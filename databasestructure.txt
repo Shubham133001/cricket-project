@@ -1,0 +1,104 @@
+Tabels structure for ent mohali
+
+
+Administration Tabales
+
+<<<<<<< HEAD
+1.	admin_groups
+		- id {bigint(20),primarykey,AUTO_INCREMENT}
+		- name {varchar(255), Default Not Null}
+		- created_at {timestamp, Default: Null}
+		- updated_at {timestamp, Default: Null}
+2. 
+	admins
+		- id {bigint(20),primarykey,AUTO_INCREMENT}
+		- name {varchar(255), Default Not Null}
+		- admin_group_id {int(11), Default Not Null} (FK {admin_groups.id})
+		- email {varchar(255), Default Not Null,Unique}
+		- password {varchar(255), Default Not Null}
+		- last_seen {timestamp, Default Null}
+		- status {int(11), Default NOT NULL DEFAULT 1}
+		- created_at {timestamp, NULL DEFAULT NULL}
+		- updated_at {timestamp, NULL DEFAULT NULL}
+
+2. 
+	admin_permissions
+		- id  {bigint(20),primarykey,AUTO_INCREMENT}
+		- admin_group_id {bigint(20), Default Not Null} (FK {admin_groups.id})
+		- urlid {bigint(20), Default Not Null}
+		- url {varchar(255), Default Not Null}
+		- slug {varchar(255), Default Not Null}
+		- groupname {varchar(255), Default Not Null}
+		- created_at {timestamp, NULL DEFAULT NULL}
+		- updated_at {timestamp, NULL DEFAULT NULL}
+=======
+admin_groups
+ id {bigint(20),primarykey,AUTO_INCREMENT}
+name {varchar(255), Default Not Null}
+ created_at {timestamp, Default: Null}
+ updated_at {timestamp, Default: Null}
+
+
+admins
+ id {bigint(20),primarykey,AUTO_INCREMENT}
+ name {varchar(255), Default Not Null}
+ admin_group_id {int(11), Default Not Null}  (FK {admin_groups.id})
+ email {varchar(255), Default Not Null,Unique}
+ password {varchar(255), Default Not Null}
+ last_seen {timestamp, Default Null}
+ status {int(11), Default NOT NULL DEFAULT 1}
+ created_at {timestamp, NULL DEFAULT NULL}
+ updated_at {timestamp, NULL DEFAULT NULL}
+
+
+admin_permissions
+ id  {bigint(20),primarykey,AUTO_INCREMENT}
+ admin_group_id {bigint(20), Default Not Null}  (FK {admin_groups.id})
+ urlid {bigint(20), Default Not Null}
+ url {varchar(255), Default Not Null}
+ slug {varchar(255), Default Not Null}
+ groupname {varchar(255), Default Not Null}
+ created_at {timestamp, NULL DEFAULT NULL}
+ updated_at {timestamp, NULL DEFAULT NULL}
+
+patients
+id  {bigint(20),primarykey,AUTO_INCREMENT}
+name {varchar(255), Default Not Null}	
+email {varchar(255), Default Null,Unique}
+phonenumber {varchar(255), Default Not Null,Unique}
+gender {int(11), Default NOT NULL DEFAULT 1,”female 0,male 1,others 2”} 
+age {int(11), Default Not Null}	
+address{varchar(255),  NULL DEFAULT NULLl}
+city {varchar(255),  NULL DEFAULT NULLl}
+created_by {bigint(11), NULL DEFAULT NULL} (FK {admins
+.id}) OR {0 for self}	
+created_at {timestamp, NULL DEFAULT NULL}
+updated_at {timestamp, Default: Null}
+
+specialization
+id  {int(20),primarykey,AUTO_INCREMENT}
+specialization_name {varchar(255), Default Not Null}
+
+doctors
+id  {bigint(20),primarykey,AUTO_INCREMENT}
+name {varchar(255), Default Not Null}
+email {varchar(255), Default Not Null,Unique}
+phonenumber {varchar(255), Default Not Null}
+profilephoto {varchar(255),  NULL DEFAULT NULLl}
+gender {int(11), Default NOT NULL DEFAULT 1,”female 0,male 1,others 2”} 
+age {int(11), Default Null}	
+address{varchar(255),  NULL DEFAULT NULLl}
+city {varchar(255),  NULL DEFAULT NULLl}
+created_by {bigint(11), NULL DEFAULT NULL} (FK {admins.id})
+specialization_id  {int(11),  Default NOT NULL }	(FK {specialization.id})
+created_at {timestamp, NULL DEFAULT NULL}
+updated_at {timestamp, NULL DEFAULT NULL}
+
+Consultancy
+id  {int(20),primarykey,AUTO_INCREMENT}
+patient_id {bigint(11), NULL DEFAULT NULL}  (FK {patients.id})
+doctor_id {bigint(11), NULL DEFAULT NULL}  (FK {doctors.id})
+created_at {timestamp, NULL DEFAULT NULL}
+updated_at {timestamp, NULL DEFAULT NULL}
+	
+>>>>>>> gaurav

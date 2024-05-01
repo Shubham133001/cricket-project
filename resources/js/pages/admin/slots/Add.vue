@@ -1,0 +1,446 @@
+<template>
+    <div style="width: 100%">
+
+        <v-card>
+            <v-card-title>
+                <span class="headline">Add Slots</span>
+            </v-card-title>
+            <v-card-text>
+                <v-row>
+                    <v-col cols="12" md="4">
+                        <v-select v-model="slotstype" :items="['Single Day', 'Date Range']" label="Slots For"
+                            @change="timeperiod = ''"></v-select>
+
+                        <v-text-field v-model="totalslots" label="Total Slots"></v-text-field>
+                        <v-select v-model="availabledays" v-if="slotstype == 'Date Range'" :items="days" multiple
+                            label="Available Days" @change="updatecalendar"></v-select>
+                        <v-btn color="primary" @click="addslot">Add</v-btn>
+                    </v-col>
+                    <v-col cols="12" md="4">
+                        <v-date-picker v-model="timeperiod" :allowed-dates="getalloweddates" label="Start Date"
+                            :events="events" v-if="slotstype == 'Single Day'"></v-date-picker>
+                        <!-- <v-date-picker v-model="timeperiod" multiple :allowed-dates="getalloweddates" label="Start Date"
+                            :events="events" v-if="slotstype == 'Multiple Days'"></v-date-picker> -->
+                        <v-date-picker v-model="timeperiod" range :allowed-dates="getalloweddates" label="Start Date"
+                            :events="events" v-if="slotstype == 'Date Range'"></v-date-picker>
+
+                    </v-col>
+
+                </v-row>
+                <v-form @submit.prevent="addslot">
+                    <v-simple-table v-if="slots.length > 0">
+                        <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <th class="text-left">Slot</th>
+                                    <th class="text-left">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="( slot, index ) in  slots " :key="index">
+                                    <td>{{ index + 1 }}</td>
+                                    <td>
+                                        <v-row>
+                                            <v-col cols="12" md="2">
+                                                <v-text-field v-model="slot.title" label="Title"></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12" md="2">
+                                                <v-text-field type="number" v-model="slot.bookings_allowed"
+                                                    label="Bookings Per Slot"></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12" md="2">
+                                                <v-select v-model="slot.time_start" :items="time"
+                                                    label="Start Time"></v-select>
+                                            </v-col>
+                                            <v-col cols="12" md="2">
+                                                <v-select v-model="slot.time_end" :items="time" label="End Time"
+                                                    @change="checkslots"></v-select>
+                                            </v-col>
+                                            <v-col cols="12" md="2">
+                                                <v-text-field type="number" v-model="slot.price" label="Price"
+                                                    value="0"></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12" md="2">
+                                                <v-text-field type="number" v-model="slot.advanceprice"
+                                                    label="Advance Price" value="0"></v-text-field>
+                                            </v-col>
+
+                                            <!-- <v-col cols="12" md="6" class="d-flex">
+                                                <v-checkbox v-model="slot.days" value="Monday"
+                                                    label="Monday"></v-checkbox>
+                                                <v-checkbox v-model="slot.days" value="Tuesday"
+                                                    label="Tuesday"></v-checkbox>
+                                                <v-checkbox v-model="slot.days" value="Wednesday"
+                                                    label="Wednesday"></v-checkbox>
+                                                <v-checkbox v-model="slot.days" value="Thursday"
+                                                    label="Thursday"></v-checkbox>
+                                                <v-checkbox v-model="slot.days" value="Friday"
+                                                    label="Friday"></v-checkbox>
+                                                <v-checkbox v-model="slot.days" value="Saturday"
+                                                    label="Saturday"></v-checkbox>
+                                                <v-checkbox v-model="slot.days" value="Sunday"
+                                                    label="Sunday"></v-checkbox>
+                                            </v-col> -->
+                                        </v-row>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <v-btn color="primary" @click="saveslots" v-if="allgood == true">Save</v-btn>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </template>
+                    </v-simple-table>
+                </v-form>
+            </v-card-text>
+        </v-card>
+    </div>
+
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+    data() {
+        return {
+            allgood: false,
+            totalslots: 0,
+            slots: [],
+            time: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
+            date: new Date().toISOString().substr(0, 10),
+            events: [],
+            slotstype: '',
+            bookedslots: [],
+            startdate: '',
+            enddate: '',
+            timeperiod: '',
+            allowedDates: '',
+            availabledays: [0, 1, 2, 3, 4, 5, 6],
+            bookeddates: [],
+            days: [{
+                text: 'Monday',
+                value: 1
+            },
+            {
+                text: 'Tuesday',
+                value: 2
+            },
+            {
+                text: 'Wednesday',
+                value: 3
+            },
+            {
+                text: 'Thursday',
+                value: 4
+            },
+            {
+                text: 'Friday',
+                value: 5
+            },
+            {
+                text: 'Saturday',
+                value: 6
+            },
+            {
+                text: 'Sunday',
+                value: 0
+            }
+            ]
+        }
+    },
+    created() {
+        this.getslots();
+    },
+    methods: {
+        async checkslots() {
+            this.allgood = false;
+            let slots = this.slots;
+            let stoploop = false;
+            slots.forEach(slot => {
+                let startdate = '';
+                let enddate = '';
+                if (this.slotstype == 'Single Day') {
+                    startdate = this.timeperiod;
+                    enddate = this.timeperiod;
+                    if (startdate == '') {
+                        this.timeperiod = '';
+                        this.$toasted.show('Date not get selected, Please Select Again.', {
+                            type: 'error',
+                            duration: 2000
+                        });
+                        this.allgood = false;
+                        return false;
+                    }
+                }
+                else {
+                    startdate = this.timeperiod[0];
+                    enddate = this.timeperiod[1];
+                    if (new Date(startdate) > new Date(enddate)) {
+                        startdate = this.timeperiod[1];
+                        enddate = this.timeperiod[0];
+                    }
+                    if (startdate == '' || enddate == '') {
+                        this.timeperiod = [];
+                        this.$toasted.show('Date not get selected, Please Select Again.', {
+                            type: 'error',
+                            duration: 2000
+                        });
+                        this.allgood = false;
+                        return false;
+                    }
+                }
+
+
+                let currentselectedates = this.getdaysbetween(startdate, enddate);
+
+                if (slot.time_start >= slot.time_end) {
+                    this.$toasted.show('Start time should be less than end time', {
+                        type: 'error',
+                        duration: 2000
+                    });
+                    this.allgood = false;
+                    return false;
+                }
+                let currentselectedtimes = this.gethoursbetween(slot.time_start, slot.time_end);
+
+                // currentselectedtimes.push(slot.time_start);
+                // currentselectedtimes.push(slot.time_end);
+                // console.log()
+
+                this.bookedslots.forEach(bookedslot => {
+
+                    let bookeddates = this.getdaysbetween(bookedslot.start_date, bookedslot.end_date);
+                    let bookedtimes = this.gethoursbetween(bookedslot.start_time, bookedslot.end_time);
+                    currentselectedates.forEach(date => {
+
+                        if (bookeddates.includes(date)) {
+                            currentselectedtimes.forEach(time => {
+                                if (stoploop) {
+                                    this.allgood = false;
+                                    return false;
+                                }
+                                if (bookedtimes.includes(time)) {
+                                    this.allgood = false;
+                                    this.$toasted.show('Slot already exists for "' + date + '" (' + bookedslot.start_time + ' - ' + bookedslot.end_time + ') ', {
+                                        type: 'error',
+                                        duration: 2000
+                                    });
+                                    stoploop = true;
+                                    this.allgood = false;
+                                    return false;
+
+                                }
+                            });
+                        }
+
+                    });
+
+
+                });
+
+
+            });
+            // if (this.bookeddates.includes(val)) {
+            //     return false;
+            // }
+            if (stoploop == false) {
+                this.allgood = true;
+            }
+            else {
+                this.allgood = false;
+            }
+
+        },
+        async getslots() {
+            await axios.post('/api/admin/slots/list', { id: this.$route.params.id }).then(response => {
+                this.bookedslots = response.data.slots;
+                this.bookedslots.forEach(slot => {
+
+                    let startdate = new Date(slot.start_date).toISOString().substr(0, 10);
+                    let enddate = new Date(slot.end_date).toISOString().substr(0, 10);
+                    if (startdate > enddate) {
+                        startdate = new Date(slot.end_date).toISOString().substr(0, 10);
+                        enddate = new Date(slot.start_date).toISOString().substr(0, 10);
+                    }
+                    // get all dates in between start and end date
+                    let currentdate = new Date(startdate);
+                    let stopdate = new Date(enddate);
+                    while (currentdate <= stopdate) {
+                        // set format to yyyy-mm-dd
+                        let datetopush = currentdate.getFullYear() + '-' + ('0' + (currentdate.getMonth() + 1)).slice(-2) + '-' + ('0' + currentdate.getDate()).slice(-2);
+                        this.bookeddates.push(datetopush);
+                        this.events.push(new Date(datetopush));
+                        currentdate.setDate(currentdate.getDate() + 1);
+                    }
+                });
+
+            }).catch(error => {
+                this.$toasted.show('Error loading slots' + error, {
+                    type: 'error'
+                });
+            });
+        },
+        getdaysbetween(start_date, end_date) {
+
+            let startdate = new Date(start_date).toISOString().substr(0, 10);
+            let enddate = new Date(end_date).toISOString().substr(0, 10);
+            // if (startdate > enddate) {
+            //     startdate = new Date(slot.slotdate[1]).toISOString().substr(0, 10);
+            //     enddate = new Date(slot.slotdate[0]).toISOString().substr(0, 10);
+            // }
+            // get all dates in between start and end date
+            let currentdate = new Date(startdate);
+            let stopdate = new Date(enddate);
+            let datesarray = [];
+            while (currentdate <= stopdate) {
+                // set format to yyyy-mm-dd
+                let datetopush = currentdate.getFullYear() + '-' + ('0' + (currentdate.getMonth() + 1)).slice(-2) + '-' + ('0' + currentdate.getDate()).slice(-2);
+                datesarray.push(datetopush);
+                // this.events.push(new Date(datetopush));
+                currentdate.setDate(currentdate.getDate() + 1);
+            }
+            return datesarray;
+        },
+        gethoursbetween(starttime, endtime) {
+            let start = parseInt(starttime.split(':')[0]);
+            let end = parseInt(endtime.split(':')[0]);
+            let hours = [];
+            for (let i = start; i <= end; i++) {
+                hours.push(i);
+            }
+            return hours;
+        },
+        addslot() {
+            if (this.timeperiod == '') {
+                this.$toasted.show('Please select time period', {
+                    type: 'error',
+                    duration: 2000
+                });
+                return false;
+            }
+            if (this.slotstype == 'Date Range' && this.availabledays.length == 0) {
+                this.$toasted.show('Please select available days', {
+                    type: 'error',
+                    duration: 2000
+                });
+                return false;
+            }
+            if (this.slotstype == 'Date Range') {
+                this.startdate = this.timeperiod[0];
+                this.enddate = this.timeperiod[1];
+                if (this.startdate > this.enddate) {
+                    this.startdate = this.timeperiod[1];
+                    this.enddate = this.timeperiod[0];
+                }
+            }
+            else if (this.slotstype == 'Single Day' || this.slotstype == 'Multiple Days') {
+                this.startdate = this.timeperiod;
+                this.enddate = this.timeperiod;
+            }
+
+
+            this.slots = [];
+            for (let i = 0; i < this.totalslots; i++) {
+                this.slots.push({
+                    time_start: '00:00',
+                    time_end: '00:00',
+                    price: 0,
+                    advanceprice: 0,
+                    bookings_allowed: 1,
+                });
+            }
+
+
+        },
+        // disable all monday in datepicker
+        getalloweddates(val) {
+            // get day from val
+            let day = new Date(val).getDay();
+            // check if day is in available days
+
+
+            // else {
+            if (this.availabledays.includes(day)) {
+                return true;
+            }
+
+            // }
+
+
+        },
+        updatecalendar() {
+            this.getalloweddates();
+        },
+
+        async saveslots() {
+
+            await axios.post('/api/admin/slots/add', {
+                slots: this.slots,
+                date: this.timeperiod,
+                days: this.availabledays,
+                id: this.$route.params.id,
+                bookings_allowed: this.bookings_allowed
+            }).then(response => {
+                this.$toasted.show('Slots added successfully', {
+                    type: 'success',
+                    duration: 2000
+                });
+                this.$router.push('/admin/category/slots/' + this.$route.params.id);
+            }).catch(error => {
+                this.$toasted.show('Error adding slots', {
+                    type: 'error',
+                    duration: 2000
+                });
+            });
+        }
+    }
+}
+
+</script>
+<style>
+.theme--light.v-calendar-weekly {
+    border: none !important;
+}
+
+.v-calendar-weekly__head {
+    background: #efefef;
+    line-height: 30px;
+    border: none;
+}
+
+.theme--light.v-calendar-weekly .v-calendar-weekly__day {
+    border: none;
+}
+
+.theme--light.v-calendar-weekly .v-calendar-weekly__head-weekday {
+    border: none;
+}
+
+.v-present .v-btn {
+    background-color: transparent !important;
+    border: solid 1px #000 !important;
+    color: #000 !important;
+}
+
+.v-present .theme--light.v-btn:focus {
+    color: #fff !important;
+    background: #0096c7 !important;
+}
+
+.v-present .theme--light.v-btn:focus::before {}
+
+.v-future .v-btn::before {
+    background-color: #0096c7 !important;
+
+}
+
+.v-future .theme--light.v-btn:focus {
+    color: #fff !important;
+}
+
+.v-future .theme--light.v-btn:focus::before {
+    opacity: 0.8 !important;
+}
+</style>
