@@ -467,7 +467,7 @@ export default {
                 user_id: localStorage.getItem('userdetails') ? JSON.parse(localStorage.getItem('userdetails')).id : 0,
 
             }
-
+ 
             // else {
 
             // }
