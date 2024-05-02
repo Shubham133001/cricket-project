@@ -131,12 +131,13 @@ export default {
                 value: 'time'
             },
             {
-                text: 'Price',
-                value: 'price'
-            },
-            {
                 text: 'Advance Price',
                 value: 'advanceprice'
+            },
+            
+            {
+                text: 'Price',
+                value: 'price'
             },
             {
                 text: 'Actions',

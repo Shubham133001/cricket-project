@@ -4,12 +4,16 @@
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
 # Node artifact files
-node_modules/
-dist/
-vendor/
+/node_modules
+/dist
+/vendor
 .env
-
-
+/storage/log/*
+/public/dist/*
+/public/hot
+/public/storage
+/public/dist/js/app.js
+/public/mix-manifest.json
 # Compiled Java class files
 *.class
 

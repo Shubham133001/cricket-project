@@ -17,10 +17,19 @@
                         <v-btn color="primary" @click="addslot">Add</v-btn>
                     </v-col>
                     <v-col cols="12" md="4">
+                        
                         <v-date-picker v-model="timeperiod" :allowed-dates="getalloweddates" label="Start Date"
                             :events="events" v-if="slotstype == 'Single Day'"></v-date-picker>
                         <!-- <v-date-picker v-model="timeperiod" multiple :allowed-dates="getalloweddates" label="Start Date"
                             :events="events" v-if="slotstype == 'Multiple Days'"></v-date-picker> -->
+                            <!-- <v-date-picker
+        v-model="selectedDates"
+        multiple
+        range
+        @input="onDateSelected"
+        :min="minDate"
+        :max="maxDate"
+      ></v-date-picker> -->
                         <v-date-picker v-model="timeperiod" range :allowed-dates="getalloweddates" label="Start Date"
                             :events="events" v-if="slotstype == 'Date Range'"></v-date-picker>
 
@@ -57,13 +66,14 @@
                                                     @change="checkslots"></v-select>
                                             </v-col>
                                             <v-col cols="12" md="2">
-                                                <v-text-field type="number" v-model="slot.price" label="Price"
-                                                    value="0"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" md="2">
                                                 <v-text-field type="number" v-model="slot.advanceprice"
                                                     label="Advance Price" value="0"></v-text-field>
                                             </v-col>
+                                            <v-col cols="12" md="2">
+                                                <v-text-field type="number" v-model="slot.price" label="Price"
+                                                    value="0"></v-text-field>
+                                            </v-col>
+                                           
 
                                             <!-- <v-col cols="12" md="6" class="d-flex">
                                                 <v-checkbox v-model="slot.days" value="Monday"
@@ -118,6 +128,9 @@ export default {
             timeperiod: '',
             allowedDates: '',
             availabledays: [0, 1, 2, 3, 4, 5, 6],
+            selectedDates: [],
+            minDate: '2024-01-01',
+            maxDate: '2024-12-31',
             bookeddates: [],
             days: [{
                 text: 'Monday',
@@ -194,6 +207,8 @@ export default {
 
 
                 let currentselectedates = this.getdaysbetween(startdate, enddate);
+                 console.log(slot.time_start);   
+                 if(slot.time_start !="00:00" && slot.time_end!="00:00"){
 
                 if (slot.time_start >= slot.time_end) {
                     this.$toasted.show('Start time should be less than end time', {
@@ -203,6 +218,8 @@ export default {
                     this.allgood = false;
                     return false;
                 }
+
+                 }
                 let currentselectedtimes = this.gethoursbetween(slot.time_start, slot.time_end);
 
                 // currentselectedtimes.push(slot.time_start);
@@ -373,6 +390,10 @@ export default {
         updatecalendar() {
             this.getalloweddates();
         },
+
+        onDateSelected() {
+         console.log(this.selectedDates);
+    },
 
         async saveslots() {
 

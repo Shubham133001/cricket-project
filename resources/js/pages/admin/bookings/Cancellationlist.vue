@@ -89,14 +89,15 @@ export default {
             //     text: 'Time',
             //     value: 'slot.start_time'
             // },
+             // {
+            //     text: 'Advance Price',
+            //     value: 'slot.advanceprice'
+            // },
             // {
             //     text: 'Price',
             //     value: 'slot.price'
             // },
-            // {
-            //     text: 'Advance Price',
-            //     value: 'slot.advanceprice'
-            // },
+           
             {
                 text: 'Status',
                 value: 'status'
