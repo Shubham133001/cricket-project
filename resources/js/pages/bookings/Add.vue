@@ -34,7 +34,7 @@
                         <v-date-picker v-model="timeperiod" label="Start Date" style="width: 100%" @change="getSlots"
                             full-width :allowed-dates="getalloweddates"></v-date-picker>
                     </v-card>
-                    <v-card class="mx-auto mt-2" :loading="loadingslots">
+                    <v-card class="mx-auto mt-2" :loading="loadingslots" v-if="timeperiod != ''">
                         <v-card-title class="text-h5">Available Slots</v-card-title>
                         <v-card-text v-if="slots.length > 0">
                             <v-list dense two-line>
@@ -43,9 +43,13 @@
                                         <template v-slot:default="{ active }">
                                             <v-list-item-content>
                                                 <v-list-item-title>
-                                                    <p class="text-h6 ma-0">{{ slot.title }}</p>
+                                                    <p class="text-h6 ma-0">{{ slot.title }}  <span class="mr-3  ml-2" style="font-size: 14px; font-weight: 400px;">({{ slot.start_time + ' - ' + slot.end_time }})</span><v-chip
+                                                        :color="(slot.bookings.length == 0) ? 'green' : (slot.bookings.length >= slot.bookings_allowed) ? 'red' : 'orange'"
+                                                        small dark>Slot(s) {{ slot.bookings.length }}
+                                                        /
+                                                        {{ slot.bookings_allowed }}</v-chip></p>
                                                 </v-list-item-title>
-                                                <v-list-item-subtitle>
+                                                <!-- <v-list-item-subtitle>
                                                     {{ slot.start_time + ' - ' + slot.end_time }}<br />
                                                     <v-chip
                                                         :color="(slot.bookings.length == 0) ? 'green' : (slot.bookings.length >= slot.bookings_allowed) ? 'red' : 'orange'"
@@ -56,7 +60,7 @@
                                                         v-if="slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed"
                                                         @click="showbookings(slot)">Show
                                                         Booking</v-btn>
-                                                </v-list-item-subtitle>
+                                                </v-list-item-subtitle> -->
                                             </v-list-item-content>
                                             <v-list-item-action>
                                                 <v-checkbox v-model="selection"
@@ -80,7 +84,7 @@
                         <v-card-title class="text-h5" style="background: var(--v-primary-base); color:#fff;">Booking
                             Summary</v-card-title>
                         <v-card-text>
-                            <p class="text-h5 mt-2">{{ selecteditem.name }} ({{ this.timeperiod }})</p>
+                            <p class="text-h5 mt-2">{{ selecteditem.name }} {{ (this.timeperiod != '')?'('+this.timeperiod+')':'' }}</p>
                             <v-divider class="mb-2"> </v-divider>
                             <v-simple-table v-if="selection.length > 0">
                                 <tr>
@@ -302,7 +306,7 @@ export default {
     mounted() {
         this.getcategory();
         this.getuserteam();
-        this.timeperiod = moment().format('YYYY-MM-DD');
+        this.timeperiod = '';//  moment().format('YYYY-MM-DD');
         // this.selection
         // this.getSlots();
         this.getgateways();
@@ -346,6 +350,7 @@ export default {
                 });
         },
         async getSlots() {
+            this.loadingslots = true;
             if (this.selection.length > 0) {
                 const ok = await this.$refs.confirm.open({
                     title: 'Are you sure?',
