@@ -2,8 +2,7 @@
     <div style="width: 100%">
         <v-row>
             <v-img height="300px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                :src="(selecteditem.image != 'null' && selecteditem.image != '') ? '/storage/images/' + selecteditem.image : 'https://picsum.photos/id/11/100/60'"
-                lazy-src="https://picsum.photos/id/11/100/60" cover>
+                :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/114/1920/450" cover>
                 <v-row>
                     <v-col cols="12" md="8" class=" d-flex align-end"
                         style="justify-content: flex-end; flex-direction: column;">
@@ -184,7 +183,7 @@
                                                 }}</span>
                                         </v-avatar>
                                         <h3 style="float: left; clear: right;" class="mt-0 ml-1">{{
-                                            booking.team.name }}<br /><v-chip color="orange" dark small
+                    booking.team.name }}<br /><v-chip color="orange" dark small
                                                 style="font-family:'Pacifico';">{{ booking.team.designation }}</v-chip>
                                         </h3>
                                     </v-list-item-title>

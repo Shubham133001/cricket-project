@@ -8,8 +8,8 @@
             <v-card-text>
                 <v-row>
                     <v-col cols="12" md="4">
-                        <v-select v-model="slotstype" :items="['Single Day', 'Date Range']" label="Slots For"
-                            @change="timeperiod = ''"></v-select>
+                        <v-select v-model="slotstype" :items="['Single Day', 'Multiple Days', 'Date Range']"
+                            label="Slots For" @change="timeperiod = ''"></v-select>
 
                         <v-text-field v-model="totalslots" label="Total Slots"></v-text-field>
                         <v-select v-model="availabledays" v-if="slotstype == 'Date Range'" :items="days" multiple
@@ -17,12 +17,12 @@
                         <v-btn color="primary" @click="addslot">Add</v-btn>
                     </v-col>
                     <v-col cols="12" md="4">
-                        
+
                         <v-date-picker v-model="timeperiod" :allowed-dates="getalloweddates" label="Start Date"
                             :events="events" v-if="slotstype == 'Single Day'"></v-date-picker>
-                        <!-- <v-date-picker v-model="timeperiod" multiple :allowed-dates="getalloweddates" label="Start Date"
-                            :events="events" v-if="slotstype == 'Multiple Days'"></v-date-picker> -->
-                            <!-- <v-date-picker
+                        <v-date-picker v-model="timeperiod" multiple :allowed-dates="getalloweddates" label="Start Date"
+                            :events="events" v-if="slotstype == 'Multiple Days'"></v-date-picker>
+                        <!-- <v-date-picker
         v-model="selectedDates"
         multiple
         range
@@ -73,7 +73,7 @@
                                                 <v-text-field type="number" v-model="slot.price" label="Price"
                                                     value="0"></v-text-field>
                                             </v-col>
-                                           
+
 
                                             <!-- <v-col cols="12" md="6" class="d-flex">
                                                 <v-checkbox v-model="slot.days" value="Monday"
@@ -171,6 +171,18 @@ export default {
             this.allgood = false;
             let slots = this.slots;
             let stoploop = false;
+            // if (this.slotstype == 'Multiple Days' && this.timeperiod == '') {
+            //     this.timeperiod.forEach(date => {
+            //         if (this.bookeddates.includes(date)) {
+            //             this.$toasted.show('Slot already exists for "' + date + '"', {
+            //                 type: 'error',
+            //                 duration: 2000
+            //             });
+            //             this.allgood = false;
+            //             return false;
+            //         }
+            //     });
+            // }
             slots.forEach(slot => {
                 let startdate = '';
                 let enddate = '';
@@ -186,6 +198,51 @@ export default {
                         this.allgood = false;
                         return false;
                     }
+                }
+                else if (this.slotstype == 'Multiple Days') {
+                    this.timeperiod.forEach(date => {
+                        startdate = date;
+                        enddate = date;
+                        this.bookedslots.forEach(bookedslot => {
+                            let bookeddates = this.getdaysbetween(bookedslot.start_date, bookedslot.end_date);
+                            let bookedtimes = this.gethoursbetween(bookedslot.start_time, bookedslot.end_time);
+                            if (bookeddates.includes(date)) {
+                                bookedtimes.forEach(time => {
+                                    if (stoploop) {
+                                        this.allgood = false;
+                                        return false;
+                                    }
+                                    if (bookedtimes.includes(time)) {
+                                        this.allgood = false;
+                                        this.$toasted.show('Slot already exists for "' + date + '" (' + bookedslot.start_time + ' - ' + bookedslot.end_time + ') ', {
+                                            type: 'error',
+                                            duration: 5000
+                                        });
+                                        stoploop = true;
+                                        this.allgood = false;
+                                        return false;
+
+                                    }
+                                });
+                            }
+                        });
+                    });
+
+                    // if (new Date(startdate) > new Date(enddate)) {
+                    //     startdate = this.timeperiod[1];
+                    //     enddate = this.timeperiod[0];
+                    // }
+                    if (startdate == '' || enddate == '') {
+                        this.timeperiod = [];
+                        this.$toasted.show('Date not get selected, Please Select Again.', {
+                            type: 'error',
+                            duration: 5000
+                        });
+                        this.allgood = false;
+                        return false;
+                    }
+
+
                 }
                 else {
                     startdate = this.timeperiod[0];
@@ -207,19 +264,19 @@ export default {
 
 
                 let currentselectedates = this.getdaysbetween(startdate, enddate);
-                 console.log(slot.time_start);   
-                 if(slot.time_start !="00:00" && slot.time_end!="00:00"){
 
-                if (slot.time_start >= slot.time_end) {
-                    this.$toasted.show('Start time should be less than end time', {
-                        type: 'error',
-                        duration: 2000
-                    });
-                    this.allgood = false;
-                    return false;
+                if (slot.time_start != "00:00" && slot.time_end != "00:00") {
+
+                    if (slot.time_start >= slot.time_end) {
+                        this.$toasted.show('Start time should be less than end time', {
+                            type: 'error',
+                            duration: 2000
+                        });
+                        this.allgood = false;
+                        return false;
+                    }
+
                 }
-
-                 }
                 let currentselectedtimes = this.gethoursbetween(slot.time_start, slot.time_end);
 
                 // currentselectedtimes.push(slot.time_start);
@@ -392,8 +449,8 @@ export default {
         },
 
         onDateSelected() {
-         console.log(this.selectedDates);
-    },
+            console.log(this.selectedDates);
+        },
 
         async saveslots() {
 

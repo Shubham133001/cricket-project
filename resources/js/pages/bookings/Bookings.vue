@@ -7,7 +7,7 @@
                     <v-card class="mx-auto">
 
                         <v-img height="200px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                            :src="(item.image != 'null') ? '/storage/images/' + item.image : 'https://dummyimage.com/400X400'"
+                            :src="'/storage/images/' + item.image" lazy-src="https://picsum.photos/id/886/350/200"
                             cover>
 
                             <v-card-title class="text-h4" style="color: #fff;">
@@ -80,8 +80,8 @@
                                 <v-card>
                                     <v-img height="200px" class="align-end"
                                         gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                                        :src="(subcategory.image != 'null') ? '/storage/images/' + subcategory.image : 'https://dummyimage.com/400X400'"
-                                        cover>
+                                        :src="'/storage/images/' + subcategory.image"
+                                        lazy-src="https://picsum.photos/id/1058/350/200" cover>
                                         <v-card-title>
                                             <span class="headline white--text">{{ subcategory.name }}</span>
 

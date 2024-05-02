@@ -12,11 +12,12 @@
                         <thead>
                             <tr>
                                 <th class="text-left">ID</th>
-                                <th class="text-left">Category</th>
+
                                 <th class="text-left">Title</th>
                                 <th class="text-left">Slot Time</th>
                                 <th class="text-left"> Slot Date</th>
                                 <th class="text-left"> Available Days</th>
+                                <th class="text-left">Category</th>
                                 <th class="text-left">Advance Price</th>
                                 <th class="text-left">Price</th>
                                 <th class="text-left">Actions</th>
@@ -25,9 +26,7 @@
                         <tbody v-if="slots.length > 0">
                             <tr v-for="(slot, index) in slots" :key="index">
                                 <td>{{ index + 1 }}</td>
-                                <td>
-                                    <strong>{{ slot.category.name }}</strong>
-                                </td>
+
                                 <td>
                                     <strong>{{ slot.title }}</strong>
                                 </td>
@@ -46,17 +45,20 @@
                 }}</v-chip>
                                 </td>
                                 <td>
+                                    <strong>{{ slot.category.name }}</strong>
+                                </td>
+                                <td width="90">
                                     <v-img src="/images/inr_icon.png" width="20"
                                         style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
                                         style="color:#297729">{{ slot.advanceprice }}</strong>
                                 </td>
-                                <td>
+                                <td width="90">
                                     <v-img src="/images/inr_icon.png" width="20"
                                         style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
                                         style="color:#297729">{{
                     slot.price }}</strong>
                                 </td>
-                                
+
                                 <td>
                                     <!-- <v-btn color="primary" @click="editSlot(slot)">Edit</v-btn> -->
                                     <v-btn color="red" icon fab small @click="deleteSlot(slot)"><v-icon small

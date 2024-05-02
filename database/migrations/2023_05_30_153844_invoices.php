@@ -16,7 +16,7 @@ class Invoices extends Migration
         // create invoice table
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->integer("slot_id");
+            // $table->integer("slot_id");
             $table->integer("payment_id")->nullable()->comment("payment id from payment table");
             $table->integer("user_id")->default(0);
             $table->integer('status')->comment("0 for unpaid ,1 for paid, 2 for partial paid");
