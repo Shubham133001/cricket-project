@@ -2,8 +2,8 @@
     <div style="width: 100%">
         <v-row>
             <v-img height="300px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                :src="(selecteditem.image != 'null' || selecteditem.image != '') ? '/storage/images/' + selecteditem.image : 'https://dummyimage.com/400X400'"
-                cover>
+                :src="(selecteditem.image != 'null' && selecteditem.image != '') ? '/storage/images/' + selecteditem.image : 'https://picsum.photos/id/11/100/60'"
+                lazy-src="https://picsum.photos/id/11/100/60" cover>
                 <v-row>
                     <v-col cols="12" md="8" class=" d-flex align-end"
                         style="justify-content: flex-end; flex-direction: column;">

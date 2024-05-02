@@ -31,7 +31,8 @@
                                     @click="opencategory(item)">
                                     <v-img height="200px" width="350px"
                                         gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                                        src="https://picsum.photos/id/11/100/60" v-if="item.image == null">
+                                        lazy-src="https://picsum.photos/id/11/350/200"
+                                        v-if="item.image == null || item.image == ''">
                                     </v-img>
                                     <v-carousel height="200" hide-delimiters cycle show-arrows-on-hover v-else>
 
@@ -40,7 +41,7 @@
 
                                             <v-img :src="'/storage/images/' + image" height="200px" min-width="150px"
                                                 gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                                                lazy-src="https://picsum.photos/id/11/100/60">
+                                                lazy-src="https://picsum.photos/id/11/350/200">
                                             </v-img>
                                         </v-carousel-item>
                                         <h3 class="text-h5 pl-1 pb-1"
@@ -136,7 +137,7 @@ export default {
         opencategory(category) {
             // check if category have children
             if (category.children.length > 0) {
-                this.$router.push(`/admin/category/subcategory/${category.id}`);
+                this.$router.push(`/admin/subcategory/${category.id}`);
             } else {
                 this.$router.push(`/admin/category/slots/${category.id}`);
             }
