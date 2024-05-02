@@ -17,8 +17,8 @@
                                 <th class="text-left">Slot Time</th>
                                 <th class="text-left"> Slot Date</th>
                                 <th class="text-left"> Available Days</th>
-                                <th class="text-left">Price</th>
                                 <th class="text-left">Advance Price</th>
+                                <th class="text-left">Price</th>
                                 <th class="text-left">Actions</th>
                             </tr>
                         </thead>
@@ -48,14 +48,15 @@
                                 <td>
                                     <v-img src="/images/inr_icon.png" width="20"
                                         style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
-                                        style="color:#297729">{{
-                    slot.price }}</strong>
+                                        style="color:#297729">{{ slot.advanceprice }}</strong>
                                 </td>
                                 <td>
                                     <v-img src="/images/inr_icon.png" width="20"
                                         style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
-                                        style="color:#297729">{{ slot.advanceprice }}</strong>
+                                        style="color:#297729">{{
+                    slot.price }}</strong>
                                 </td>
+                                
                                 <td>
                                     <!-- <v-btn color="primary" @click="editSlot(slot)">Edit</v-btn> -->
                                     <v-btn color="red" icon fab small @click="deleteSlot(slot)"><v-icon small

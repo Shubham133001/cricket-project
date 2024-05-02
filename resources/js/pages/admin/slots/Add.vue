@@ -66,13 +66,14 @@
                                                     @change="checkslots"></v-select>
                                             </v-col>
                                             <v-col cols="12" md="2">
-                                                <v-text-field type="number" v-model="slot.price" label="Price"
-                                                    value="0"></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" md="2">
                                                 <v-text-field type="number" v-model="slot.advanceprice"
                                                     label="Advance Price" value="0"></v-text-field>
                                             </v-col>
+                                            <v-col cols="12" md="2">
+                                                <v-text-field type="number" v-model="slot.price" label="Price"
+                                                    value="0"></v-text-field>
+                                            </v-col>
+                                           
 
                                             <!-- <v-col cols="12" md="6" class="d-flex">
                                                 <v-checkbox v-model="slot.days" value="Monday"

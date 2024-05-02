@@ -29,18 +29,19 @@
                             @click="openuser(item.user.id)">#{{ item.user.name
                             }}</span>
                     </template>
-                    <template v-slot:item.slot.price="{ item }">
-                        <v-img src="/images/inr_icon.png" width="20"
-                            style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
-                            style="color:#297729">{{
-            item.slot.price }}</strong>
-                    </template>
                     <template v-slot:item.slot.advanceprice="{ item }">
                         <v-img src="/images/inr_icon.png" width="20"
                             style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
                             style="color:#297729">{{
             item.slot.advanceprice }}</strong>
                     </template>
+                    <template v-slot:item.slot.price="{ item }">
+                        <v-img src="/images/inr_icon.png" width="20"
+                            style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
+                            style="color:#297729">{{
+            item.slot.price }}</strong>
+                    </template>
+                    
                     <template v-slot:item.actions="{ item }">
                         <v-btn small fab icon color="primary" @click="editBooking(item)"><v-icon
                                 small>mdi-pencil</v-icon></v-btn>
@@ -99,12 +100,12 @@ export default {
                 value: 'slot.start_time'
             },
             {
-                text: 'Price',
-                value: 'slot.price'
-            },
-            {
                 text: 'Advance Price',
                 value: 'slot.advanceprice'
+            },
+            {
+                text: 'Price',
+                value: 'slot.price'
             },
             {
                 text: 'Status',
