@@ -1,8 +1,12 @@
 <template>
     <div class="d-flex flex-column flex-grow-1">
+      <div>
+        <div class="display-1">Edit Group</div>
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+      </div>
       <v-card>
         <v-card-title>
-          Edit Group
+         <!--  Edit Group -->
           <v-spacer></v-spacer>
         </v-card-title>
         <v-form ref="form" v-model="isFormValid" lazy-validation>
@@ -117,6 +121,13 @@
         { text: "Inactive", value: 0 },
       ],
       showPassword: false,
+      breadcrumbs: [{
+        text: 'Admin Group',
+        disabled: false,
+        to: '/admin/adminuser/groups'
+      }, {
+        text: 'Edit Group'
+      }],
       adminGroupList: [],
       isLoading: false,
       isSignInDisabled: false,

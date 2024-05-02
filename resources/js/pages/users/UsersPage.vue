@@ -121,7 +121,7 @@ export default {
       breadcrumbs: [{
         text: 'Users',
         disabled: false,
-        href: '#'
+        to: '/admin/users'
       }, {
         text: 'List'
       }],

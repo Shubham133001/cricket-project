@@ -1,9 +1,12 @@
 <template>
     <div style="width: 100%">
-
+        <div>
+        <div class="display-1">Categories</div>
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+      </div>
         <v-card>
             <v-card-title>
-                <span class="headline">Categories</span>
+                <!-- <span class="headline">Categories</span> -->
                 <v-spacer></v-spacer>
                 <v-btn color="primary" to="/admin/category/add">Add New Category</v-btn>
             </v-card-title>
@@ -117,6 +120,13 @@ export default {
     data() {
         return {
             categories: [],
+            breadcrumbs: [{
+                text: 'Categories',
+                disabled: false,
+                to: '/admin/categories'
+            }, {
+                text: 'Categories'
+            }],
             show: false,
             headers: [
                 { text: 'ID', align: 'start', value: 'id' },

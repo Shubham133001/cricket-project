@@ -1,10 +1,13 @@
 <template>
     <div style="width: 100%">
-
+         <div>
+        <div class="display-1">Edit Sub Category</div>
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+      </div>
         <v-card>
-            <v-card-title>
+            <!-- <v-card-title>
                 <span class="headline">Edit Sub Category</span>
-            </v-card-title>
+            </v-card-title> -->
             <v-card-text>
                 <v-form ref="form" v-model="valid" lazy-validation>
                     <v-row>
@@ -52,6 +55,13 @@ export default {
                 image: null
             },
             categoryimage: [],
+            breadcrumbs: [{
+                text: 'Categories',
+                disabled: false,
+                to: '/admin/categories'
+            }, {
+                text: 'Edit Sub Categories'
+            }],
             valid: true,
             nameRules: [
                 v => !!v || 'Name is required',

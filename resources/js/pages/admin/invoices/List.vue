@@ -1,9 +1,12 @@
 <template>
     <div style="width: 100%">
-
+        <div>
+        <div class="display-1">Invoices</div>
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+      </div>
         <v-card>
             <v-card-title>
-                <span class="headline">Invoices</span>
+                <!-- <span class="headline">Invoices</span> -->
                 <v-spacer></v-spacer>
                 <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line
                     hide-details></v-text-field>
@@ -60,7 +63,13 @@ export default {
         return {
             dialog: false,
             dialogDelete: false,
-
+            breadcrumbs: [{
+                text: 'Invoices',
+                disabled: false,
+                to: '/admin/invoices'
+            }, {
+                text: 'List'
+            }],
             options: {},
             loading: false,
 
