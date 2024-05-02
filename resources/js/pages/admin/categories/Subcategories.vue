@@ -1,6 +1,9 @@
 <template>
     <div style="width: 100%">
-
+         <div>
+        <div class="display-1">Sub Category</div>
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+      </div>
         <v-card>
             <v-card-title>
                 <v-btn color="black" small icon fab dense @click="back"><v-icon small>mdi-arrow-left</v-icon></v-btn>
@@ -121,6 +124,13 @@ export default {
     data() {
         return {
             categories: [],
+            breadcrumbs: [{
+                text: 'Categories',
+                disabled: false,
+                to: '/admin/categories'
+            }, {
+                text: 'Sub Categories'
+            }],
             show: false,
             headers: [
                 { text: 'ID', align: 'start', value: 'id' },

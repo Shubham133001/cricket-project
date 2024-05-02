@@ -1,9 +1,11 @@
 <template>
   <div class="d-flex flex-column flex-grow-1">
-
+    <div>
+        <div class="display-1">Admin Groups</div>
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+      </div>
     <v-card>
       <v-card-title>
-        Admin Groups
         <v-spacer></v-spacer>
         <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details></v-text-field>
         <v-spacer></v-spacer>
@@ -48,6 +50,13 @@ export default {
       isvisiable: true,
       totalDesserts: 0,
       search: '',
+       breadcrumbs: [{
+        text: 'Admin Group',
+        disabled: false,
+        to: '/admin/adminuser/groups'
+      }, {
+        text: 'List'
+      }],
       desserts: [],
       loading: true,
       options: {},

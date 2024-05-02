@@ -1,9 +1,13 @@
 <template>
     <div style="width: 100%">
+        <div>
+        <div class="display-1">Bookings List</div>
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+      </div>
         <v-card :loading="loading">
-            <v-card-title>
+            <!-- <v-card-title>
                 <span class="headline">Bookings List</span>
-            </v-card-title>
+            </v-card-title> -->
             <v-card-text>
                 <v-data-table :headers="headers" :items="bookings" class="elevation-0" :options.sync="options"
                     :server-items-length="totalbookings" :search="search" :loading="loading">
@@ -70,6 +74,13 @@ export default {
     data() {
         return {
             loading: true,
+            breadcrumbs: [{
+                text: 'Booking',
+                disabled: false,
+                to: '/admin/bookings'
+            }, {
+                text: 'List'
+            }],
             slots: [],
             days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
             time: [],

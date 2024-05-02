@@ -1,8 +1,12 @@
 <template>
     <div style="width: 100%">
+        <div>
+        <div class="display-1">All Transactions</div>
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+      </div>
         <v-card>
             <v-card-title>
-                <h3>All Transactions</h3>
+                
                 <v-spacer></v-spacer>
                 <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line
                     hide-details></v-text-field>
@@ -62,6 +66,13 @@ export default {
         return {
             transactions: [],
             loading: false,
+            breadcrumbs: [{
+                text: 'Transactions',
+                disabled: false,
+                to: '/admin/transactions'
+            }, {
+                text: 'List'
+            }],
             search: '',
             dates: [],
             menu: false,

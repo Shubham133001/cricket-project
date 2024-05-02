@@ -1,10 +1,13 @@
 <template>
     <div style="width: 100%">
-
+        <div>
+        <div class="display-1">List Slots</div>
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+      </div>
         <v-card>
-            <v-card-title>
+            <!-- <v-card-title>
                 <span class="headline">List Slots</span>
-            </v-card-title>
+            </v-card-title> -->
             <v-card-text>
                 <v-simple-table>
                     <template v-slot:default>
@@ -84,7 +87,13 @@ export default {
     },
     data() {
         return {
-
+            breadcrumbs: [{
+                text: 'Slots',
+                disabled: false,
+                to: '/admin/slots'
+            }, {
+                text: 'List'
+            }],
             slots: [],
 
             days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat']

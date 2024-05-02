@@ -1,10 +1,13 @@
 <template>
     <div style="width: 100%">
-
+        <div>
+        <div class="display-1">Add Slots</div>
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+      </div>
         <v-card>
-            <v-card-title>
+            <!-- <v-card-title>
                 <span class="headline">Add Slots</span>
-            </v-card-title>
+            </v-card-title> -->
             <v-card-text>
                 <v-row>
                     <v-col cols="12" md="4">
@@ -117,6 +120,13 @@ export default {
         return {
             allgood: false,
             totalslots: 0,
+            breadcrumbs: [{
+                text: 'Categories',
+                disabled: false,
+                to: '/admin/categories'
+            }, {
+                text: 'Add Slots'
+            }],
             slots: [],
             time: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
             date: new Date().toISOString().substr(0, 10),

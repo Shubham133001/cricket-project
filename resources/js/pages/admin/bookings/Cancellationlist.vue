@@ -1,9 +1,13 @@
 <template>
     <div style="width: 100%">
+        <div>
+        <div class="display-1">Bookings Cancellation Requests</div>
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+      </div>
         <v-card :loading="loading">
-            <v-card-title>
+            <!-- <v-card-title>
                 <span class="headline">Bookings Cancellation Requests</span>
-            </v-card-title>
+            </v-card-title> -->
             <v-card-text>
                 <v-data-table :headers="headers" :items="cancellations" class="elevation-0" :loading="loading">
 
@@ -61,6 +65,13 @@ export default {
         return {
             loading: true,
             slots: [],
+            breadcrumbs: [{
+                text: 'Booking',
+                disabled: false,
+                to: '/admin/cancellation'
+            }, {
+                text: 'Cancellation Requests'
+            }],
             days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
             time: [],
             cancellations: [],

@@ -4,7 +4,7 @@
       <div class="d-flex align-center py-3">
         <div>
           <div class="display-1">Edit User {{ user.name && `- ${user.name}` }}</div>
-          <!-- <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs> -->
+          <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
         </div>
         <v-spacer></v-spacer>
         <!-- <v-btn icon @click>

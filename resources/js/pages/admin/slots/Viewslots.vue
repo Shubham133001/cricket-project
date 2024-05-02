@@ -1,9 +1,12 @@
 <template>
     <div style="width: 100%">
-
+        <div>
+        <div class="display-1">List Slots</div>
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+      </div>
         <v-card>
             <v-card-title>
-                <span class="headline">List Slots</span><v-spacer></v-spacer>
+                <!-- <span class="headline">List Slots</span> --><v-spacer></v-spacer>
                 <v-btn color="primary" @click="addslot()">Add New Slot</v-btn>
             </v-card-title>
             <v-card-text>
@@ -91,7 +94,13 @@ export default {
         return {
 
             slots: [],
-
+            breadcrumbs: [{
+                text: 'Categories',
+                disabled: false,
+                to: '/admin/categories'
+            }, {
+                text: 'List Slots'
+            }],
             days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat']
         }
     },

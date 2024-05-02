@@ -1,8 +1,12 @@
 <template>
     <div class="d-flex flex-column flex-grow-1">
+      <div>
+        <div class="display-1">Add Admin</div>
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+      </div>
       <v-card>
         <v-card-title>
-          Add Admin
+          <!-- Add Admin -->
           <v-spacer></v-spacer>
         </v-card-title>
         <v-form ref="form" v-model="isFormValid" lazy-validation>
@@ -109,6 +113,13 @@
       adminGroupList: [],
       isLoading: false,
       isSignInDisabled: false,
+      breadcrumbs: [{
+        text: 'Admin',
+        disabled: false,
+        to: '/admin/adminusers'
+      }, {
+        text: 'Add Admin'
+      }],
       isFormValid: true,
       valid: false,
       fullname: "",
