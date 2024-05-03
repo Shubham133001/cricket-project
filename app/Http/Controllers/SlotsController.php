@@ -14,41 +14,77 @@ class SlotsController extends Controller
         try {
             $postdata = $request->all();
             $slots = $postdata['slots'];
+            if (isset($request->ismultiple) && $request->ismultiple == 'true') {
 
-            foreach ($slots as $slot) {
-                // check if start time is less than end time
+                foreach ($request->date as $date) {
+                    foreach ($slots as $slot) {
+                        // check if start time is less than end time
+                        $insertdata = [];
+                        $insertdata['title'] = $slot['title'];
+                        $insertdata['price'] = $slot['price'];
+                        $insertdata['advanceprice'] = $slot['advanceprice'];
+                        $insertdata['start_time'] = date('H:i:s', strtotime($slot['time_start']));
+                        $insertdata['end_time'] = date('H:i:s', strtotime($slot['time_end']));
+                        $insertdata['bookings_allowed'] = $slot['bookings_allowed'];
+                        if (isset($slot['days'])) {
+                            $insertdata['days'] = (gettype($slot['days']) == 'array') ? implode(',', $slot['days']) : $slot['days'];
+                        } else {
+                            $insertdata['days'] = implode(',', $request->days);
+                        }
 
-                $insertdata = [];
-                $insertdata['title'] = $slot['title'];
-                $insertdata['price'] = $slot['price'];
-                $insertdata['advanceprice'] = $slot['advanceprice'];
-                $insertdata['start_time'] = $slot['time_start'];
-                $insertdata['end_time'] = $slot['time_end'];
-                $insertdata['bookings_allowed'] = $slot['bookings_allowed'];
-                if (isset($slot['days'])) {
-                    $insertdata['days'] = (gettype($slot['days']) == 'array') ? implode(',', $slot['days']) : $slot['days'];
-                } else {
-                    $insertdata['days'] = implode(',', $request->days);
-                }
-                if (gettype($request->date) == 'array') {
-                    $insertdata['start_date'] = $request->date[0];
-                    $insertdata['end_date'] = $request->date[1];
-                } else {
-                    $insertdata['start_date'] = $request->date;
-                    $insertdata['end_date'] = $request->date;
-                }
-                if (strtotime($insertdata['start_date']) >= strtotime($insertdata['end_date'])) {
-                    // swap start and end time
-                    $temp = $insertdata['start_date'];
-                    $insertdata['start_date'] = $insertdata['end_date'];
-                    $insertdata['end_date'] = $temp;
-                }
+                        $insertdata['start_date'] = $date;
+                        $insertdata['end_date'] = $date;
 
-                // $insertdata['start_date'] = $slot['startdate'];
-                // $insertdata['end_date'] = $slot['enddate'];
-                $insertdata['category_id'] = $postdata['id'];
-                $insertdata['status'] = 'Active';
-                $data = \App\Models\Slot::create($insertdata);
+                        // if (strtotime($insertdata['start_date']) >= strtotime($insertdata['end_date'])) {
+                        //     // swap start and end time
+                        //     $temp = $insertdata['start_date'];
+                        //     $insertdata['start_date'] = $insertdata['end_date'];
+                        //     $insertdata['end_date'] = $temp;
+                        // }
+
+                        // $insertdata['start_date'] = $slot['startdate'];
+                        // $insertdata['end_date'] = $slot['enddate'];
+                        $insertdata['category_id'] = $postdata['id'];
+                        $insertdata['status'] = 'Active';
+                        $data = \App\Models\Slot::create($insertdata);
+                    }
+                }
+            } else {
+                foreach ($slots as $slot) {
+                    // check if start time is less than end time
+
+                    $insertdata = [];
+                    $insertdata['title'] = $slot['title'];
+                    $insertdata['price'] = $slot['price'];
+                    $insertdata['advanceprice'] = $slot['advanceprice'];
+                    $insertdata['start_time'] = date('H:i:s', strtotime($slot['time_start']));
+                    $insertdata['end_time'] = date('H:i:s', strtotime($slot['time_end']));
+                    $insertdata['bookings_allowed'] = $slot['bookings_allowed'];
+                    if (isset($slot['days'])) {
+                        $insertdata['days'] = (gettype($slot['days']) == 'array') ? implode(',', $slot['days']) : $slot['days'];
+                    } else {
+                        $insertdata['days'] = implode(',', $request->days);
+                    }
+                    if (gettype($request->date) == 'array') {
+                        $insertdata['start_date'] = $request->date[0];
+                        $insertdata['end_date'] = $request->date[1];
+                    } else {
+                        $insertdata['start_date'] = $request->date;
+                        $insertdata['end_date'] = $request->date;
+                    }
+                    if (strtotime($insertdata['start_date']) >= strtotime($insertdata['end_date'])) {
+                        // swap start and end time
+                        $temp = $insertdata['start_date'];
+                        $insertdata['start_date'] = $insertdata['end_date'];
+                        $insertdata['end_date'] = $temp;
+                    }
+
+                    // $insertdata['start_date'] = $slot['startdate'];
+                    // $insertdata['end_date'] = $slot['enddate'];
+                    $insertdata['category_id'] = $postdata['id'];
+                    $insertdata['status'] = 'Active';
+                    $data = \App\Models\Slot::create($insertdata);
+                }
             }
 
             return response()->json([

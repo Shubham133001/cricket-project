@@ -1,9 +1,9 @@
 <template>
     <div style="width: 100%">
         <div>
-        <div class="display-1">Add Slots</div>
-        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
-      </div>
+            <div class="display-1">Add Slots</div>
+            <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+        </div>
         <v-card>
             <!-- <v-card-title>
                 <span class="headline">Add Slots</span>
@@ -114,6 +114,7 @@
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
     data() {
@@ -128,14 +129,14 @@ export default {
                 text: 'Add Slots'
             }],
             slots: [],
-            time: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
+            time: ['00:00 AM', '01:00 AM', '02:00 AM', '03:00 AM', '04:00 AM', '05:00 AM', '06:00 AM', '07:00 AM', '08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM', '08:00 PM', '09:00 PM', '10:00 PM', '11:00 PM'],
             date: new Date().toISOString().substr(0, 10),
             events: [],
             slotstype: '',
             bookedslots: [],
             startdate: '',
             enddate: '',
-            timeperiod: '',
+            timeperiod: [],
             allowedDates: '',
             availabledays: [0, 1, 2, 3, 4, 5, 6],
             selectedDates: [],
@@ -174,7 +175,26 @@ export default {
         }
     },
     created() {
+
         this.getslots();
+    },
+    watch: {
+
+        slotstype: function (val) {
+            if (val == 'Single Day') {
+                this.timeperiod = '';
+            }
+            else if (val == 'Multiple Days') {
+                this.timeperiod = [];
+            }
+            else {
+                this.timeperiod = [];
+            }
+        },
+        timeperiod: function (val) {
+            this.checkslots();
+        }
+
     },
     methods: {
         async checkslots() {
@@ -193,7 +213,9 @@ export default {
             //         }
             //     });
             // }
+            const availableTimeSlots = this.bookedslots;
             slots.forEach(slot => {
+
                 let startdate = '';
                 let enddate = '';
                 if (this.slotstype == 'Single Day') {
@@ -205,6 +227,7 @@ export default {
                             type: 'error',
                             duration: 2000
                         });
+                        stoploop = true;
                         this.allgood = false;
                         return false;
                     }
@@ -222,7 +245,8 @@ export default {
                                         this.allgood = false;
                                         return false;
                                     }
-                                    if (bookedtimes.includes(time)) {
+
+                                    if (bookedtimes.includes(slot.start_time) || bookedtimes.includes(slot.end_time)) {
                                         this.allgood = false;
                                         this.$toasted.show('Slot already exists for "' + date + '" (' + bookedslot.start_time + ' - ' + bookedslot.end_time + ') ', {
                                             type: 'error',
@@ -248,6 +272,7 @@ export default {
                             type: 'error',
                             duration: 5000
                         });
+                        stoploop = true;
                         this.allgood = false;
                         return false;
                     }
@@ -267,11 +292,70 @@ export default {
                             type: 'error',
                             duration: 2000
                         });
+                        stoploop = true;
                         this.allgood = false;
                         return false;
                     }
                 }
+                // cehck in existing slots if any slot exists
 
+                console.log(availableTimeSlots);
+                function parseDateTime(dateString, timeString) {
+                    console.log(dateString, timeString);
+                    const [year, month, day] = dateString.split('-').map(Number);
+                    const [hours, minutes] = timeString.split(':').map(Number);
+                    return new Date(year, month - 1, day, hours, minutes);
+                }
+
+                function hasOverlap(dates, newStartTime, newEndTime) {
+                    const newSlotStart = parseDateTime(dates[0], newStartTime);
+                    const newSlotEnd = parseDateTime(dates[0], newEndTime);
+
+                    return availableTimeSlots.some(slot2 => {
+                        if (!dates.includes(slot2.start_date)) return false;
+
+                        const slotStart = parseDateTime(slot2.start_date, slot2.start_time);
+                        const slotEnd = parseDateTime(slot2.end_date, slot2.end_time);
+
+                        return (newSlotStart < slotEnd && newSlotEnd > slotStart);
+                    });
+                }
+
+                // function bookTimeSlot(date, startTime, endTime) {
+                //     console.log(`Booked time slot on ${date} from ${startTime} to ${endTime}`);
+                // }
+
+                const selectedDates = this.timeperiod;
+                const newStartTime = slot.start_time;
+                const newEndTime = slot.end_time;
+                const overlaps = selectedDates.filter(date => hasOverlap([date], newStartTime, newEndTime));
+
+                if (overlaps.length === 0) {
+                    this.allgood = true;
+                }
+                // var i = 0;
+                // this.slots.forEach(slot1 => {
+                //     if (stoploop == true) {
+                //         return false;
+
+                //     }
+                //     else {
+                //         i++;
+                //         if (i >= 2) {
+                //             var slothoursbetween = this.gethoursbetween(slot1.time_start, slot1.time_end);
+                //             console.log(slothoursbetween, moment(slot1.time_start, 'hh:mm A').format('H'), slot.time_end);
+                //             if (slothoursbetween.includes(parseInt(moment(slot1.time_start, 'hh:mm A').format('H'))) || slothoursbetween.includes(parseInt(moment(slot.time_end, 'hh:mm A').format('HH')))) {
+                //                 this.$toasted.show('Slot already exists for "' + slot1.time_start + ' - ' + slot1.time_end + '"', {
+                //                     type: 'error',
+                //                     duration: 2000
+                //                 });
+                //                 stoploop = true;
+                //                 this.allgood = false;
+                //                 return false;
+                //             }
+                //         }
+                //     }
+                // });
 
                 let currentselectedates = this.getdaysbetween(startdate, enddate);
 
@@ -441,14 +525,18 @@ export default {
         // disable all monday in datepicker
         getalloweddates(val) {
             // get day from val
-            let day = new Date(val).getDay();
-            // check if day is in available days
-
-
-            // else {
-            if (this.availabledays.includes(day)) {
-                return true;
+            if (moment(val).isBefore(moment().format('YYYY-MM-DD'))) {
+                return false;
             }
+
+            // let day = new Date(val).getDay();
+            // // check if day is in available days
+
+
+            // // else {
+            // if (this.availabledays.includes(day)) {
+            return true;
+            // }
 
             // }
 
@@ -469,7 +557,8 @@ export default {
                 date: this.timeperiod,
                 days: this.availabledays,
                 id: this.$route.params.id,
-                bookings_allowed: this.bookings_allowed
+                bookings_allowed: this.bookings_allowed,
+                ismultiple: this.slotstype == 'Multiple Days' ? true : false
             }).then(response => {
                 this.$toasted.show('Slots added successfully', {
                     type: 'success',
