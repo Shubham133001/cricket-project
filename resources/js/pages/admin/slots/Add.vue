@@ -298,7 +298,6 @@ export default {
                     }
                 }
                 // cehck in existing slots if any slot exists
-
                 console.log(availableTimeSlots);
                 function parseDateTime(dateString, timeString) {
                     console.log(dateString, timeString);

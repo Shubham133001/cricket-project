@@ -23,16 +23,22 @@
                             <td>
                                 {{ invoice.created_at }}
                             </td>
+                            <th>
+                                Balance Due
+                            </th>
+                            <td>
+                                ₹{{ invoice.balance }}
+                            </td>
                         </tr>
                         <tr>
                             <th>
-                                <b>Patient Name:</b>
+                                <b>User Name:</b>
                             </th>
                             <td>
                                 {{ invoice.user.name }}
                             </td>
                             <th>
-                                <b>Patient Phone:</b>
+                                <b>User Phone:</b>
                             </th>
                             <td>
                                 {{ invoice.user.phone }}
@@ -54,15 +60,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>{{ invoice.description }}</td>
-                                        <td>₹{{ invoice.amount }}</td>
+                                    <tr v-for="item in invoice.items" :key="item.id">
+                                        <td>{{ item.description }}</td>
+                                        <td>₹{{ item.total }}</td>
                                     </tr>
                                 </tbody>
                             </template>
                         </v-simple-table>
                     </v-col>
-                    <v-col cols="12" md="12" v-if="invoice.payment != null">
+                    <v-col cols="12" md="12" v-if="invoice.payment.length > 0">
                         <h3>Payment Details:</h3>
                         <v-simple-table>
                             <template v-slot:default>
@@ -71,20 +77,20 @@
                                         <th class="text-left">ID</th>
                                         <th class="text-left">Payment ID</th>
                                         <th class="text-left">Payment Amount</th>
+                                        <th class="text-left">Payment Method</th>
                                         <th class="text-left">Payment Date</th>
                                         <th class="text-left">Payment Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>{{ invoice.payment.id }}</td>
-                                        <td>{{ invoice.payment.payment_id }}</td>
-                                        <td>₹{{ invoice.payment.amount }}</td>
-                                        <td>{{ invoice.payment.created_at }}</td>
-                                        <td><v-chip color="green" dark
-                                                v-if="invoice.payment.status == 'Paid'">Paid</v-chip>
-                                            <v-chip color="red" dark
-                                                v-if="invoice.payment.status == 'Unpaid'">Unpaid</v-chip>
+                                    <tr v-for="payment in invoice.payment" :key="payment.id">
+                                        <td>{{ payment.id }}</td>
+                                        <td>{{ payment.transactionid }}</td>
+                                        <td>₹{{ payment.amount }}</td>
+                                        <td>{{ payment.method }}</td>
+                                        <td>{{ payment.created_at }}</td>
+                                        <td><v-chip color="green" dark v-if="payment.status == 'paid'">Paid</v-chip>
+                                            <v-chip color="red" dark v-if="payment.status == 'unpaid'">Unpaid</v-chip>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -114,7 +120,8 @@ export default {
     data() {
         return {
             invoice: {
-                patient: {},
+                id: 0,
+                user: {},
                 amount: 0.00,
                 description: '',
                 status: 0,
@@ -136,6 +143,9 @@ export default {
                 this.invoice.created_at = moment(this.invoice.created_at).format('DD-MM-YYYY, h:mm:ss a');
                 let todaydate = moment().format('DD-MM-YYYY, h:mm:ss a');
                 this.payment_id = '' + this.invoice.user.name + ' on ' + todaydate;
+
+
+
             }).catch(error => {
                 console.log(error);
             });
@@ -151,12 +161,14 @@ export default {
             const id = this.$route.params.id;
             // Determine the source of payment initiation
             const source = this.source;
-            axios.post('/api/admin/payinvoice', {
+            axios.post('/api/admin/invoices/payinvoice', {
                 id: id,
                 payment_id: this.payment_id,
                 method: this.payment_method,
-                patient_phonenumber: this.invoice.patient.phonenumber,
-                doctor_id: this.invoice.doctor_id,
+                user_id: this.invoice.user.id,
+                currency: 'INR',
+                amount: this.invoice.balance,
+
             }).then(response => {
                 const redirect = localStorage.getItem('redirect');
                 this.$router.push(redirect);

@@ -26,6 +26,39 @@ class InvoicesController extends Controller
         $invoice->save();
         return redirect()->route('invoices.index');
     }
+    public function payinvoice(Request $request)
+    {
+        try {
+            // add payment in payment table
+            $payment = new \App\Models\Payment();
+            $payment->invoice_id = $request->id;
+            $payment->transactionid = $request->payment_id;
+            $payment->currency = $request->currency;
+            $payment->amount = $request->amount;
+            $payment->method = $request->method;
+            $payment->user_id = $request->user_id;
+            $payment->save();
+            // update invoice status
+            $invoice = Invoice::find($request->id);
+            $invoice->status = 1;
+            $invoice->payment_id = $payment->id;
+            $invoice->save();
+            // update booking status
+            $bookings = \App\Models\Booking::where('invoice_id', $request->id)->get();
+            foreach ($bookings as $book) {
+                \App\Models\Booking::where('id', $book->id)->update(['status' => 'Approved', 'payment_status' => 'Paid']);
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Invoice paid successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
     public function getInvoiceById($id)
     {
         $invoice = Invoice::with(['user', 'payment', 'items' => function ($query) {
