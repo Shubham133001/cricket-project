@@ -302,7 +302,7 @@ export default {
 
                 let currentselectedates = this.getdaysbetween(startdate, enddate);
 
-                if (slot.time_start != "00:00" && slot.time_end != "00:00") {
+                if (slot.time_start != "" && slot.time_end != "") {
 
                     if (moment(slot.time_start, "hh:mm A").format("HH:mm") >= moment(slot.time_end, "hh:mm A").format("H:mm")) {
                         this.$toasted.show('Start time should be less than end time', {
@@ -315,21 +315,25 @@ export default {
 
                 }
                 let currentselectedtimes = this.gethoursbetween(slot.time_start, slot.time_end);
+                let stoploop1 = false;
                 currentselectedtimes.forEach(times => {
+                    console.log(times, 'time');
+                    if(stoploop1){
+                        return false;
+                    }
                     if(alltimes.includes(times)){
                         this.$toasted.show('Slot already exists for (' + slot.time_start + ' - ' + slot.time_end + ') ', {
                                         type: 'error',
                                         duration: 2000
                                     });
+                           stoploop1 = true;  
+                           this.allgood= false;       
                     }else{
                         alltimes.push(times);
                     }
                 })
-                
-                // currentselectedtimes.push(slot.time_start);
-                // currentselectedtimes.push(slot.time_end);
-                // console.log()
-
+                console.log(alltimes);  
+               
                 this.bookedslots.forEach(bookedslot => {
 
                     let bookeddates = this.getdaysbetween(bookedslot.start_date, bookedslot.end_date);
@@ -363,9 +367,7 @@ export default {
 
 
             });
-            // if (this.bookeddates.includes(val)) {
-            //     return false;
-            // }
+        
             if (stoploop == false) {
                 this.allgood = true;
             }
@@ -407,10 +409,7 @@ export default {
 
             let startdate = new Date(start_date).toISOString().substr(0, 10);
             let enddate = new Date(end_date).toISOString().substr(0, 10);
-            // if (startdate > enddate) {
-            //     startdate = new Date(slot.slotdate[1]).toISOString().substr(0, 10);
-            //     enddate = new Date(slot.slotdate[0]).toISOString().substr(0, 10);
-            // }
+           
             // get all dates in between start and end date
             let currentdate = new Date(startdate);
             let stopdate = new Date(enddate);
@@ -428,8 +427,13 @@ export default {
             let start = parseInt(starttime.split(':')[0]);
             let end = parseInt(endtime.split(':')[0]);
             let hours = [];
-            for (let i = start; i <= end; i++) {
+            for (let i = start+1; i <= end-1; i++) {
                 hours.push(i);
+            }
+            if(hours.length == 0){
+                for (let i = start; i <= end; i++) {
+                hours.push(i);
+            }
             }
             return hours;
         },
@@ -465,8 +469,8 @@ export default {
             this.slots = [];
             for (let i = 0; i < this.totalslots; i++) {
                 this.slots.push({
-                    time_start: '00:00',
-                    time_end: '00:00',
+                    time_start: '',
+                    time_end: '',
                     price: 0,
                     advanceprice: 0,
                     bookings_allowed: 1,
@@ -485,7 +489,7 @@ export default {
             // let day = new Date(val).getDay();
             // // check if day is in available days
 
-
+    
             // // else {
             // if (this.availabledays.includes(day)) {
             return true;
