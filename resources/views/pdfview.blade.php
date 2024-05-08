@@ -107,7 +107,7 @@
             display: inline-block;
             float: right;
             padding: 5pt;
-            margin-top: 40px;
+            margin-top: 0px;
         }
 
         .invoice-box .invoice-summary .invoice-total {
@@ -234,11 +234,10 @@
             </tr>
            
             <tr>
+                <td>#</td>
+                <td></td>
                 <td colspan="3">
-                    <div class="invoice-summary">
-                         <span><b>Sub total</b> :  {{$item->amount}} INR 
-                                       </div>
-
+                    <div class="invoice-summary"><span><b>Sub total</b> :  {{$item->amount}} INR </div>
                 </td>
             </tr>
         </table>
@@ -265,10 +264,8 @@
             <tr class="">
                 <td><span class="t-item">{{ \Carbon\Carbon::parse($item->created_by)->format('Y-m-d') }} </span></td>
                 <td style="text-align: left;"><span class="t-item">{{ $item->gateway  }}</span></td>
-                <td><span class="t-item">{{ $item->transaction_id }} </span></td>
-                <td><span class="t-price">
-                        INR
-                        {{ number_format($item->amount,2,'.') }} INR</span></td>
+                <td><span class="t-item">{{ $item->payment_id }} </span></td>
+                <td><span class="t-price"> INR{{ number_format($item->amount,2,'.') }} INR</span></td>
             </tr>
            
         </table>
