@@ -37,6 +37,8 @@ Route::get('getgateways', [PaymentgatewaysController::class, 'getgateways']);
 Route::post('addbooking', [CommonController::class, 'addbooking']);
 Route::get('getinvoicebyid/{id}', [InvoicesController::class, 'getInvoiceById']);
 Route::post('changegateway', [InvoicesController::class, 'changegateway']);
+Route::get('downloadpdf/{id}', [InvoicesController::class, 'downloadPdf']);
+Route::get('viewpdf/{id}', [InvoicesController::class, 'viewpdf']);
 
 // add admin group with middleware
 Route::group(['prefix' => 'admin'], function () {
@@ -118,6 +120,8 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('update', [InvoicesController::class, 'update']);
             Route::post('delete', [InvoicesController::class, 'delete']);
             Route::post('payinvoice', [InvoicesController::class, 'payinvoice']);
+            Route::post('addpayments', [PaymentsController::class, 'addpayments']);
+           
         });
         Route::group(['prefix' => 'bookings'], function () {
             Route::post('list', [CommonController::class, 'getbookings']);

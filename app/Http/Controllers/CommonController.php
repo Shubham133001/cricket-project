@@ -54,6 +54,8 @@ class CommonController extends Controller
 
     public function addbooking(Request $request)
     {
+        // echo "<pre>";
+        // print_r($request->all()); die;
         $booking = new \App\Models\Booking();
         $totalamount = 0;
         $firstpayment = 0;

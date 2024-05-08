@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 
 class PaymentsController extends Controller
@@ -9,15 +10,48 @@ class PaymentsController extends Controller
     //
     public function addpayments(Request $request)
     {
-        $payment = new \App\Models\Payment();
-        $payment->booking_id = $request->booking_id;
-        $payment->amount = $request->amount;
-        $payment->description = $request->description;
-        $payment->save();
-        return response()->json([
-            'success' => true,
-            'payment' => $payment
-        ]);
+
+        
+
+        // echo "<pre>";
+        // print_r($invoice); die;
+        try {
+            // add payment in payment table
+            $payment = new \App\Models\Payment;
+            $payment->invoice_id = $request->id;
+            $payment->transactionid = $request->transaction_id;
+            $payment->currency = $request->currency;
+            $payment->amount = $request->amount;
+            $payment->method = $request->method;
+            $payment->user_id = $request->user_id;
+            $payment->save();
+            // update invoice status
+            $invoice = \App\Models\Invoice::find($request->id);
+            $invoice->status = 1;
+            $invoice->payment_id = $payment->id;
+            $invoice->save();
+
+            if($invoice->amount == $request->amount){
+                $status = "Paid";
+            }else{
+                $status = "Partial paid";
+            }
+            
+            // update booking status
+            $bookings = \App\Models\Booking::where('invoice_id', $request->id)->get();
+            foreach ($bookings as $book) {
+                \App\Models\Booking::where('id', $book->id)->update(['status' => 'Approved', 'payment_status' => $status]);
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Invoice paid successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
     public function paynow(Request $request)
     {
