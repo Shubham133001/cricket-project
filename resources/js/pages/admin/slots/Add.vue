@@ -214,6 +214,7 @@ export default {
             //     });
             // }
             const availableTimeSlots = this.bookedslots;
+            var alltimes = [];
             slots.forEach(slot => {
 
                 let startdate = '';
@@ -276,8 +277,6 @@ export default {
                         this.allgood = false;
                         return false;
                     }
-
-
                 }
                 else {
                     startdate = this.timeperiod[0];
@@ -298,69 +297,14 @@ export default {
                     }
                 }
                 // cehck in existing slots if any slot exists
-                console.log(availableTimeSlots);
-                function parseDateTime(dateString, timeString) {
-                    console.log(dateString, timeString);
-                    const [year, month, day] = dateString.split('-').map(Number);
-                    const [hours, minutes] = timeString.split(':').map(Number);
-                    return new Date(year, month - 1, day, hours, minutes);
-                }
 
-                function hasOverlap(dates, newStartTime, newEndTime) {
-                    const newSlotStart = parseDateTime(dates[0], newStartTime);
-                    const newSlotEnd = parseDateTime(dates[0], newEndTime);
 
-                    return availableTimeSlots.some(slot2 => {
-                        if (!dates.includes(slot2.start_date)) return false;
-
-                        const slotStart = parseDateTime(slot2.start_date, slot2.start_time);
-                        const slotEnd = parseDateTime(slot2.end_date, slot2.end_time);
-
-                        return (newSlotStart < slotEnd && newSlotEnd > slotStart);
-                    });
-                }
-
-                // function bookTimeSlot(date, startTime, endTime) {
-                //     console.log(`Booked time slot on ${date} from ${startTime} to ${endTime}`);
-                // }
-
-                const selectedDates = this.timeperiod;
-                const newStartTime = slot.start_time;
-                const newEndTime = slot.end_time;
-                const overlaps = selectedDates.filter(date => hasOverlap([date], newStartTime, newEndTime));
-
-                if (overlaps.length === 0) {
-                    this.allgood = true;
-                }
-                // var i = 0;
-                // this.slots.forEach(slot1 => {
-                //     if (stoploop == true) {
-                //         return false;
-
-                //     }
-                //     else {
-                //         i++;
-                //         if (i >= 2) {
-                //             var slothoursbetween = this.gethoursbetween(slot1.time_start, slot1.time_end);
-                //             console.log(slothoursbetween, moment(slot1.time_start, 'hh:mm A').format('H'), slot.time_end);
-                //             if (slothoursbetween.includes(parseInt(moment(slot1.time_start, 'hh:mm A').format('H'))) || slothoursbetween.includes(parseInt(moment(slot.time_end, 'hh:mm A').format('HH')))) {
-                //                 this.$toasted.show('Slot already exists for "' + slot1.time_start + ' - ' + slot1.time_end + '"', {
-                //                     type: 'error',
-                //                     duration: 2000
-                //                 });
-                //                 stoploop = true;
-                //                 this.allgood = false;
-                //                 return false;
-                //             }
-                //         }
-                //     }
-                // });
 
                 let currentselectedates = this.getdaysbetween(startdate, enddate);
 
-                if (slot.time_start != "00:00" && slot.time_end != "00:00") {
+                if (slot.time_start != "" && slot.time_end != "") {
 
-                    if (slot.time_start >= slot.time_end) {
+                    if (moment(slot.time_start, "hh:mm A").format("HH:mm") >= moment(slot.time_end, "hh:mm A").format("H:mm")) {
                         this.$toasted.show('Start time should be less than end time', {
                             type: 'error',
                             duration: 2000
@@ -371,10 +315,24 @@ export default {
 
                 }
                 let currentselectedtimes = this.gethoursbetween(slot.time_start, slot.time_end);
-
-                // currentselectedtimes.push(slot.time_start);
-                // currentselectedtimes.push(slot.time_end);
-                // console.log()
+                let stoploop1 = false;
+                currentselectedtimes.forEach(times => {
+                    console.log(times, 'time');
+                    if (stoploop1) {
+                        return false;
+                    }
+                    if (alltimes.includes(times)) {
+                        this.$toasted.show('Slot already exists for (' + slot.time_start + ' - ' + slot.time_end + ') ', {
+                            type: 'error',
+                            duration: 2000
+                        });
+                        stoploop1 = true;
+                        this.allgood = false;
+                    } else {
+                        alltimes.push(times);
+                    }
+                })
+                console.log(alltimes);
 
                 this.bookedslots.forEach(bookedslot => {
 
@@ -409,9 +367,7 @@ export default {
 
 
             });
-            // if (this.bookeddates.includes(val)) {
-            //     return false;
-            // }
+
             if (stoploop == false) {
                 this.allgood = true;
             }
@@ -453,10 +409,7 @@ export default {
 
             let startdate = new Date(start_date).toISOString().substr(0, 10);
             let enddate = new Date(end_date).toISOString().substr(0, 10);
-            // if (startdate > enddate) {
-            //     startdate = new Date(slot.slotdate[1]).toISOString().substr(0, 10);
-            //     enddate = new Date(slot.slotdate[0]).toISOString().substr(0, 10);
-            // }
+
             // get all dates in between start and end date
             let currentdate = new Date(startdate);
             let stopdate = new Date(enddate);
@@ -474,8 +427,13 @@ export default {
             let start = parseInt(starttime.split(':')[0]);
             let end = parseInt(endtime.split(':')[0]);
             let hours = [];
-            for (let i = start; i <= end; i++) {
+            for (let i = start + 1; i <= end - 1; i++) {
                 hours.push(i);
+            }
+            if (hours.length == 0) {
+                for (let i = start; i <= end; i++) {
+                    hours.push(i);
+                }
             }
             return hours;
         },
@@ -511,8 +469,8 @@ export default {
             this.slots = [];
             for (let i = 0; i < this.totalslots; i++) {
                 this.slots.push({
-                    time_start: '00:00',
-                    time_end: '00:00',
+                    time_start: '',
+                    time_end: '',
                     price: 0,
                     advanceprice: 0,
                     bookings_allowed: 1,

@@ -43,6 +43,10 @@
                             <td>
                                 {{ invoice.user.phone }}
                             </td>
+                            <td>
+                                <v-select v-model="invoice.status" @change="updateinvoicestatus" :items="invoicestatus"
+                                    label="Status" required></v-select>
+                            </td>
                         </tr>
 
                     </tbody>
@@ -68,7 +72,7 @@
                             </template>
                         </v-simple-table>
                     </v-col>
-                    <v-col cols="12" md="12" v-if="invoice.payment.length > 0">
+                    <v-col cols="12" md="12" v-if="(invoice.payment != undefined)">
                         <h3>Payment Details:</h3>
                         <v-simple-table>
                             <template v-slot:default>
@@ -80,6 +84,7 @@
                                         <th class="text-left">Payment Method</th>
                                         <th class="text-left">Payment Date</th>
                                         <th class="text-left">Payment Status</th>
+                                        <th class="text-left">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -91,6 +96,10 @@
                                         <td>{{ payment.created_at }}</td>
                                         <td><v-chip color="green" dark v-if="payment.status == 'paid'">Paid</v-chip>
                                             <v-chip color="red" dark v-if="payment.status == 'unpaid'">Unpaid</v-chip>
+                                        </td>
+                                        <td>
+                                            <v-btn color="red" icon fab small @click="deletepayment(payment.id)"><v-icon
+                                                    small>mdi-delete</v-icon></v-btn>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -110,13 +119,17 @@
                 <v-btn color="blue darken-1" text @click="cancel">Cancel</v-btn>
             </v-card-actions>
         </v-card>
-
+        <confirm ref="confirm"></confirm>
     </div>
 </template>
 <script>
 import axios from 'axios';
 import moment from 'moment';
+import confirm from '@/components/common/Confirm.vue';
 export default {
+    components: {
+        confirm
+    },
     data() {
         return {
             invoice: {
@@ -132,6 +145,19 @@ export default {
             payment_methods: [
                 'Cash',
                 'UPI',
+            ],
+            invoicestatus: [{
+                text: 'Unpaid',
+                value: 0
+            },
+            {
+                text: 'Paid',
+                value: 1
+            },
+            {
+                text: 'Partial Paid',
+                value: 2
+            },
             ]
         }
     },
@@ -146,6 +172,43 @@ export default {
 
 
 
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        async updateinvoicestatus() {
+            const id = this.$route.params.id;
+            await axios.post('/api/admin/invoices/update', {
+                status: this.invoice.status,
+                id: id
+            }).then(response => {
+                if (response.data.success) {
+                    this.$toasted.success(response.data.message, {
+                        duration: 2000,
+                        type: 'success'
+                    });
+                }
+                else {
+                    this.$toasted.error(response.data.message, {
+                        duration: 2000,
+                        type: 'error'
+                    });
+                }
+                this.invoiceData();
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        async deletepayment(id) {
+            const ok = await this.$refs.confirm.open({
+                title: 'Are you sure?',
+                message: 'This will delete the payment transaction',
+                okButtonText: 'Yes',
+                cancelButtonText: 'No'
+            });
+            if (!ok) return;
+            axios.post('/api/admin/deletetransaction/' + id).then(response => {
+                this.invoiceData();
             }).catch(error => {
                 console.log(error);
             });

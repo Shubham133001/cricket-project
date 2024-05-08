@@ -1,9 +1,9 @@
 <template>
     <div style="width: 100%">
         <div>
-        <div class="display-1">Bookings List</div>
-        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
-      </div>
+            <div class="display-1">Bookings List</div>
+            <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
+        </div>
         <v-card :loading="loading">
             <!-- <v-card-title>
                 <span class="headline">Bookings List</span>
@@ -37,16 +37,22 @@
                         <v-img src="/images/inr_icon.png" width="20"
                             style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
                             style="color:#297729">{{
-            item.slot.advanceprice }}</strong>
+                item.slot.advanceprice }}</strong>
                     </template>
                     <template v-slot:item.slot.price="{ item }">
                         <v-img src="/images/inr_icon.png" width="20"
                             style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
                             style="color:#297729">{{
-            item.slot.price }}</strong>
+                item.slot.price }}</strong>
                     </template>
-                    
+
                     <template v-slot:item.actions="{ item }">
+                        <v-btn small color="success" @click="approve(item)" v-if="item.status == 'Pending'"><v-icon
+                                small>mdi-check</v-icon>
+                            Approve</v-btn>
+                        <v-btn small color="success" @click="complete(item)" v-if="item.status == 'Approved'"><v-icon
+                                small>mdi-check</v-icon>
+                            Complete</v-btn>
                         <v-btn small fab icon color="primary" @click="editBooking(item)"><v-icon
                                 small>mdi-pencil</v-icon></v-btn>
                         <v-btn small fab icon color="red" @click="deleteBooking(item)"><v-icon
@@ -151,6 +157,72 @@ export default {
         },
     },
     methods: {
+        async approve(item) {
+            const ok = await this.$refs.confirm.open({
+                title: 'Approve Booking',
+                message: 'Are you sure you want to approve this booking?',
+                options: {
+                    color: "success",
+                    width: 290,
+                    zIndex: 200,
+                },
+                icon: "mdi-check",
+                buttons: [{
+                    title: 'Yes',
+                    class: 'btn-success',
+                }]
+            });
+            if (!ok) return;
+            axios.post('/api/admin/bookings/approvebooking', {
+                id: item.id
+            }).then(response => {
+                if (response.data.success) {
+                    this.$toasted.show(response.data.message, {
+                        type: 'success',
+                        dureation: 3000
+                    })
+                    this.getbookings();
+                } else {
+                    this.$toasted.show(response.data.message, {
+                        type: 'error',
+                        dureation: 3000
+                    })
+                }
+            });
+        },
+        async complete(item) {
+            const ok = await this.$refs.confirm.open({
+                title: 'Complete Booking',
+                message: 'Are you sure you want to complete this booking?',
+                options: {
+                    color: "success",
+                    width: 290,
+                    zIndex: 200,
+                },
+                icon: "mdi-check",
+                buttons: [{
+                    title: 'Yes',
+                    class: 'btn-success',
+                }]
+            });
+            if (!ok) return;
+            axios.post('/api/admin/bookings/completebooking', {
+                id: item.id
+            }).then(response => {
+                if (response.data.success) {
+                    this.$toasted.show(response.data.message, {
+                        type: 'success',
+                        dureation: 3000
+                    })
+                    this.getbookings();
+                } else {
+                    this.$toasted.show(response.data.message, {
+                        type: 'error',
+                        dureation: 3000
+                    })
+                }
+            });
+        },
         openuser(id) {
             this.$router.push({
                 name: 'admin-users-edit',

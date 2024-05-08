@@ -127,4 +127,16 @@ class InvoicesController extends Controller
             'message' => 'Payment gateway changed successfully'
         ]);
     }
+    public function update(Request $request)
+    {
+        $invoice = Invoice::find($request->id);
+        foreach ($request->all() as $key => $value) {
+            $invoice->$key = $value;
+        }
+        $invoice->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice updated successfully'
+        ]);
+    }
 }

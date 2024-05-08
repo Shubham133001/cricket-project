@@ -233,7 +233,6 @@ class CommonController extends Controller
             'cancellations' => $data
         ]);
     }
-
     public function rejectcancellation(Request $request)
     {
         $canceldata = CancellationRequest::where('id', $request->id)->first();
@@ -244,6 +243,26 @@ class CommonController extends Controller
         $booking->save();
         return response()->json([
             'success' => true
+        ]);
+    }
+    public function approvebooking(Request $request)
+    {
+        $booking = \App\Models\Booking::find($request->id);
+        $booking->status = 'Approved';
+        $booking->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking approved'
+        ]);
+    }
+    public function completebooking(Request $request)
+    {
+        $booking = \App\Models\Booking::find($request->id);
+        $booking->status = 'Completed';
+        $booking->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking completed'
         ]);
     }
 }

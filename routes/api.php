@@ -128,6 +128,8 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('cancellationrequests', [CommonController::class, 'cancellationrequests']);
             Route::post('cancelbooking', [CommonController::class, 'cancelbooking']);
             Route::post('rejectcancellation', [CommonController::class, 'rejectcancellation']);
+            Route::post('approvebooking', [CommonController::class, 'approvebooking']);
+            Route::post('completebooking', [CommonController::class, 'completebooking']);
         });
     });
 });
