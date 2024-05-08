@@ -387,7 +387,7 @@ export default {
                 method: this.payment_method,
                 user_id: this.invoice.user.id,
                 currency: 'INR',
-                amount: this.invoice.balance,
+                amount: this.paymentamount,
 
             }).then(response => {
                this.$router.push('/admin/invoices');

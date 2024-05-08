@@ -10,11 +10,6 @@ class PaymentsController extends Controller
     //
     public function addpayments(Request $request)
     {
-
-        
-
-        // echo "<pre>";
-        // print_r($invoice); die;
         try {
             // add payment in payment table
             $payment = new \App\Models\Payment;
@@ -29,9 +24,10 @@ class PaymentsController extends Controller
             $invoice = \App\Models\Invoice::find($request->id);
             $invoice->status = 1;
             $invoice->payment_id = $payment->id;
+            //$invoice->amount = $request->amount;
             $invoice->save();
 
-            if($invoice->amount == $request->amount){
+            if($invoice->amount >= $request->amount){
                 $status = "Paid";
             }else{
                 $status = "Partial paid";
