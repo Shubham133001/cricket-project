@@ -135,7 +135,7 @@ export default {
         }).goAway(2000);
         return;
       }
-      await axios.post('/api/admin/user/add/', this.user).then(response => {
+      await axios.post('/api/admin/user/add', this.user).then(response => {
         // console.log(response.data.userdata);
         if (response.data.success) {
           // response.data.userdata.status = (response.data.userdata.status == 1) ? true : false;

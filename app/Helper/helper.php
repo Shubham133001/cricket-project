@@ -29,8 +29,8 @@ if (!function_exists('getAllRoutes')) {
                 'name' => 'Get Admin Data',
                 'slug' => 'admin.getadminuser',
             ], [
-                'name' => 'List Doctors',
-                'slug' => 'admin.getdoctors',
+                'name' => 'List User',
+                'slug' => 'admin.users',
             ], [
                 'name' => 'Get Doctors',
                 'slug' => 'admin.getdoctor',

@@ -29,7 +29,7 @@ use App\Http\Controllers\UsersController;
 |
 */
 
-Route::get('category/{id}', [CategoriesController::class, 'editcategories']);
+Route::get('category/{id}', [CategoriesController::class, 'editcategories'])->name('getcategory');
 Route::get('store', [CommonController::class, 'store']);
 Route::get('categories', [CategoriesController::class, 'getcategorieswithslots']);
 Route::post('slots', [SlotsController::class, 'getslots']);
