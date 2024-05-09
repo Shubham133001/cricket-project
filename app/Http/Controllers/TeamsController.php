@@ -53,6 +53,7 @@ class TeamsController extends Controller
             $extension = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extension;
             $destination = storage_path('app/public/uploads/team');
+
             $file->move($destination, $filename);
             $team->image = $filename;
         }

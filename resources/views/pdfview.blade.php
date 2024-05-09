@@ -154,16 +154,18 @@
 
 <body>
     <div class="invoice-box">
+
         <table cellpadding="0" cellspacing="0">
             <tr class="top">
                 <td colspan="2">
+
                     <table>
                         <tr>
                             <td class="title">
-                                @if($storedetail['storelogo'] != '')
-                                <img src="{{ $storedetail['storelogo'] }}" style="width:100%; max-width:200px;">
+                                @if($storedetail['logo'] != '')
+                                <img src="{{ $storedetail['logo'] }}" style="width:100%; max-width:200px;">
                                 @else
-                                <span class="t-invoice">{{ $storedetail['companyname'] }}</span>
+                                <span class="t-invoice">{{ $storedetail['name'] }}</span>
                                 @endif
                             </td>
                             <td></td>
@@ -194,22 +196,23 @@
                         <tr>
                             <td class="information-company">
                                 <span class="t-invoice-from" style="font-size: 16px;">Invoice From</span><br>
-                                <span id="company-name">{{$storedetail['companyname']}}</span><br>
-                                <span id="company-address">{!! nl2br(e($storedetail['storeaddress'])) !!}</span><br>
+                                <span id="company-name">{{$storedetail['name']}}</span><br>
+                                <span id="company-address">{!! nl2br(e($storedetail['address'])) !!}</span><br>
+                                <span id="company-phone">{!! nl2br(e($storedetail['contact'])) !!}</span><br>
                             </td>
 
                             <td class="information-client">
                                 <span class="t-invoice-to" style="font-size: 16px;">Invoice To</span><br>
                                 <span id="client-name">{{ $item->user->name }} </span><br>
-                                
-        
+
+
                                 @if($item->user->address != '')
                                 <span id="client-address">{!! nl2br(e( $item->user->address )) !!}</span><br>
                                 @endif
                                 @if($item->user->address2 != '')
                                 <span id="client-address">{!! nl2br(e( $item->user->address2 )) !!}</span><br>
                                 @endif
-                            
+
 
                                 <span id="client-country"> @if($item->user->country != '')
                                     {{ $item->user->country->name }},
@@ -225,32 +228,32 @@
                 </td>
             </tr>
         </table>
-   
+
         <table class="transaction-items" cellpadding="0" cellspacing="0">
             <tr class="heading">
                 <td style="width: 5%;"><span class="t-item"># </span></td>
                 <td style="width: 60%;"><span class="t-item">Item </span></td>
                 <td><span class="t-price">Price</span></td>
             </tr>
-           
-            <tr>
-                <td>#</td>
-                <td></td>
-                <td colspan="3">
-                    <div class="invoice-summary"><span><b>Sub total</b> :  {{$item->amount}} INR </div>
-                </td>
+
+            @foreach($item->items as $key => $product)
+            <tr class="item">
+                <td><span class="t-item">{{ $key+1 }} </span></td>
+                <td style="text-align: left !important;"><span>{{ $product->description }} </span></td>
+                <td><span class="t-price"> {{ number_format($product->price,2,'.') }} INR</span></td>
             </tr>
+            @endforeach
         </table>
 
-        
-      
-        
+
+
+
         <div>&nbsp;</div>
         <div>&nbsp;</div>
         <div>&nbsp;</div>
         <br>
 
-        
+
         <table class="transaction-items" cellpadding="0" cellspacing="0">
             <tr class="heading">
                 <td style="width: 20%;"><span class="t-item">Date </span></td>
@@ -260,16 +263,18 @@
                 <td><span class="t-item">Transacation Fee</span></td>
             </tr>
 
-            
+            @foreach($item->payment as $key => $transaction)
             <tr class="">
-                <td><span class="t-item">{{ \Carbon\Carbon::parse($item->created_by)->format('Y-m-d') }} </span></td>
-                <td style="text-align: left;"><span class="t-item">{{ $item->gateway  }}</span></td>
-                <td><span class="t-item">{{ $item->payment_id }} </span></td>
-                <td><span class="t-price"> INR{{ number_format($item->amount,2,'.') }} INR</span></td>
+                <td><span class="t-item">{{ \Carbon\Carbon::parse($transaction->created_at)->format('Y-m-d') }} </span></td>
+                <td style="text-align: left;"><span class="t-item">{{ $transaction->method  }}</span></td>
+                <td><span class="t-item">{{ $transaction->transactionid }} </span></td>
+                <td><span class="t-price"> {{ number_format($transaction->amount,2,'.') }} INR</span></td>
+                <td><span class="t-price"> {{ number_format($transaction->fee,2,'.') }} INR</span></td>
             </tr>
-           
+            @endforeach
+
         </table>
-       
+
     </div>
 </body>
 

@@ -62,7 +62,9 @@ class InvoicesController extends Controller
     }
     public function getInvoiceById($id)
     {
-        $invoice = Invoice::with(['user', 'payment', 'items' => function ($query) {
+        $invoice = Invoice::with(['user', 'payment' => function ($query1) {
+            $query1->with('user');
+        }, 'items' => function ($query) {
             $query->with('slots');
         }])->where('id', $id)->first();
         $payments = \App\Models\Payment::where('invoice_id', $id)->get();
@@ -143,14 +145,20 @@ class InvoicesController extends Controller
 
     public function downloadPdf($id)
     {
-        //$id = decrypt($id);
-       
-        $item = Invoice::with(['user'])->findOrFail($id);
-        $storedetail['storelogo'] = "";
-        $storedetail['companyname'] = "booking App";
-        $storedetail['storeaddress'] = "Mohali";
-       // die($item);
-        view()->share(['item' => $item,'storedetail'=>$storedetail]);
+        $invoice = self::getInvoiceById($id);
+
+        $item = $invoice->original['invoice'];
+        // echo '<pre>';
+        // print_r($item);
+        // die();
+        $storedetaildata = \App\Models\Setting::get()->toArray();
+        $storedetail = [];
+
+        foreach ($storedetaildata as $store) {
+            $storedetail[$store['setting']] = $store['value'];
+        }
+
+        view()->share(['item' => $item, 'storedetail' => $storedetail]);
         $pdf = PDF::loadView('pdfview');
         return $pdf->download('invoice-' . $item->id . '.pdf');
     }
@@ -158,11 +166,20 @@ class InvoicesController extends Controller
     public function viewpdf($id)
     {
         try {
-            $item = Invoice::with(['user'])->findOrFail($id);
-            $storedetail['storelogo'] = "";
-            $storedetail['companyname'] = "booking App";
-            $storedetail['storeaddress'] = "Mohali";
-            view()->share(['item' => $item,'storedetail'=>$storedetail]);
+            $invoice = self::getInvoiceById($id);
+
+            $item = $invoice->original['invoice'];
+            // echo '<pre>';
+            // print_r($item);
+            // die();
+            $storedetaildata = \App\Models\Setting::get()->toArray();
+            $storedetail = [];
+
+            foreach ($storedetaildata as $store) {
+                $storedetail[$store['setting']] = $store['value'];
+            }
+
+            view()->share(['item' => $item, 'storedetail' => $storedetail]);
             $pdf = PDF::loadView('pdfview');
             return $pdf->stream('invoice-' . $item->id . '.pdf', array('Attachment' => 0));
             exit(0);
