@@ -322,7 +322,7 @@ export default {
                         return false;
                     }
                     if (alltimes.includes(times)) {
-                        this.$toasted.show('Slot already exists for (' + slot.time_start + ' - ' + slot.time_end + ') ', {
+                        this.$toasted.show('Can not add Slot for (' + slot.time_start + ' - ' + slot.time_end + ') ', {
                             type: 'error',
                             duration: 2000
                         });
@@ -427,7 +427,7 @@ export default {
             let start = parseInt(starttime.split(':')[0]);
             let end = parseInt(endtime.split(':')[0]);
             let hours = [];
-            for (let i = start + 1; i <= end - 1; i++) {
+            for (let i = start; i <= end - 1; i++) {
                 hours.push(i);
             }
             if (hours.length == 0) {
