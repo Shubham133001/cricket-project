@@ -165,14 +165,14 @@ export default {
         },
         async getDataFromApi() {
             this.loading = true
-            await this.fakeApiCall().then(data => {
+            await this.fakeApiCall().then(data => { 
                 this.invoices = data.items
                 this.totalDesserts = data.total
                 this.loading = false
             })
         },
         downloadpdf(id) {
-            window.open('/admin/invoice/downloadpdf/' + id, '_blank');
+            window.open('/api/downloadpdf/' + id);
         },
         /**
          * In a real application this would be a call to fetch() or axios.get()

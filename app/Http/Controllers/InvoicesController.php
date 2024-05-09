@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\Auth;
+use PDF;
 
 class InvoicesController extends Controller
 {
@@ -138,5 +139,35 @@ class InvoicesController extends Controller
             'success' => true,
             'message' => 'Invoice updated successfully'
         ]);
+    }
+
+    public function downloadPdf($id)
+    {
+        //$id = decrypt($id);
+       
+        $item = Invoice::with(['user'])->findOrFail($id);
+        $storedetail['storelogo'] = "";
+        $storedetail['companyname'] = "booking App";
+        $storedetail['storeaddress'] = "Mohali";
+       // die($item);
+        view()->share(['item' => $item,'storedetail'=>$storedetail]);
+        $pdf = PDF::loadView('pdfview');
+        return $pdf->download('invoice-' . $item->id . '.pdf');
+    }
+
+    public function viewpdf($id)
+    {
+        try {
+            $item = Invoice::with(['user'])->findOrFail($id);
+            $storedetail['storelogo'] = "";
+            $storedetail['companyname'] = "booking App";
+            $storedetail['storeaddress'] = "Mohali";
+            view()->share(['item' => $item,'storedetail'=>$storedetail]);
+            $pdf = PDF::loadView('pdfview');
+            return $pdf->stream('invoice-' . $item->id . '.pdf', array('Attachment' => 0));
+            exit(0);
+        } catch (\Throwable $th) {
+            print_r($th->getMessage());
+        }
     }
 }

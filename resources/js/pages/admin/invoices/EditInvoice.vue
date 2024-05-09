@@ -5,7 +5,9 @@
             <v-card-title>
                 <span class="headline">Edit Invoice</span>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="downloadpdf">Download PDF <v-icon>mdi-file-pdf</v-icon></v-btn>
+                <v-btn color="primary" @click="downloadpdf"> <v-icon>mdi-download</v-icon></v-btn>
+                <v-btn color="warning" @click="viewpdf"> <v-icon>mdi-eye</v-icon></v-btn>
+                <v-btn color="success" @click.stop="dialog = true">Add Payment</v-btn>
             </v-card-title>
             <v-card-text>
                 <v-simple-table>
@@ -60,7 +62,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-left">Slot Description</th>
-                                        <th class="text-left">Slot Price</th>
+                                        <th class="text-left"invoice.balance>Slot Price</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -119,6 +121,124 @@
                 <v-btn color="blue darken-1" text @click="cancel">Cancel</v-btn>
             </v-card-actions>
         </v-card>
+    <v-dialog v-model="dialog" max-width="70%" >
+       <v-card>
+        <v-form ref="formpay" v-model="isFormValidpay" lazy-validation>
+        <v-card-title class="headline">Add Payment</v-card-title>
+        <v-divider class="mb-2"></v-divider>
+        <v-card-text>
+            <h4 v-if="status == 2" style="text-align: center">
+            As this invoice is already marked paid, any further payments
+            applied will result in a credit to the client
+            </h4>
+            <v-container>
+            <v-row>
+                <v-col cols="12" sm="6" md="6" class="pa-1">
+                <v-menu
+                    v-model="duedatepicker"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                    outlined
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                        :value="paymentdate"
+                        v-bind="attrs"
+                        v-on="on"
+                        outlined
+                    ></v-text-field>
+                    </template>
+                    <v-date-picker
+                    v-model="paymentdate"
+                    required
+                    @input="duedatepicker = false"
+                    outlined
+                    ></v-date-picker>
+                </v-menu>
+                </v-col>
+                <v-spacer></v-spacer>
+                <v-col cols="12" sm="6" md="6" class="pa-1">
+                <v-text-field
+                    label="amount"
+                    v-model="paymentamount"
+                    required
+                    hint="Enter amount"
+                    outlined
+                ></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="6" class="pa-1">
+                <v-text-field
+                    label="Transaction ID"
+                    v-model="transaction_id"
+                    required
+                    outlined
+                ></v-text-field>
+                </v-col>
+                <v-col cols="6" sm="6" class="pa-1">
+                <v-select
+                    item-text="value"
+                    item-value="id"
+                    v-model="payment_method_transaction"
+                    :items="paymentmethodList"
+                    label="Payment Method"
+                    outlined
+                    required
+                ></v-select>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="6" class="pa-1">
+                <v-text-field
+                    label="Transaction Fee"
+                    type="number"
+                    v-model="transaction_fee"
+                    outlined
+                    required
+                ></v-text-field>
+                </v-col>
+                <v-col cols="6" class="pa-1">
+                <v-checkbox
+                    label="Tick to send confirmation email"
+                    v-model="sendemail"
+                    outlined
+                ></v-checkbox>
+                </v-col>
+                
+            </v-row>
+            </v-container>
+        </v-card-text>
+        <v-card-actions>
+        <v-col cols="12" class="text-center">
+          <v-btn
+            @click="addTransaction()"
+            :loading="isLoadingpay"
+            :disabled="isSignInDisabledpay"
+            elevation="2"
+            style="text-color: #fff"
+            color="primary"
+            large
+            >Add Payment</v-btn
+          >
+          &nbsp;
+          <v-btn
+            @click="
+              (addPaymentDialog = false),
+                (transaction_id = ''),
+                (transaction_fee = '')
+            "
+            large
+            >Cancel</v-btn
+          >
+        </v-col>
+      </v-card-actions>
+        </v-form>
+    </v-card> 
+    </v-dialog>
         <confirm ref="confirm"></confirm>
     </div>
 </template>
@@ -126,12 +246,29 @@
 import axios from 'axios';
 import moment from 'moment';
 import confirm from '@/components/common/Confirm.vue';
+import { format, parseISO } from "date-fns";
 export default {
     components: {
         confirm
     },
     data() {
         return {
+            dialog: false,
+            isFormValidpay: true,
+            duedatepicker: false,
+            paymentamount: "",
+            transaction_id: "",
+            payment_method_transaction: "",
+            paymentmethodList: [],
+            transaction_fee: "",
+            sendemail:"",
+            isLoadingpay: false,
+            isSignInDisabledpay: false,
+            //transaction_id: "",
+            transaction_fee: "",
+            status:0,
+            paymentdate: moment().format("YYYY-MM-DD"),
+            
             invoice: {
                 id: 0,
                 user: {},
@@ -161,14 +298,19 @@ export default {
             ]
         }
     },
+    mounted: function () {
+        this.paymentmethod();
+    },
     methods: {
         async invoiceData() {
             const id = this.$route.params.id;
             await axios.get('/api/getinvoicebyid/' + id).then(response => {
                 this.invoice = response.data.invoice;
+                this.paymentamount = response.data.invoice.balance;
                 this.invoice.created_at = moment(this.invoice.created_at).format('DD-MM-YYYY, h:mm:ss a');
                 let todaydate = moment().format('DD-MM-YYYY, h:mm:ss a');
                 this.payment_id = '' + this.invoice.user.name + ' on ' + todaydate;
+                this.gateways_id = response.data.invoice.gateway;
 
 
 
@@ -176,6 +318,7 @@ export default {
                 console.log(error);
             });
         },
+        
         async updateinvoicestatus() {
             const id = this.$route.params.id;
             await axios.post('/api/admin/invoices/update', {
@@ -218,8 +361,41 @@ export default {
             this.$router.push('/admin/invoices');
         },
         downloadpdf() {
-            window.open('/admin/invoice/downloadpdf/' + this.invoice.id, '_blank');
+            window.open('/api/downloadpdf/' + this.invoice.id);
         },
+
+        viewpdf() {
+            window.open('/api/viewpdf/' + this.invoice.id);
+        },
+
+        paymentmethod(){
+             axios.get('/api/getgateways').then(response => {
+                
+                this.paymentmethodList = response.data.gateways;
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+
+        addTransaction(){
+            const id = this.$route.params.id;
+            const source = this.source;
+            axios.post('/api/admin/invoices/addpayments', {
+                id: id,
+                payment_id: this.gateways_id,
+                transaction_id: this.transaction_id,
+                method: this.payment_method,
+                user_id: this.invoice.user.id,
+                currency: 'INR',
+                amount: this.paymentamount,
+
+            }).then(response => {
+               this.$router.push('/admin/invoices');
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        
         pay() {
             const id = this.$route.params.id;
             // Determine the source of payment initiation
@@ -240,6 +416,7 @@ export default {
             });
         },
     },
+    
     created() {
         this.invoiceData();
     }
