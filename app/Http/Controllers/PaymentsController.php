@@ -7,11 +7,9 @@ use Illuminate\Http\Request;
 
 class PaymentsController extends Controller
 {
-    //
     public function addpayments(Request $request)
     {
         try {
-            // add payment in payment table
             $payment = new \App\Models\Payment;
             $payment->invoice_id = $request->id;
             $payment->transactionid = $request->transaction_id;

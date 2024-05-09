@@ -54,6 +54,34 @@
               </div>
             </v-card-text>
           </v-card>
+
+          <v-card >
+            <v-card-title>Team Information</v-card-title>
+            <v-card-text>
+              <div class="d-flex flex-column flex-sm-row">
+                    <v-avatar :size="100" :color="hover ? 'primary' : ''" color="#cccccc">
+                      <v-img :lazy-src="temimagecurrent" :src="'/storage/' + user.team.image"
+                          v-if="user.team.image != '' && user.team.image != null" class="align-center" />
+                      <span class="headline text-h1" v-else>{{ user.team.name.charAt(0) }}</span>
+                  </v-avatar>
+                <div class="flex-grow-1 pt-2 pa-sm-2">
+                  
+                  <v-text-field v-model="user.team.name" label="Team Name" placeholder="name" outlined></v-text-field>
+                  <v-text-field v-model="user.team.designation"  label="Designation" outlined></v-text-field>
+                  <v-text-field v-model="user.team.experience" label="Experience (How old is your team?)" outlined></v-text-field>
+                  <v-text-field v-model="user.team.description" label="Description" class="" outlined></v-text-field>
+                  <div class=" d-flex flex-column mt-2">
+                    <!-- <v-checkbox v-model="user.status" dense label="Email Verified"></v-checkbox> -->
+                    <!-- <div>
+                    <v-btn v-if="!user.status">
+                      <v-icon left small>mdi-email</v-icon>Send Verification Email
+                    </v-btn>
+                  </div> -->
+                  </div>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
         </div>
       </div>
       <!-- <v-dialog v-model="askpassword" max-width="350px">
@@ -101,6 +129,7 @@ export default {
         'password': null,
       },
       loadingdata: true,
+      temimagecurrent:"",
       tab: null,
       askpassword: false,
       breadcrumbs: [{
@@ -124,6 +153,7 @@ export default {
         if (response.data.success) {
           // response.data.userdata.status = (response.data.userdata.status == 1) ? true : false;
           this.user = response.data.data;
+          this.temimagecurrent = response.data.data.team.image;
           this.loadingdata = false;
         } else {
           this.$router.push({

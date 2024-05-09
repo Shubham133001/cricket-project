@@ -130,7 +130,9 @@ class CommonController extends Controller
             $data->orderBy($options['sortBy'], $options['sortDesc'] ? 'desc' : 'asc');
         }
         $data = \App\Models\Booking::with('user', 'slot')->paginate($options['itemsPerPage']);
-        return response()->json([
+        // echo "<pre>";
+        // print_r($data); die;
+        return response()->json([ 
             'success' => true,
             'bookings' => $data
         ]);

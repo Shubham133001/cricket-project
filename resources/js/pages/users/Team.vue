@@ -11,7 +11,7 @@
                         <v-col cols="12" md="2" xs="12">
                             <v-hover v-slot:default="{ hover }">
                                 <v-avatar :size="150" :color="hover ? 'primary' : ''" color="#cccccc">
-                                    <v-img :lazy-src="temimagecurrent" :src="'/storage/uploads/team/' + team.image"
+                                    <v-img :lazy-src="temimagecurrent" :src="'/storage/' + team.image"
                                         v-if="team.image != '' && team.image != null" class="align-center" />
                                     <span class="headline text-h1" v-else>{{ team.name.charAt(0) }}</span>
                                     <v-fade-transition>

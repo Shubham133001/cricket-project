@@ -116,7 +116,7 @@ class UsersController extends Controller
 
     public function edituser(Request $request)
     {
-        $data = \App\Models\User::find($request->id);
+        $data = \App\Models\User::with('team')->find($request->id);
         return response()->json([
             'success' => true,
             'data' => $data

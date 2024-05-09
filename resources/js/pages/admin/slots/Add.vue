@@ -200,6 +200,7 @@ export default {
         async checkslots() {
             this.allgood = false;
             let slots = this.slots;
+           // console.log(this.slots);
             let stoploop = false;
             // if (this.slotstype == 'Multiple Days' && this.timeperiod == '') {
             //     this.timeperiod.forEach(date => {
@@ -312,17 +313,19 @@ export default {
                         this.allgood = false;
                         return false;
                     }
+                    else{
+                                    this.allgood = true;
+                                }   
 
                 }
-                let currentselectedtimes = this.gethoursbetween(slot.time_start, slot.time_end);
+                let currentselectedtimes = this.gethoursbetween(moment(slot.time_start, "hh:mm A").format("HH:mm"), moment(slot.time_end, "hh:mm A").format("H:mm"));
                 let stoploop1 = false;
                 currentselectedtimes.forEach(times => {
-                    console.log(times, 'time');
                     if (stoploop1) {
                         return false;
                     }
                     if (alltimes.includes(times)) {
-                        this.$toasted.show('Can not add Slot for (' + slot.time_start + ' - ' + slot.time_end + ') ', {
+                        this.$toasted.show('Can not add Slot for (' + moment(slot.time_start, "hh:mm A").format("H:mm") + ' - ' + moment(slot.time_end, "hh:mm A").format("H:mm") + ') ', {
                             type: 'error',
                             duration: 2000
                         });
@@ -339,7 +342,6 @@ export default {
                     let bookeddates = this.getdaysbetween(bookedslot.start_date, bookedslot.end_date);
                     let bookedtimes = this.gethoursbetween(bookedslot.start_time, bookedslot.end_time);
                     currentselectedates.forEach(date => {
-
                         if (bookeddates.includes(date)) {
                             currentselectedtimes.forEach(time => {
                                 if (stoploop) {
@@ -357,6 +359,9 @@ export default {
                                     return false;
 
                                 }
+                                else{
+                                    this.allgood = true;
+                                }
                             });
                         }
 
@@ -365,15 +370,10 @@ export default {
 
                 });
 
-
+                
             });
 
-            if (stoploop == false) {
-                this.allgood = true;
-            }
-            else {
-                this.allgood = false;
-            }
+            
 
         },
         async getslots() {
@@ -508,7 +508,7 @@ export default {
         },
 
         async saveslots() {
-
+            
             await axios.post('/api/admin/slots/add', {
                 slots: this.slots,
                 date: this.timeperiod,

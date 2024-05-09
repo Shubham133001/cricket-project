@@ -128,7 +128,7 @@
           </v-row>
           <v-divider class="my-3"></v-divider>
           <div class="text-center caption">
-            © Indielayer 2021. All Rights Reserved
+            © Indielayer 2024. All Rights Reserved
           </div>
         </v-container>
       </v-footer>

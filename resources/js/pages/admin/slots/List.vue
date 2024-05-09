@@ -21,7 +21,6 @@
                                 <th class="text-left">Category</th>
                                  <th class="text-left">Advance Price</th>
                                 <th class="text-left">Price</th>
-                               
                                 <th class="text-left">Actions</th>
                             </tr>
                         </thead>
