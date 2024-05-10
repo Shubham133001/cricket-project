@@ -120,22 +120,42 @@ class CommonController extends Controller
 
     public function getbookings(Request $request)
     {
-        $search = $request->search;
-        $options = $request->options;
-        $data = \App\Models\Booking::with('user', 'slot');
-        if ($search != '') {
-            $data->where('date', 'like', '%' . $search . '%');
+        try {
+            $page = $request->page ?? 1;
+            $limit = $request->limit ?? 10;
+            $search = $request->search ?? '';
+        
+            $resp = \App\Models\Booking::with('user', 'slot', 'team', 'invoice')
+                ->where(function ($query) use ($search) {
+                    if ($search) {
+                        $query->where(function ($innerQuery) use ($search) {
+                            $innerQuery->orWhere('status', 'like', '%' . $search . '%')
+                                ->orWhere('payment_status', 'like', '%' . $search . '%')
+                                ->orWhere('date', 'like', '%' . $search . '%');
+                        })->orWhereHas('user', function ($q) use ($search) {
+                            $q->where('name', 'like', '%' . $search . '%');
+                        })->orWhereHas('slot', function ($q) use ($search) {
+                            $q->where('title', 'like', '%' . $search . '%')
+                                ->orWhere('price', 'like', '%' . $search . '%')
+                                ->orWhere('advanceprice', 'like', '%' . $search . '%')
+                                ->orWhere('start_time', 'like', '%' . $search . '%')
+                                ->orWhere('end_time', 'like', '%' . $search . '%');
+                        });
+                    }
+                })
+                ->orderByDesc('created_at')
+                ->paginate($limit);
+        
+            return response()->json([
+                'success' => true,
+                'bookings' => $resp
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
         }
-        if ($options['sortBy']) {
-            $data->orderBy($options['sortBy'], $options['sortDesc'] ? 'desc' : 'asc');
-        }
-        $data = \App\Models\Booking::with('user', 'slot')->paginate($options['itemsPerPage']);
-        // echo "<pre>";
-        // print_r($data); die;
-        return response()->json([ 
-            'success' => true,
-            'bookings' => $data
-        ]);
     }
 
     public function deletebooking(Request $request)

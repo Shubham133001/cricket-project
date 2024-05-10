@@ -25,12 +25,12 @@ class PaymentsController extends Controller
             //$invoice->amount = $request->amount;
             $invoice->save();
 
-            if($invoice->amount >= $request->amount){
+            if ($invoice->amount >= $request->amount) {
                 $status = "Paid";
-            }else{
+            } else {
                 $status = "Partial paid";
             }
-            
+
             // update booking status
             $bookings = \App\Models\Booking::where('invoice_id', $request->id)->get();
             foreach ($bookings as $book) {
@@ -143,16 +143,39 @@ class PaymentsController extends Controller
 
     public function getpayments(Request $request)
     {
-        $payments = \App\Models\Payment::with('user');
-        if ($request->dates) {
-            $dates = explode(',', $request->dates);
-            $payments->whereBetween('created_at', [$dates[0], $dates[1]]);
+
+        try {
+            $page = $request->page ?? 1;
+            $limit = $request->limit ?? 10;
+            $search = $request->search ?? '';
+
+            $resp = \App\Models\Payment::with('user')
+                ->where(function ($query) use ($search) {
+                    if ($search) {
+                        $query->whereHas('user', function ($userQuery) use ($search) {
+                            $userQuery->orWhere('phone', 'like', '%' . $search . '%')
+                            ->orWhere('name', 'like', '%' . $search . '%');
+                        })
+                            ->orWhere('amount', 'like', '%' . $search . '%')
+                            ->orWhere('status', 'like', '%' . $search . '%')
+                            ->orWhere('method', 'like', '%' . $search . '%')
+                            ->orWhere('transactionid', 'like', '%' . $search . '%')
+                            ->orWhere('created_at', 'like', '%' . $search . '%');
+                    }
+                })
+                ->orderByDesc('created_at')
+                ->paginate($limit);
+
+            return response()->json([
+                'success' => true,
+                'payments' => $resp
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
         }
-        $payments = $payments->get();
-        return response()->json([
-            'success' => true,
-            'payments' => $payments
-        ]);
     }
     public function todaytransactions()
     {

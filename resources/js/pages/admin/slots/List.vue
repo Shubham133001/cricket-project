@@ -7,6 +7,7 @@
 
     <v-card>
       <v-card-text>
+        <v-col cols="6" class="d-flex  align-center">
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -14,6 +15,7 @@
           single-line
           hide-details
         ></v-text-field>
+        </v-col>
         <v-data-table
           :headers="headers"
           :items="slots"
@@ -85,7 +87,7 @@ export default {
           value: "days",
         },
         {
-          text: "Advance Price",
+          text: "Category Name",
           value: "category.name",
         },
         {
@@ -144,7 +146,7 @@ export default {
         const response = await axios
           .get('/api/admin/slots/all?page=' + this.options.page + '&limit=' + this.options.itemsPerPage + '&search=' + this.search)
           .then((response) => {
-            this.slots = response.data.slots;
+            this.slots = response.data.slots.data;
           });
       } catch (error) {
         console.error(error);

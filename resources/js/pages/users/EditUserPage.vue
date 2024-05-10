@@ -3,7 +3,9 @@
     <v-container>
       <div class="d-flex align-center py-3">
         <div>
-          <div class="display-1">Edit User {{ user.name && `- ${user.name}` }}</div>
+          <div class="display-1">
+            Edit User {{ user.name && `- ${user.name}` }}
+          </div>
           <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
         </div>
         <v-spacer></v-spacer>
@@ -12,7 +14,10 @@
       </v-btn> -->
       </div>
 
-      <div v-if="user.admin_group_id === 1" class="d-flex align-center font-weight-bold primary--text my-2">
+      <div
+        v-if="user.admin_group_id === 1"
+        class="d-flex align-center font-weight-bold primary--text my-2"
+      >
         <v-icon small color="primary">mdi-security</v-icon>
         <span class="ma-1">Administrator</span>
       </div>
@@ -34,11 +39,30 @@
             <v-card-text>
               <div class="d-flex flex-column flex-sm-row">
                 <div class="flex-grow-1 pt-2 pa-sm-2">
-                  <v-text-field v-model="user.name" label="Display name" placeholder="name" outlined></v-text-field>
-                  <v-text-field v-model="user.email" :disabled="user.status" label="Email" outlined></v-text-field>
-                  <v-text-field v-model="user.phone" label="Phone" outlined></v-text-field>
-                  <v-text-field v-model="user.password" label="Password" class="" outlined></v-text-field>
-                  <div class=" d-flex flex-column mt-2">
+                  <v-text-field
+                    v-model="user.name"
+                    label="Display name"
+                    placeholder="name"
+                    outlined
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="user.email"
+                    :disabled="user.status"
+                    label="Email"
+                    outlined
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="user.phone"
+                    label="Phone"
+                    outlined
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="user.password"
+                    label="Password"
+                    class=""
+                    outlined
+                  ></v-text-field>
+                  <div class="d-flex flex-column mt-2">
                     <!-- <v-checkbox v-model="user.status" dense label="Email Verified"></v-checkbox> -->
                     <!-- <div>
                     <v-btn v-if="!user.status">
@@ -47,30 +71,84 @@
                   </div> -->
                   </div>
 
-                  <div class="mt-2">
+                  <!-- <div class="mt-2">
                     <v-btn color="primary" @click="updateuser">Update</v-btn>
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </v-card-text>
           </v-card>
 
-          <v-card >
+          <v-card>
             <v-card-title>Team Information</v-card-title>
             <v-card-text>
               <div class="d-flex flex-column flex-sm-row">
-                    <v-avatar :size="100" :color="hover ? 'primary' : ''" color="#cccccc">
+                <!-- <v-avatar :size="100" :color="hover ? 'primary' : ''" color="#cccccc">
                       <v-img :lazy-src="temimagecurrent" :src="'/storage/' + user.team.image"
                           v-if="user.team.image != '' && user.team.image != null" class="align-center" />
                       <span class="headline text-h1" v-else>{{ user.team.name.charAt(0) }}</span>
+                  </v-avatar> -->
+                <v-hover v-slot:default="{ hover }">
+                  <v-avatar
+                    :size="150"
+                    :color="hover ? 'primary' : ''"
+                    color="#cccccc"
+                  >
+                    <v-img
+                      :lazy-src="temimagecurrent"
+                      :src="'/storage/' + user.team.image"
+                      v-if="user.team.image != '' && user.team.image != null"
+                      class="align-center"
+                    />
+                    <span class="headline text-h1" v-else>{{
+                      user.team.name.charAt(0)
+                    }}</span>
+                    <v-fade-transition>
+                      <v-overlay v-if="hover" absolute color="#036358">
+                        <v-btn icon fab small @click="handleFileImport"
+                          ><v-icon>mdi-pencil</v-icon></v-btn
+                        >
+                      </v-overlay>
+                    </v-fade-transition>
                   </v-avatar>
+                </v-hover>
                 <div class="flex-grow-1 pt-2 pa-sm-2">
-                  
-                  <v-text-field v-model="user.team.name" label="Team Name" placeholder="name" outlined></v-text-field>
-                  <v-text-field v-model="user.team.designation"  label="Designation" outlined></v-text-field>
-                  <v-text-field v-model="user.team.experience" label="Experience (How old is your team?)" outlined></v-text-field>
-                  <v-text-field v-model="user.team.description" label="Description" class="" outlined></v-text-field>
-                  <div class=" d-flex flex-column mt-2">
+                  <input
+                    type="file"
+                    ref="uploader"
+                    style="display: none"
+                    @change="onfilechange"
+                  />
+                  <v-text-field
+                    v-model="user.team.name"
+                    label="Team Name"
+                    placeholder="name"
+                    outlined
+                  ></v-text-field>
+                  <!-- <v-text-field
+                    v-model="user.team.designation"
+                    label="Designation"
+                    outlined
+                  ></v-text-field> -->
+                  <v-select
+                    v-model="user.team.designation"
+                    :items="designations"
+                    outlined
+                    label="Designation"
+                  ></v-select>
+                  <v-text-field
+                    v-model="user.team.experience"
+                    label="Experience (How old is your team?)"
+                    outlined
+                  ></v-text-field>
+                  <!-- <v-text-field
+                    v-model="user.team.description"
+                    label="Description"
+                    class=""
+                    outlined
+                  ></v-text-field> -->
+                  <v-textarea v-model="user.team.description" outlined label="Description"></v-textarea>
+                  <div class="d-flex flex-column mt-2">
                     <!-- <v-checkbox v-model="user.status" dense label="Email Verified"></v-checkbox> -->
                     <!-- <div>
                     <v-btn v-if="!user.status">
@@ -79,6 +157,9 @@
                   </div> -->
                   </div>
                 </div>
+              </div>
+              <div class="mt-2">
+                <v-btn color="primary" @click="updateuser">Update</v-btn>
               </div>
             </v-card-text>
           </v-card>
@@ -109,9 +190,9 @@
 </template>
 
 <script>
-import CopyLabel from '../../components/common/CopyLabel'
-import AccountTab from './EditUser/AccountTab'
-import InformationTab from './EditUser/InformationTab'
+import CopyLabel from "../../components/common/CopyLabel";
+import AccountTab from "./EditUser/AccountTab";
+import InformationTab from "./EditUser/InformationTab";
 
 export default {
   components: {
@@ -122,74 +203,98 @@ export default {
   data() {
     return {
       user: {
-        'phone': '',
-        'id': 32,
-        'email': 'bfitchew0@ezinearticles.com',
-        'name': 'Bartel Fitchew',
-        'password': null,
+        phone: "",
+        id: 32,
+        email: "bfitchew0@ezinearticles.com",
+        name: "Bartel Fitchew",
+        password: null,
       },
+      designations: ["Beginner", "Intermediate", "Expert"],
       loadingdata: true,
-      temimagecurrent:"",
+      temimagecurrent: "",
       tab: null,
       askpassword: false,
-      breadcrumbs: [{
-        text: 'Users',
-        to: '/admin/users',
-        exact: true
-      },
-      {
-        text: 'Edit User'
-      }
-      ]
-    }
+      breadcrumbs: [
+        {
+          text: "Users",
+          to: "/admin/users",
+          exact: true,
+        },
+        {
+          text: "Edit User",
+        },
+      ],
+    };
   },
   mounted() {
-    this.me()
+    this.me();
   },
   methods: {
+    onfilechange(e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      const files = e.target.files[0];
+      this.user.team.image = files;
+      reader.onload = (e) => {
+        this.temimagecurrent = e.target.result;
+      };
+    },
+    handleFileImport() {
+      this.$refs.uploader.click();
+    },
     async me() {
-      await axios.get('/api/admin/user/edit/' + this.$route.params.id).then(response => {
-        // console.log(response.data.userdata);
-        if (response.data.success) {
-          // response.data.userdata.status = (response.data.userdata.status == 1) ? true : false;
-          this.user = response.data.data;
-          this.temimagecurrent = response.data.data.team.image;
-          this.loadingdata = false;
-        } else {
-          this.$router.push({
-            name: 'login'
-          })
-        }
-      })
+      await axios
+        .get("/api/admin/user/edit/" + this.$route.params.id)
+        .then((response) => {
+          // console.log(response.data.userdata);
+          if (response.data.success) {
+            // response.data.userdata.status = (response.data.userdata.status == 1) ? true : false;
+            this.user = response.data.data;
+            this.temimagecurrent = response.data.data.team.image;
+            this.loadingdata = false;
+          } else {
+            this.$router.push({
+              name: "login",
+            });
+          }
+        });
     },
     async updateuser() {
-      // if (!this.user.currentpass) {
-      //   this.$toasted.show('Please enter your current password', {
-      //     type: 'error'
-      //   }).goAway(2000);
-      //   return;
-      // }
-      axios.post('/api/admin/user/update', this.user).then(response => {
-        // console.log(response.data);
-
+      let formdata = new FormData();
+      formdata.append("id", this.user.id);
+      formdata.append("name", this.user.name);
+      formdata.append("email", this.user.email);
+      formdata.append("phone", this.user.phone);
+      formdata.append("password", this.user.password);
+      formdata.append("team_name", this.user.team.name);
+      formdata.append("designation", this.user.team.designation);
+      formdata.append("experience", this.user.team.experience);
+      formdata.append("description", this.user.team.description);
+      formdata.append("image", this.user.team.image);
+      
+      axios.post("/api/admin/user/update", formdata).then((response) => {
         if (response.data.success) {
-          this.$toasted.show('User updated successfully', {
-            type: 'success'
-          }).goAway(2000);
+          this.me();
+          this.$toasted
+            .show("User updated successfully", {
+              type: "success",
+            })
+            .goAway(2000);
           this.askpassword = false;
           this.user.password = null;
           // this.user.currentpass = null;
         } else {
-          this.$toasted.show('Password Does Not Match', {
-            type: 'error'
-          }).goAway(2000);
+          this.$toasted
+            .show("Password Does Not Match", {
+              type: "error",
+            })
+            .goAway(2000);
           this.user.currentpass = null;
           return;
         }
-
-      })
-
-    }
+      });
+    },
   },
-}
+};
 </script>
