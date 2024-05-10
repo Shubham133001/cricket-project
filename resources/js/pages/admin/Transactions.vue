@@ -35,7 +35,7 @@
                 </v-menu>
             </v-card-title>
             <v-card-text>
-                <v-data-table :headers="headers" :items="transactions" :search="search" :loading="loading"
+                <v-data-table :headers="headers" :items="transactions" :search="search" :loading="loading" :options.sync="options"
                     :items-per-page="10" class="elevation-1">
                     <template v-slot:item.patient.name="{ item }">
                         <span style="font-weight: bold; cursor: pointer" @click="openClient(item.patient)">#{{
@@ -64,6 +64,7 @@ export default {
     },
     data() {
         return {
+            options:{},
             transactions: [],
             loading: false,
             breadcrumbs: [{
@@ -122,37 +123,77 @@ export default {
     mounted() {
         this.getTransactions();
     },
+
+    watch: {
+        options: {
+            handler() {
+                this.initialize()
+            },
+            deep: true,
+        },
+        search: {
+            handler() {
+                this.getTransactions()
+            },
+            deep: true,
+        },
+    },
+    
     methods: {
+
+        // getTransactions() {
+        //     this.loading = true;
+        //     this.menu = false;
+        //     if (this.dates.length == 0) {
+        //         axios.get('/api/admin/getpayments')
+        //             .then(response => {
+        //                 this.transactions = response.data.payments;
+        //                 this.loading = false;
+        //             })
+        //             .catch(error => {
+        //                 if (error.response.status == 403) {
+        //                     this.$router.push("/admin/unauthorized");
+        //                 }
+        //                 console.log(error);
+        //             });
+        //     } else {
+        //         axios.get('/api/admin/getpayments/?dates=' + this.dates)
+        //             .then(response => {
+        //                 this.transactions = response.data.payments;
+        //                 this.loading = false;
+        //             })
+        //             .catch(error => {
+        //                 if (error.response.status == 403) {
+        //                     this.$router.push("/admin/unauthorized");
+        //                 }
+        //                 this.loading = false;
+        //             });
+        //     }
+        //     this.loading = false;
+        // },
 
         getTransactions() {
             this.loading = true;
             this.menu = false;
-            if (this.dates.length == 0) {
-                axios.get('/api/admin/getpayments')
-                    .then(response => {
-                        this.transactions = response.data.payments;
-                        this.loading = false;
-                    })
-                    .catch(error => {
-                        if (error.response.status == 403) {
-                            this.$router.push("/admin/unauthorized");
-                        }
-                        console.log(error);
-                    });
-            } else {
-                axios.get('/api/admin/getpayments/?dates=' + this.dates)
-                    .then(response => {
-                        this.transactions = response.data.payments;
-                        this.loading = false;
-                    })
-                    .catch(error => {
-                        if (error.response.status == 403) {
-                            this.$router.push("/admin/unauthorized");
-                        }
-                        this.loading = false;
-                    });
+            let apiUrl = '/api/admin/getpayments?page=' + this.options.page + '&limit=' + this.options.itemsPerPage + '&search=' + this.search;
+            if (this.dates.length > 0) {
+                apiUrl += 'dates=' + this.dates;
             }
-            this.loading = false;
+
+            axios.get(apiUrl)
+                .then(response => {
+                    this.transactions = response.data.payments.data;
+                })
+                .catch(error => {
+                    if (error.response && error.response.status == 403) {
+                        this.$router.push("/admin/unauthorized");
+                    } else {
+                        console.error(error);
+                    }
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
         },
         async deleteItem(item) {
             const ok = await this.$refs.confirm.open({

@@ -136,7 +136,7 @@ export default {
         { text: 'Email', value: 'email' },
         // { text: 'Verified', value: 'verified' },
         { text: 'Name', align: 'left', value: 'name' },
-        // { text: 'Role', value: 'role' },
+        { text: 'Team', value: 'team.name' },
         { text: 'Created', value: 'created' },
         // { text: 'Last SignIn', value: 'lastSignIn' },
         // { text: 'Status', value: 'status' },
@@ -150,8 +150,8 @@ export default {
     this.getusers()
   },
   watch: {
-    searchQuery(val) {
-      this.searchUser(val)
+    searchQuery() {
+      this.getusers()
     },
     options: {
       handler() {

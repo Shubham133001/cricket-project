@@ -94,19 +94,24 @@ class UsersController extends Controller
 
     public function getusers(Request $request)
     {
-        $data = \App\Models\User::with('team');
         $search = $request->search;
         $limit = $request->itemsPerPage;
         $page = $request->page;
-        if ($search && $search != '' && $search != null) {
-            $data->where('name', 'like', '%' . $search . '%');
-        }
-        if ($request->sortBy && $request->sortBy != '' && $request->sortBy != null) {
-            $data->orderBy($request->sortBy, $request->sortDesc ? 'desc' : 'asc');
-        }
-
-
-        $resp = $data->paginate($limit);
+        
+        $resp = \App\Models\User::with('team')
+            ->where(function ($query) use ($search) {
+                if ($search) {
+                    $query
+                    ->whereHas('team', function ($userQuery) use ($search) {
+                        $userQuery->where('name', 'like', '%' . $search . '%');
+                    })
+                        ->orWhere('name', 'like', '%' . $search . '%')
+                        ->orWhere('email', 'like', '%' . $search . '%')
+                        ->orWhere('created_at', 'like', '%' . $search . '%');
+                }
+            })
+            ->orderByDesc('created_at')
+            ->paginate($limit);
 
         return response()->json([
             'success' => true,
@@ -125,20 +130,42 @@ class UsersController extends Controller
 
     public function updateuser(Request $request)
     {
-        $data = \App\Models\User::find($request->id);
-        $password = $request->password;
-        if ($password && $password != '' && $password != null) {
-            $data->password = bcrypt($password);
-        }
-        $data->name = $request->name;
-        $data->email = $request->email;
-        $data->phone = $request->phone;
 
-        $data->update();
-        return response()->json([
-            'success' => true,
-            'data' => $data
-        ]);
+        try {
+            $data = \App\Models\User::find($request->id);
+            $password = $request->password;
+            if ($password && $password != '' && $password != null) {
+                $data->password = bcrypt($password);
+            }
+            $data->name = $request->name;
+            $data->email = $request->email;
+            $data->phone = $request->phone;
+        
+            $data->update();
+        
+            $team = \App\Models\Team::where('user_id', $request->id)->first();
+            $team->name = $request->team_name;
+            $team->description = $request->description;
+            $team->experience = $request->experience;
+            $team->designation = $request->designation;
+        
+            if ($request->hasFile('image')) {
+                $path = $this->uploadTeamImage($request->file('image'));
+                $team->image = $path;
+            }
+        
+            $team->save();
+        
+            return response()->json([
+                'success' => true,
+                'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     public function deleteuser(Request $request)
@@ -184,5 +211,14 @@ class UsersController extends Controller
             'success' => true,
             'bookings' => $data
         ]);
+    }
+
+    public function uploadTeamImage($imagefile)
+    {
+        $file = $imagefile;
+        $extension = $file->getClientOriginalExtension();
+        $filename = time() . '.' . $extension;
+        $path = $file->storeAs('uploads/team/image/', $filename, 'public');
+        return $path;
     }
 }

@@ -79,8 +79,6 @@ class SlotsController extends Controller
                         $insertdata['end_date'] = $temp;
                     }
 
-                    // $insertdata['start_date'] = $slot['startdate'];
-                    // $insertdata['end_date'] = $slot['enddate'];
                     $insertdata['category_id'] = $postdata['id'];
                     $insertdata['status'] = 'Active';
                     $data = \App\Models\Slot::create($insertdata);
@@ -100,60 +98,108 @@ class SlotsController extends Controller
     }
     public function getallslots(Request $request)
     {
-        $data = \App\Models\Slot::with('category')->get();
+        try {
+            $page = ($request->page) ? $request->page : 1;
+            $limit = ($request->limit) ? $request->limit : 10;
+            $search = ($request->search) ? $request->search : '';
 
-        $data->map(function ($item) {
-            $item->slot_time = $item->start_time . " - " . $item->end_time;
-            $item->slot_date = $item->start_date . " - " . $item->end_date;
-            $item->days = explode(',', $item->days);
-            return $item;
-        });
-        return response()->json([
-            'success' => true,
-            'slots' => $data
-        ]);
+            $resp = \App\Models\Slot::with('category')
+                ->where(function ($query) use ($search) {
+                    if ($search) {
+                        $query->orWhere('title', 'like', '%' . $search . '%')
+                            ->orWhere('start_time', 'like', '%' . $search . '%')
+                            ->orWhere('end_time', 'like', '%' . $search . '%')
+                            ->orWhere('start_date', 'like', '%' . $search . '%')
+                            ->orWhere('end_date', 'like', '%' . $search . '%')
+                            ->orWhere('price', 'like', '%' . $search . '%')
+                            ->orWhere('advanceprice', 'like', '%' . $search . '%')
+                            ->orWhereHas('category', function ($q) use ($search) {
+                                $q->where('name', 'like', '%' . $search . '%');
+                            });
+                    }
+                })
+                ->orderByDesc('created_at')
+                ->paginate($limit);
+
+            $resp->map(function ($item) {
+                $item->slot_time = $item->start_time . " - " . $item->end_time;
+                $item->slot_date = $item->start_date . " - " . $item->end_date;
+                $item->days = explode(',', $item->days);
+                return $item;
+            });
+
+            return response()->json([
+                'success' => true,
+                'slots' => $resp
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
     public function getslots(Request $request)
     {
         // get day from date
-        $date = strtotime($request->date);
-        $date = date('Y-m-d', $date);
-        $data = \App\Models\Slot::where(
-            'category_id',
-            $request->id
-        )->whereDate('start_date', '<=', $date)->whereDate('end_date', '>=', $date)->with('bookings', function ($query) use ($date) {
-            $query->where('date', $date)->with(['user', 'team']);
-        })->with('category')->get();
-        $data->map(function ($item) {
-            $item->days = explode(',', $item->days);
-            return $item;
-        });
-        return response()->json([
-            'success' => true,
-            'slots' => $data
-        ]);
+        try {
+            $date = strtotime($request->date);
+            $date = date('Y-m-d', $date);
+
+            $data = \App\Models\Slot::where('category_id', $request->id)
+                ->whereDate('start_date', '<=', $date)
+                ->whereDate('end_date', '>=', $date)
+                ->with(['bookings' => function ($query) use ($date) {
+                    $query->where('date', $date)->with(['user', 'team']);
+                }])
+                ->with('category')
+                ->get();
+
+            $data->map(function ($item) {
+                $item->days = explode(',', $item->days);
+                return $item;
+            });
+
+            return response()->json([
+                'success' => true,
+                'slots' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     public function getallslotsforcategory(Request $request)
     {
-        // get day from date
-        $date = strtotime($request->date);
-        $date = date('Y-m-d', $date);
-        $data = \App\Models\Slot::where(
-            'category_id',
-            $request->id
-        )->with('category')->get();
+        try {
+            // get day from date
+            $date = strtotime($request->date);
+            $date = date('Y-m-d', $date);
+            $data = \App\Models\Slot::where(
+                'category_id',
+                $request->id
+            )->with('category')->get();
 
-        $data->map(function ($item) {
-            // $item->time = explode('-', $item->time);
-            $item->days = explode(',', $item->days);
-            // $item->slotdate = explode(',', $item->slotdate);
-            return $item;
-        });
-        return response()->json([
-            'success' => true,
-            'slots' => $data
-        ]);
+            $data->map(function ($item) {
+                // $item->time = explode('-', $item->time);
+                $item->days = explode(',', $item->days);
+                // $item->slotdate = explode(',', $item->slotdate);
+                return $item;
+            });
+            return response()->json([
+                'success' => true,
+                'slots' => $data
+            ]);
+        } catch (\Exception $e) {
+            // Handle the exception
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage() // You can customize the error message as needed
+            ]);
+        }
     }
 
     public function delete(Request $request)
