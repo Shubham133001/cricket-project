@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Queue;
+use Illuminate\Bus\Queueable;
 
 
 class EmailsController extends Controller
 {
-    //
-
+    //  
+    use Queueable;
     public function sendEmail($request)
     {
         $to_name = $request->to_name;

@@ -121,34 +121,40 @@ class CommonController extends Controller
     public function getbookings(Request $request)
     {
         try {
+            $options = $request->options;
+
+            $limit = $options['itemsPerPage'] ?? 10;
             $page = $request->page ?? 1;
-            $limit = $request->limit ?? 10;
             $search = $request->search ?? '';
-        
-            $resp = \App\Models\Booking::with('user', 'slot', 'team', 'invoice')
-                ->where(function ($query) use ($search) {
-                    if ($search) {
-                        $query->where(function ($innerQuery) use ($search) {
-                            $innerQuery->orWhere('status', 'like', '%' . $search . '%')
-                                ->orWhere('payment_status', 'like', '%' . $search . '%')
-                                ->orWhere('date', 'like', '%' . $search . '%');
-                        })->orWhereHas('user', function ($q) use ($search) {
-                            $q->where('name', 'like', '%' . $search . '%');
-                        })->orWhereHas('slot', function ($q) use ($search) {
-                            $q->where('title', 'like', '%' . $search . '%')
-                                ->orWhere('price', 'like', '%' . $search . '%')
-                                ->orWhere('advanceprice', 'like', '%' . $search . '%')
-                                ->orWhere('start_time', 'like', '%' . $search . '%')
-                                ->orWhere('end_time', 'like', '%' . $search . '%');
-                        });
-                    }
-                })
-                ->orderByDesc('created_at')
-                ->paginate($limit);
-        
+
+            $resp = \App\Models\Booking::with('user', 'slot', 'team', 'invoice');
+            $resp->where(function ($query) use ($search) {
+                if ($search) {
+                    $query->where(function ($innerQuery) use ($search) {
+                        $innerQuery->orWhere('status', 'like', '%' . $search . '%')
+                            ->orWhere('payment_status', 'like', '%' . $search . '%')
+                            ->orWhere('date', 'like', '%' . $search . '%');
+                    })->orWhereHas('user', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })->orWhereHas('slot', function ($q) use ($search) {
+                        $q->where('title', 'like', '%' . $search . '%')
+                            ->orWhere('price', 'like', '%' . $search . '%')
+                            ->orWhere('advanceprice', 'like', '%' . $search . '%')
+                            ->orWhere('start_time', 'like', '%' . $search . '%')
+                            ->orWhere('end_time', 'like', '%' . $search . '%');
+                    });
+                }
+            });
+
+            if ($options['sortBy']) {
+
+                $resp->orderBy($options['sortBy'][0], $options['sortDesc'] ? 'desc' : 'asc');
+            }
+            $data = $resp->paginate($limit);
+
             return response()->json([
                 'success' => true,
-                'bookings' => $resp
+                'bookings' => $data
             ]);
         } catch (\Exception $e) {
             return response()->json([

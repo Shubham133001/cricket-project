@@ -102,11 +102,13 @@ export default {
             },
             {
                 text: 'User',
-                value: 'user.name'
+                value: 'user.name',
+                sortable: false
             },
             {
                 text: 'Slot',
-                value: 'slot.title'
+                value: 'slot.title',
+                sortable: false
             },
             {
                 text: 'Date',
@@ -114,15 +116,18 @@ export default {
             },
             {
                 text: 'Time',
-                value: 'slot.start_time'
+                value: 'slot.start_time',
+                sortable: false
             },
             {
                 text: 'Advance Price',
-                value: 'slot.advanceprice'
+                value: 'slot.advanceprice',
+                sortable: false
             },
             {
                 text: 'Price',
-                value: 'slot.price'
+                value: 'slot.price',
+                sortable: false
             },
             {
                 text: 'Status',
