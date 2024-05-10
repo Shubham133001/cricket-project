@@ -101,10 +101,11 @@ class SlotsController extends Controller
     public function getallslots(Request $request)
     {
         $data = \App\Models\Slot::with('category')->get();
+
         $data->map(function ($item) {
-            // $item->time = explode('-', $item->time);
+            $item->slot_time = $item->start_time . " - " . $item->end_time;
+            $item->slot_date = $item->start_date . " - " . $item->end_date;
             $item->days = explode(',', $item->days);
-            // $item->slotdate = explode(',', $item->slotdate);
             return $item;
         });
         return response()->json([
@@ -124,9 +125,7 @@ class SlotsController extends Controller
             $query->where('date', $date)->with(['user', 'team']);
         })->with('category')->get();
         $data->map(function ($item) {
-            // $item->time = explode('-', $item->time);
             $item->days = explode(',', $item->days);
-            // $item->slotdate = explode(',', $item->slotdate);
             return $item;
         });
         return response()->json([

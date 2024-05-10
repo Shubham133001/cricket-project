@@ -102,18 +102,19 @@ class InvoicesController extends Controller
         $page = ($request->page) ? $request->page : 1;
         $limit = ($request->limit) ? $request->limit : 10;
         $search = ($request->search) ? $request->search : '';
-        $invoices = Invoice::with('user', 'payment');
-
-        if ($search != '') {
-            $invoices->where('amount', 'like', '%' . $search . '%')
-                ->orWhere('description', 'like', '%' . $search . '%')
-                ->orWhere('status', 'like', '%' . $search . '%')
-                ->orWhere('created_at', 'like', '%' . $search . '%');
-        }
-        $invoices->orderBy('created_at', 'desc');
-        // $invoices->offset(($page - 1) * $limit);
-        // $invoices->limit($limit);
-        $resp = $invoices->paginate($limit);
+        $resp = Invoice::with('user', 'payment')
+            ->where(function ($query) use ($search) {
+                if ($search) {
+                    $query->whereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('name', 'like', '%' . $search . '%');
+                    })
+                        ->orWhere('amount', 'like', '%' . $search . '%')
+                        ->orWhere('status', 'like', '%' . $search . '%')
+                        ->orWhere('created_at', 'like', '%' . $search . '%');
+                }
+            })
+            ->orderByDesc('created_at')
+            ->paginate($limit);
 
         return response()->json([
             'success' => true,

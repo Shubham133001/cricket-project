@@ -1,192 +1,228 @@
 <template>
-    <div style="width: 100%">
-        <div>
-        <div class="display-1">List Slots</div>
-        <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
-      </div>
-        <v-card>
-            <!-- <v-card-title>
-                <span class="headline">List Slots</span>
-            </v-card-title> -->
-            <v-card-text>
-                <v-simple-table>
-                    <template v-slot:default>
-                        <thead>
-                            <tr>
-                                <th class="text-left">ID</th>
-                                <th class="text-left">Title</th>
-                                <th class="text-left">Slot Time</th>
-                                <th class="text-left"> Slot Date</th>
-                                <th class="text-left"> Available Days</th>
-                                <th class="text-left">Category</th>
-                                 <th class="text-left">Advance Price</th>
-                                <th class="text-left">Price</th>
-                                <th class="text-left">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(slot, index) in slots" :key="index">
-                                <td>{{ index + 1 }}</td>
-                                
-                                <td>
-                                    <strong>{{ slot.title }}</strong>
-                                </td>
-                                <td>
-                                    {{ slot.start_time }} - {{ slot.end_time }}
-                                </td>
-                                <td>
-                                    {{ slot.start_date }} - {{ slot.end_date }}
-                                </td>
-                                <td>
-
-                                    <v-chip color="green" outlined dark v-for="(day, index) in slot.days"
-                                        style="font-size: 11px; padding: 0px 5px;  width: auto; height: 20px;"
-                                        class="mr-1 mb-1" :key="index">{{
-                                days[parseInt(day)]
-                            }}</v-chip>
-                                </td>
-                                <td>
-                                    <strong>{{ slot.category.name }}</strong>
-                                </td>
-                                <td>
-                                    <v-img src="/images/inr_icon.png" width="20"
-                                        style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
-                                        style="color:#297729">{{ slot.advanceprice }}</strong>
-                                </td>
-                                <td>
-                                    <v-img src="/images/inr_icon.png" width="20"
-                                        style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
-                                        style="color:#297729">{{
-                                slot.price }}</strong>
-                                </td>
-                                
-                                <td>
-                                    <!-- <v-btn color="primary" @click="editSlot(slot)">Edit</v-btn> -->
-                                    <v-btn color="red" icon fab small @click="deleteSlot(slot)"><v-icon small
-                                            color="red">mdi-delete</v-icon></v-btn>
-                                </td>
-
-                            </tr>
-                        </tbody>
-                    </template>
-                </v-simple-table>
-            </v-card-text>
-        </v-card>
-        <confirm ref="confirm"></confirm>
+  <div style="width: 100%">
+    <div>
+      <div class="display-1">List Slots</div>
+      <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
     </div>
 
+    <v-card>
+      <v-card-text>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+        <v-data-table
+          :headers="headers"
+          :items="slots"
+          sort-by="id"
+          :options.sync="options"
+          :search="search"
+          :loading="loading"
+          class="elevation-1"
+        >
+          <template v-slot:item.days="{ item }">
+            <v-chip
+              v-for="(day, index) in item.days"
+              :key="index"
+              color="green"
+              outlined
+              dark
+              class="mr-1 mb-1"
+              style="font-size: 11px; padding: 0px 5px; height: 20px"
+            >
+              {{ getDayName(day) }}
+            </v-chip>
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <v-btn color="red" icon fab small @click="deleteSlot(item)"
+              ><v-icon small color="red">mdi-delete</v-icon></v-btn
+            >
+          </template>
+        </v-data-table>
+      </v-card-text>
+    </v-card>
+    <confirm ref="confirm"></confirm>
+  </div>
 </template>
 
 <script>
-import axios from 'axios';
-import Confirm from '@/components/common/Confirm.vue';
+import axios from "axios";
+import Confirm from "@/components/common/Confirm.vue";
 export default {
-    components: {
-        Confirm
-    },
-    data() {
-        return {
-            breadcrumbs: [{
-                text: 'Slots',
-                disabled: false,
-                to: '/admin/slots'
-            }, {
-                text: 'List'
-            }],
-            slots: [],
-
-            days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat']
-        }
-    },
-    mounted() {
-        this.getSlots();
-    },
-    methods: {
-        async getSlots() {
-            try {
-                const response = await axios.get('/api/admin/slots/all').then(response => {
-                    console.log(response.data.slots);
-                    this.slots = response.data.slots;
-                });
-
-            } catch (error) {
-                console.error(error);
-            }
+  components: {
+    Confirm,
+  },
+  data() {
+    return {
+      options: {},
+      search: "",
+      totalslot: 0,
+      loading: false,
+      headers: [
+        {
+          text: "# ID",
+          align: "start",
+          value: "id",
         },
-        async deleteSlot(slot) {
-            const ok = await this.$refs.confirm.open({
-                title: 'Are you sure?',
-                message: 'Are you sure you want to delete this slot?',
-                okButtonText: 'Yes',
-                cancelButtonText: 'No',
-                options: {
-                    color: "error",
-                    width: 290,
-                    zIndex: 200,
-                },
-                icon: "mdi-delete",
+        {
+          text: "Title",
+          sortable: false,
+          value: "title",
+        },
+        {
+          text: "Slot Time",
+          value: "slot_time",
+        },
+        {
+          text: "Slot Date",
+          value: "slot_date",
+        },
+        {
+          text: "Available Days",
+          value: "days",
+        },
+        {
+          text: "Advance Price",
+          value: "category.name",
+        },
+        {
+          text: "Advance Price",
+          value: "advanceprice",
+        },
+        {
+          text: "Price",
+          value: "price",
+        },
+        {
+          text: "Actions",
+          value: "actions",
+          sortable: false,
+        },
+      ],
+      breadcrumbs: [
+        {
+          text: "Slots",
+          disabled: false,
+          to: "/admin/slots",
+        },
+        {
+          text: "List",
+        },
+      ],
+      slots: [],
+    };
+  },
+  mounted() {
+    this.getSlots();
+  },
+   watch: {
+        options: {
+            handler() {
+                this.initialize()
+            },
+            deep: true,
+        },
+        search: {
+            handler() {
+                this.getSlots()
+            },
+            deep: true,
+        },
+    },
+  methods: {
+    getDayName(day) {
+      // Define day names
+      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      // Return the corresponding day name
+      return dayNames[parseInt(day)];
+    },
+    async getSlots() {
+      try {
+        const response = await axios
+          .get('/api/admin/slots/all?page=' + this.options.page + '&limit=' + this.options.itemsPerPage + '&search=' + this.search)
+          .then((response) => {
+            this.slots = response.data.slots;
+          });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async deleteSlot(slot) {
+      const ok = await this.$refs.confirm.open({
+        title: "Are you sure?",
+        message: "Are you sure you want to delete this slot?",
+        okButtonText: "Yes",
+        cancelButtonText: "No",
+        options: {
+          color: "error",
+          width: 290,
+          zIndex: 200,
+        },
+        icon: "mdi-delete",
+      });
+      if (ok) {
+        try {
+          const response = await axios
+            .post(`/api/admin/slots/delete`, { id: slot.id })
+            .then((response) => {
+              this.$toasted.success("Slot deleted successfully", {
+                duration: 2000,
+              });
             });
-            if (ok) {
-                try {
-                    const response = await axios.post(`/api/admin/slots/delete`, { id: slot.id }).then(response => {
-                        this.$toasted.success('Slot deleted successfully', {
-                            duration: 2000
-                        });
-                    });
-                    this.getSlots();
-                } catch (error) {
-                    console.error(error);
-                }
-            }
-        },
-
+          this.getSlots();
+        } catch (error) {
+          console.error(error);
+        }
+      }
     },
-
-
-}
+  },
+};
 </script>
 <style>
 .theme--light.v-calendar-weekly {
-    border: none !important;
+  border: none !important;
 }
 
 .v-calendar-weekly__head {
-    background: #efefef;
-    line-height: 30px;
-    border: none;
+  background: #efefef;
+  line-height: 30px;
+  border: none;
 }
 
 .theme--light.v-calendar-weekly .v-calendar-weekly__day {
-    border: none;
+  border: none;
 }
 
 .theme--light.v-calendar-weekly .v-calendar-weekly__head-weekday {
-    border: none;
+  border: none;
 }
 
 .v-present .v-btn {
-    background-color: transparent !important;
-    border: solid 1px #000 !important;
-    color: #000 !important;
+  background-color: transparent !important;
+  border: solid 1px #000 !important;
+  color: #000 !important;
 }
 
 .v-present .theme--light.v-btn:focus {
-    color: #fff !important;
-    background: #0096c7 !important;
+  color: #fff !important;
+  background: #0096c7 !important;
 }
 
-.v-present .theme--light.v-btn:focus::before {}
+.v-present .theme--light.v-btn:focus::before {
+}
 
 .v-future .v-btn::before {
-    background-color: #0096c7 !important;
-
+  background-color: #0096c7 !important;
 }
 
 .v-future .theme--light.v-btn:focus {
-    color: #fff !important;
+  color: #fff !important;
 }
 
 .v-future .theme--light.v-btn:focus::before {
-    opacity: 0.8 !important;
+  opacity: 0.8 !important;
 }
 </style>
