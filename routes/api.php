@@ -17,6 +17,7 @@ use App\Models\Payment;
 use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\PaymentgatewaysController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\AbandonedbookingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -121,10 +122,11 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('delete', [InvoicesController::class, 'delete']);
             Route::post('payinvoice', [InvoicesController::class, 'payinvoice']);
             Route::post('addpayments', [PaymentsController::class, 'addpayments']);
-           
         });
         Route::group(['prefix' => 'bookings'], function () {
             Route::post('list', [CommonController::class, 'getbookings']);
+            Route::post('abandonedbookings', [AbandonedbookingsController::class, 'getabandonedbookings']);
+            Route::post('deleteabandonedbooking', [AbandonedbookingsController::class, 'removeabandonedbookings']);
             Route::post('update', [CommonController::class, 'updatebooking']);
             Route::post('delete', [CommonController::class, 'deletebooking']);
             Route::get('edit/{id}', [CommonController::class, 'editbooking']);

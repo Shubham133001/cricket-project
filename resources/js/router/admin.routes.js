@@ -122,6 +122,11 @@ export default [{
   component: () => import('@/pages/admin/bookings/Add.vue')
 },
 {
+  path: '/admin/abandonedbookings',
+  name: 'admin-abandonedbookings-list',
+  component: () => import('@/pages/admin/bookings/AbandonedBookings.vue')
+},
+{
   path: '/admin/invoices',
   name: 'admin-invoices-list',
   component: () => import('@/pages/admin/invoices/List.vue')

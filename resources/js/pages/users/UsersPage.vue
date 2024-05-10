@@ -138,7 +138,7 @@ export default {
         { text: 'Name', align: 'left', value: 'name' },
         // { text: 'Role', value: 'role' },
         { text: 'Created', value: 'created' },
-        // { text: 'Last SignIn', value: 'lastSignIn' },
+        { text: 'Credits', value: 'credits' },
         // { text: 'Status', value: 'status' },
         { text: '', sortable: false, align: 'right', value: 'action' }
       ],

@@ -32,6 +32,7 @@ export default {
       },
       { icon: 'mdi-format-list-checks', text: 'Slots', link: '/admin/slots' },
       { icon: 'mdi-calendar', text: 'Bookings', link: '/admin/bookings' },
+      { icon: 'mdi-calendar-question', text: 'Abandoned Bookings', link: '/admin/abandonedbookings' },
       { icon: 'mdi-table-cancel', text: 'Cancellation Requests', link: '/admin/cancellation' },
       {
         icon: 'mdi-receipt', text: 'Invoices',
