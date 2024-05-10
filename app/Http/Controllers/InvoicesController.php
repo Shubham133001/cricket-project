@@ -99,9 +99,10 @@ class InvoicesController extends Controller
     {
 
         // paginate the invoices
-        $page = ($request->page) ? $request->page : 1;
-        $limit = ($request->limit) ? $request->limit : 10;
-        $search = ($request->search) ? $request->search : '';
+        $options = $request->options;
+        $limit = $options['itemsPerPage'] ?? 10;
+        $page = $request->page ?? 1;
+        $search = $request->search ?? '';
         $resp = Invoice::with('user', 'payment')
             ->where(function ($query) use ($search) {
                 if ($search) {

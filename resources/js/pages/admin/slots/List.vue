@@ -89,6 +89,7 @@ export default {
         {
           text: "Category Name",
           value: "category.name",
+          sortable: false,
         },
         {
           text: "Advance Price",

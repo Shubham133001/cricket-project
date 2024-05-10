@@ -58,8 +58,7 @@ export default {
             headers: [{
                 text: 'ID',
                 align: 'start',
-                value: 'id',
-                sortable: false
+                value: 'id'
             }, {
                 text: 'User',
                 align: 'start',
@@ -68,26 +67,33 @@ export default {
             }, {
                 text: 'Payment ID',
                 value: 'transactionid',
+                 sortable: false
             },
             {
                 text: 'Phone Number',
-                value: 'user.phone'
+                value: 'user.phone',
+                 sortable: false
             },
             {
                 text: 'Amount',
-                value: 'amount'
+                value: 'amount',
+                 sortable: false
             },
             {
                 text: 'Status',
-                value: 'status'
+                value: 'status',
+                 sortable: false
+                
             },
             {
                 text: 'Method',
-                value: 'method'
+                value: 'method',
+                 sortable: false
             },
             {
                 text: 'Payment Date',
-                value: 'created_at'
+                value: 'created_at',
+                 sortable: false
             },
             {
                 text: 'Actions',

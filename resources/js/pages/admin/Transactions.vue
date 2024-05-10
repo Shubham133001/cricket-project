@@ -82,7 +82,7 @@ export default {
                 text: 'ID',
                 align: 'start',
                 value: 'id',
-                sortable: false
+               // sortable: true
             }, {
                 text: 'User',
                 align: 'start',
@@ -94,7 +94,9 @@ export default {
             },
             {
                 text: 'Phone Number',
-                value: 'user.phone'
+                value: 'user.phone',
+                sortable: false
+
             },
             {
                 text: 'Amount',

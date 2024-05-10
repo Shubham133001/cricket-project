@@ -94,9 +94,10 @@ class UsersController extends Controller
 
     public function getusers(Request $request)
     {
-        $search = $request->search;
-        $limit = $request->itemsPerPage;
-        $page = $request->page;
+        $options = $request->options;
+        $limit = $options['itemsPerPage'] ?? 10;
+        $page = $request->page ?? 1;
+        $search = $request->search ?? '';
         
         $resp = \App\Models\User::with('team')
             ->where(function ($query) use ($search) {

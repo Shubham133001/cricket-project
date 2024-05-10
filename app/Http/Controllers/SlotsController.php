@@ -99,9 +99,11 @@ class SlotsController extends Controller
     public function getallslots(Request $request)
     {
         try {
-            $page = ($request->page) ? $request->page : 1;
-            $limit = ($request->limit) ? $request->limit : 10;
-            $search = ($request->search) ? $request->search : '';
+            $options = $request->options;
+
+            $limit = $options['itemsPerPage'] ?? 10;
+            $page = $request->page ?? 1;
+            $search = $request->search ?? '';
 
             $resp = \App\Models\Slot::with('category')
                 ->where(function ($query) use ($search) {

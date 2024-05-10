@@ -145,8 +145,10 @@ class PaymentsController extends Controller
     {
 
         try {
+            $options = $request->options;
+
+            $limit = $options['itemsPerPage'] ?? 10;
             $page = $request->page ?? 1;
-            $limit = $request->limit ?? 10;
             $search = $request->search ?? '';
 
             $resp = \App\Models\Payment::with('user')

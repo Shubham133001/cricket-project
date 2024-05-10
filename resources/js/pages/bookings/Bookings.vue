@@ -126,7 +126,6 @@ export default {
             headers: [{
                 text: 'ID',
                 align: 'start',
-                sortable: false,
                 value: 'id'
             },
             {
