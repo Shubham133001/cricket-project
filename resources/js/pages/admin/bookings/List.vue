@@ -5,16 +5,11 @@
             <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
         </div>
         <v-card :loading="loading">
-            <!-- <v-card-title>
-                <span class="headline">Bookings List</span>
-            </v-card-title> -->
             <v-card-text>
                 <v-data-table :headers="headers" :items="bookings" class="elevation-0" :options.sync="options"
                     :server-items-length="totalbookings" :search="search" :loading="loading">
                     <template v-slot:top>
                         <v-toolbar flat>
-                            <!-- <v-toolbar-title>Bookings</v-toolbar-title> -->
-                            <!-- <v-divider class="mx-4" inset vertical></v-divider> -->
                             <v-spacer></v-spacer>
                             <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line
                                 hide-details></v-text-field>

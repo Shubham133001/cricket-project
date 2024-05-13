@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
-    //
+
     public function adduser(Request $request)
     {
         try {
@@ -113,7 +113,12 @@ class UsersController extends Controller
             })
             ->orderByDesc('created_at')
             ->paginate($limit);
-
+        foreach($resp as $user){
+            $credit =  \App\Models\Credittransaction::where(['credit_type'=> 1 , 'user_id'=>$user->id])->sum('amount');
+            $debit =  \App\Models\Credittransaction::where(['credit_type'=> 2 , 'user_id'=>$user->id])->sum('amount');
+            $user->credits = $credit - $debit;
+        }   
+            
         return response()->json([
             'success' => true,
             'users' => $resp
@@ -123,6 +128,10 @@ class UsersController extends Controller
     public function edituser(Request $request)
     {
         $data = \App\Models\User::with('team')->find($request->id);
+       // $user = auth()->user();
+        $credit =  \App\Models\Credittransaction::where(['credit_type'=> 1 , 'user_id'=>auth()->user()->id])->sum('amount');
+        $debit =  \App\Models\Credittransaction::where(['credit_type'=> 2 , 'user_id'=>auth()->user()->id])->sum('amount');
+        $data->credits = $credit - $debit;
         return response()->json([
             'success' => true,
             'data' => $data
@@ -222,4 +231,5 @@ class UsersController extends Controller
         $path = $file->storeAs('uploads/team/image/', $filename, 'public');
         return $path;
     }
+
 }

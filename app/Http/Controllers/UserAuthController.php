@@ -100,9 +100,13 @@ class UserAuthController extends Controller
                 'message' => 'User not found'
             ]);
         }
+        $user = auth()->user();
+        $credit =  \App\Models\Credittransaction::where(['credit_type'=> 1 , 'user_id'=>auth()->user()->id])->sum('amount');
+        $debit =  \App\Models\Credittransaction::where(['credit_type'=> 2 , 'user_id'=>auth()->user()->id])->sum('amount');
+        $user->credits = $credit - $debit;
         return response()->json([
             'success' => true,
-            'user' => auth()->user()
+            'user' => $user
         ]);
     }
 }

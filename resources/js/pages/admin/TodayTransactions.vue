@@ -107,7 +107,6 @@ export default {
         this.getTransactions();
     },
     methods: {
-
         getTransactions() {
             this.loading = true;
             this.menu = false;
@@ -123,7 +122,6 @@ export default {
                             this.$router.push("/admin/unauthorized");
                         }
                         console.log(error);
-
                     });
             } else {
                 axios.get('/api/admin/gettodaypayments/?dates=' + this.dates)

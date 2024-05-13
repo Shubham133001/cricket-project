@@ -34,4 +34,8 @@ class Booking extends Model
     {
         return $this->belongsTo(Invoice::class);
     }
+    public function cancellation_request()
+    {
+        return $this->belongsTo(CancellationRequest::class,'id','booking_id');
+    }
 }

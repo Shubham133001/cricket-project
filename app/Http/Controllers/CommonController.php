@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Http\Controllers\InvoiceitemsController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CancellationRequest;
+use Carbon\Carbon;
 
 class CommonController extends Controller
 {
@@ -235,19 +236,42 @@ class CommonController extends Controller
     }
     public function cancelbooking(Request $request)
     {
-
+        //$currentDate = Carbon::now()->toDateString();
         $canceldata = CancellationRequest::where('id', $request->id)->first();
 
-        $booking = \App\Models\Booking::find($canceldata->booking_id);
+        $booking = \App\Models\Booking::with('slot','invoice','cancellation_request')->find($canceldata->booking_id);
+        $currentDate = Carbon::now();
+        $dateToCheck = Carbon::createFromFormat('Y-m-d', $booking->slot->start_date);
+        if($dateToCheck->greaterThan($currentDate)){
+           // die("The date is greater than the current date.");
+            $credit_trans = new \App\Models\Credittransaction; 
+            $credit_trans->user_id = $booking->user_id;
+            $credit_trans->amount = $booking->slot->price;
+            $credit_trans->description = $booking->cancellation_request->reason;
+            $credit_trans->credit_type = 1;  
+            $credit_trans->created_by = $booking->user_id;  
+            $credit_trans->save();
 
+            $booking->status = "Cancelled";
+            $booking->save();
+            // echo "<Pre>";
+            // print_r($booking); die;    
+            
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'Cancelled date expired'
+            ]);
+        }
+       // die('The date is not greater than the current date.');
         if ($booking->status == 2) {
             return response()->json([
                 'success' => false,
                 'message' => 'Booking already cancelled'
             ]);
         }
-        $booking->status = 'Cancellation Requested';
-        $booking->save();
+       // $booking->status = 'Cancellation Requested';
+       // $booking->save();
         // update cancellation request status
         $canceldata->status = 'approved';
         $canceldata->save();

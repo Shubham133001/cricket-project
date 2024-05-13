@@ -5,16 +5,11 @@
             <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
         </div>
         <v-card :loading="loading">
-            <!-- <v-card-title>
-                <span class="headline">Bookings List</span>
-            </v-card-title> -->
             <v-card-text>
                 <v-data-table :headers="headers" :items="bookings" class="elevation-0" :options.sync="options"
                     :server-items-length="totalbookings" :search="search" :loading="loading">
                     <template v-slot:top>
                         <v-toolbar flat>
-                            <!-- <v-toolbar-title>Bookings</v-toolbar-title> -->
-                            <!-- <v-divider class="mx-4" inset vertical></v-divider> -->
                             <v-spacer></v-spacer>
                             <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line
                                 hide-details></v-text-field>
@@ -22,28 +17,24 @@
                     </template>
                     <template v-slot:item.id="{ item }">
                         <span style="font-weight: bold; cursor: pointer; border-bottom: dashed 1px #000;"
-                            @click="editBooking(item)">#{{ item.id
-                            }}</span>
+                            @click="editBooking(item)">#{{ item.id }}</span>
                     </template>
                     <template v-slot:item.slot.start_time="{ item }">
                         {{ item.slot.start_time }} - {{ item.slot.end_time }}
                     </template>
                     <template v-slot:item.user.name="{ item }">
                         <span style="font-weight: bold; cursor: pointer; border-bottom: dashed 1px #000;"
-                            @click="openuser(item.user.id)">#{{ item.user.name
-                            }}</span>
+                            @click="openuser(item.user.id)">#{{ item.user.name }}</span>
                     </template>
                     <template v-slot:item.slot.advanceprice="{ item }">
                         <v-img src="/images/inr_icon.png" width="20"
                             style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
-                            style="color:#297729">{{
-                item.slot.advanceprice }}</strong>
+                            style="color:#297729">{{item.slot.advanceprice }}</strong>
                     </template>
                     <template v-slot:item.slot.price="{ item }">
                         <v-img src="/images/inr_icon.png" width="20"
                             style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
-                            style="color:#297729">{{
-                item.slot.price }}</strong>
+                            style="color:#297729">{{item.slot.price }}</strong>
                     </template>
 
                     <template v-slot:item.actions="{ item }">
@@ -56,8 +47,6 @@
         <confirm ref="confirm"></confirm>
     </div>
 </template>
-
-
 <script>
 import axios from 'axios'
 import moment from 'moment'
@@ -89,16 +78,17 @@ export default {
             headers: [{
                 text: '#ID',
                 align: 'start',
-
                 value: 'id'
             },
             {
                 text: 'User',
-                value: 'user.name'
+                value: 'user.name',
+                sortable: false
             },
             {
                 text: 'Slot',
-                value: 'slot.title'
+                value: 'slot.title',
+                sortable: false
             },
             {
                 text: 'Date',
@@ -106,16 +96,19 @@ export default {
             },
             {
                 text: 'Time',
-                value: 'slot.start_time'
+                value: 'slot.start_time',
+                sortable: false
             },
-            // {
-            //     text: 'Advance Price',
-            //     value: 'slot.advanceprice'
-            // },
-            // {
-            //     text: 'Price',
-            //     value: 'slot.price'
-            // },
+            {
+                text: 'Advance Price',
+                value: 'slot.advanceprice',
+                sortable: false
+            },
+            {
+                text: 'Price',
+                value: 'slot.price',
+                sortable: false
+            },
 
             {
                 text: 'Actions',
@@ -183,7 +176,6 @@ export default {
             axios.post('/api/admin/bookings/abandonedbookings', { options: this.options, search: this.search, page: this.options.page })
                 .then(response => {
                     let bookings = response.data.abandonedbookings.data;
-
                     let newbookings = [];
                     // bookings.forEach(booking => {
                     //     booking.date = moment(booking.date).format('YYYY-MM-DD');
@@ -209,9 +201,6 @@ export default {
         }
     }
 }
-
-
-
 </script>
 <style>
 .theme--light.v-calendar-weekly {
@@ -247,7 +236,6 @@ export default {
 
 .v-future .v-btn::before {
     background-color: #0096c7 !important;
-
 }
 
 .v-future .theme--light.v-btn:focus {

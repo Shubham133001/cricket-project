@@ -335,7 +335,7 @@ export default {
                         alltimes.push(times);
                     }
                 })
-                console.log(alltimes);
+               // console.log(alltimes);
 
                 this.bookedslots.forEach(bookedslot => {
 

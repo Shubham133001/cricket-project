@@ -5,9 +5,6 @@
         <v-breadcrumbs :items="breadcrumbs" class="pa-0 py-2"></v-breadcrumbs>
       </div>
         <v-card :loading="loading">
-            <!-- <v-card-title>
-                <span class="headline">Bookings Cancellation Requests</span>
-            </v-card-title> -->
             <v-card-text>
                 <v-data-table :headers="headers" :items="cancellations" class="elevation-0" :loading="loading">
 

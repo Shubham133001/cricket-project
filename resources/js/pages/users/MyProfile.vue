@@ -19,7 +19,9 @@
         </v-card> -->
 
           <v-card :loading="loadingdata">
-            <v-card-title>Basic Information</v-card-title>
+            <div class="d-flex  flex-sm-row"><v-card-title>Basic Information</v-card-title>
+            <v-card-title style="padding: 0 298px;">Credits Balance : {{user.credits}} INR</v-card-title></div>
+            
             <v-card-text>
               <div class="d-flex flex-column flex-sm-row">
                 <div class="flex-grow-1 pt-2 pa-sm-2">
@@ -42,6 +44,7 @@
                 </div>
               </div>
             </v-card-text>
+            
           </v-card>
         </div>
       </div>

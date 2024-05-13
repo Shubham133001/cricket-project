@@ -52,7 +52,7 @@
                   :label="route.name"
                   outlined
                 >
-                  outlined></v-checkbox
+                  </v-checkbox
                 >
               </div>
             </v-col>

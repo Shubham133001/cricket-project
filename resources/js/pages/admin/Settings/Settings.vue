@@ -9,8 +9,7 @@
 
                     <v-tabs v-model="tab">
                         <v-tab>Store Details</v-tab>
-                        <!-- <v-tab>Email Configuration</v-tab>
-                        <v-tab>SMS Configuration</v-tab> -->
+                       
                     </v-tabs>
                     <v-tabs-items v-model="tab">
                         <v-tab-item>
@@ -39,7 +38,7 @@
                                     <td><v-checkbox v-model="storeDetails.enablesms"
                                             label="Tick to Enable sending SMS"></v-checkbox><span></span>
                                     </td> -->
-                                    </td>
+                                    
                                 </tr>
                             </v-simple-table>
                         </v-tab-item>
@@ -216,7 +215,7 @@ export default {
             });
         },
         updateStoreDetails() {
-            console.log(this.storeDetails);
+          //  console.log(this.storeDetails);
             axios.post("/api/admin/settings/update", {
                 name: this.storeDetails.name,
                 address: this.storeDetails.address,
@@ -245,7 +244,7 @@ export default {
             });
         },
         updateSmtpDetails() {
-            console.log(this.smtpSettings);
+          //  console.log(this.smtpSettings);
             axios.post("/api/admin/settings/smtp/update", this.smtpSettings).then((response) => {
                 if (response.data.success) {
                     this.smtpSettings = response.data.smtpSettings;

@@ -174,10 +174,7 @@ export default {
         downloadpdf(id) {
             window.open('/api/downloadpdf/' + id);
         },
-        /**
-         * In a real application this would be a call to fetch() or axios.get()
-         */
-
+       
         editItem(item) {
             this.$router.push('/admin/invoice/edit/' + item.id);
         },

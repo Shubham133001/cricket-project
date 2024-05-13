@@ -51,8 +51,6 @@ class AdminAuthController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer',
         ]);
-        
-
     }
 
     public function update(Request $request)
@@ -109,8 +107,6 @@ class AdminAuthController extends Controller
                 'iron' => '2'
             );
         }
-
-
         return response()->json([
             'success' => true,
             'message' => 'wait here pelase',
@@ -121,13 +117,11 @@ class AdminAuthController extends Controller
 
     public function getadmins(Request $request)
     {
-       
         $search = (isset($request->search) && !empty($request->search)) ? $request->search : '';
         $page = (isset($request->page) && !empty($request->page)) ? $request->page : '';
         $itemsPerPage = (isset($request->itemsPerPage) && !empty($request->itemsPerPage)) ? $request->itemsPerPage : '';
         $sortBy = (isset($request->sortBy) && !empty($request->sortBy)) ? $request->sortBy : '';
         $sortDesc = ($request->sortDesc) ?  'desc' : 'asc';
-        // echo $sortDesc;die();
         $recordsdata = array();
         for($i = 1;$i <= 500;$i++)
         {
@@ -140,8 +134,6 @@ class AdminAuthController extends Controller
                 'iron' => '2'
             );
         }
-
-
         return response()->json([
             'success' => true,
             'message' => 'wait here pelase',
@@ -159,8 +151,6 @@ class AdminAuthController extends Controller
                     auth()->guard('admin')->user()->tokens()->delete();
                     Auth::guard('admin')->logout();
                 }
-
-                //WIll do logs here layer
             }
             return response()->json([
                 'message' => 'Logout Successfully.'

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class User extends Authenticatable
 {
@@ -51,4 +52,20 @@ class User extends Authenticatable
     {
         return $this->hasOne(Team::class, 'user_id', 'id');
     }
+
+    // public function credit()
+    // {
+    //     return $this->hasMany(Credittransaction::class, 'user_id', 'id')->where(function ($query) {
+    //         $query->where('cradit_type', 1)->sum('amount'); 
+    //     });
+    // }
+    
+
+    // public function debit()
+    // {
+    //     return $this->hasMany(Credittransaction::class, 'user_id', 'id')->where(function ($query) {
+    //         $query->where('cradit_type', 2)->sum('amount'); 
+    //     });
+    // }
+
 }
