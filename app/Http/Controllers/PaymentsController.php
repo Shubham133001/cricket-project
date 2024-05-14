@@ -49,6 +49,7 @@ class PaymentsController extends Controller
     }
     public function paynow(Request $request)
     {
+        try{
         $data = [];
         $gateway = $request->gateway;
         // $data = [];
@@ -77,10 +78,14 @@ class PaymentsController extends Controller
             'success' => true,
             'data' => $resp
         ]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
     }
 
     public function callback(Request $request)
     {
+        try{
         $gateway = $request->gateway;
         $invoiceid = request()->segment(4);
         $data = $request->all();
@@ -139,6 +144,9 @@ class PaymentsController extends Controller
             'success' => true,
             'data' => $resp
         ]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
     }
 
     public function getpayments(Request $request)
@@ -181,15 +189,20 @@ class PaymentsController extends Controller
     }
     public function todaytransactions()
     {
+        try{
         $payments = \App\Models\Payment::with('user')->whereDate('created_at', date('Y-m-d'))->get();
         return response()->json([
             'success' => true,
             'payments' => $payments
         ]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
     }
 
     public function deletetransaction($id)
     {
+        try{
         $payment = \App\Models\Payment::find($id);
         if ($payment) {
             $payment->delete();
@@ -202,5 +215,8 @@ class PaymentsController extends Controller
             'success' => false,
             'message' => 'Payment not found'
         ]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
     }
 }

@@ -13,6 +13,7 @@ class UserAuthController extends Controller
     //
     public function signin(Request $request)
     {
+        try{
         $credentials = $request->only('email', 'password');
         if (auth()->attempt($credentials)) {
             $user = auth()->user();
@@ -28,10 +29,14 @@ class UserAuthController extends Controller
                 'message' => 'Invalid credentials'
             ]);
         }
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
     }
 
     public function signup(Request $request)
     {
+        try{
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
@@ -67,10 +72,14 @@ class UserAuthController extends Controller
             'user' => $user,
             'token' => $token
         ]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
     }
 
     public function signout()
     {
+        try{
         if (!auth()->user()) {
             // get token from request headers
             $token = $request->bearerToken();
@@ -89,10 +98,14 @@ class UserAuthController extends Controller
             'success' => true,
             'message' => 'Logged out successfully'
         ]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
     }
 
     public function me()
     {
+        try{
         if (!auth()->user()) {
             self::signout();
             return response()->json([
@@ -108,5 +121,8 @@ class UserAuthController extends Controller
             'success' => true,
             'user' => $user
         ]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
     }
 }

@@ -14,7 +14,7 @@ class AddCreditTypeToCredittransactionsTable extends Migration
     public function up()
     {
         Schema::table('credittransactions', function (Blueprint $table) {
-            $table->integer('cradit_type')->nullable()->comment("1 for credit , 2 for debit");
+            $table->integer('credit_type')->nullable()->comment("1 for credit , 2 for debit");
         });
     }
 
@@ -26,7 +26,7 @@ class AddCreditTypeToCredittransactionsTable extends Migration
     public function down()
     {
         Schema::table('credittransactions', function (Blueprint $table) {
-            $table->dropColumn('cradit_type');
+            $table->dropColumn('credit_type');
         });
     }
 }

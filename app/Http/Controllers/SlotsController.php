@@ -152,7 +152,7 @@ class SlotsController extends Controller
                 ->whereDate('start_date', '<=', $date)
                 ->whereDate('end_date', '>=', $date)
                 ->with(['bookings' => function ($query) use ($date) {
-                    $query->where('date', $date)->with(['user', 'team']);
+                    $query->where('date', $date)->where('status','!=','Cancelled')->with(['user', 'team']);
                 }])
                 ->with('category')
                 ->get();

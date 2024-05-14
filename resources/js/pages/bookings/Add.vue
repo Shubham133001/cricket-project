@@ -129,8 +129,19 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2">
+                                        <h3 style="float: left">Available Credits</h3>
+                                        <span style="float: right">{{ credits }}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <v-divider class="mt-2 pb-2"></v-divider>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
                                         <h3 style="float: left">Balance</h3>
-                                        <span style="float: right">{{ totalprice - advanceprice }}</span>
+                                        <span style="float: right">{{ totalprice - (advanceprice + credits) }}</span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -263,6 +274,7 @@ export default {
             openlogindialog: false,
             haveaccount: true,
             bookingform: false,
+            credits:0,
             slots: [],
             days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
             time: [],
@@ -308,6 +320,7 @@ export default {
     mounted() {
         this.getcategory();
         this.getuserteam();
+        this.getusercredits();
         this.timeperiod = '';//  moment().format('YYYY-MM-DD');
         // this.selection
         // this.getSlots();
@@ -462,6 +475,7 @@ export default {
                 // slot: slot,
                 // category: this.selecteditem,
                 advance: slot.advanceprice,
+                credits: this.credits,
                 total: slot.price,
                 time: slot.start_time + ' - ' + slot.end_time,
                 team_id: this.team.id,
@@ -496,6 +510,16 @@ export default {
                     this.temimagecurrent = this.team.image;
                 })
         },
+
+        getusercredits() {
+            if (localStorage.getItem('userdetails') == null) {
+                return;
+            }
+            axios.get('/api/user/me')
+                .then(response => {
+                    this.credits = response.data.user.credits;
+                })
+        },
         bookslot() {
             // console.log(this.selection);
             // console.log(this.selecteditem);
@@ -515,10 +539,12 @@ export default {
                 });
                 return;
             }
+           // availableCredit =  this.totalprice - (this.advanceprice + this.credits)
             axios.post('/api/addbooking', {
                 slot: this.selection,
                 category: this.selecteditem,
                 date: this.timeperiod,
+                credit: this.credits,
                 user: JSON.parse(this.userdetails),
                 team_id: this.team.id,
                 gateway: this.gateway

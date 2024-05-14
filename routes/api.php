@@ -144,10 +144,10 @@ Route::group(['prefix' => 'user',], function () {
     Route::post('signin', [UserAuthController::class, 'signin']);
     Route::post('signup', [UserAuthController::class, 'signup']);
     Route::group(['middleware' => ['auth:sanctum']], function () {
-        Route::get('/me', [App\Http\Controllers\UserAuthController::class, 'me'])->name('user.me');
+        Route::get('/me', [UserAuthController::class, 'me'])->name('user.me');
         Route::post('signout', [UserAuthController::class, 'signout']);
-        Route::post('update', [UserAuthController::class, 'update']);
-        Route::post('changepassword', [UserAuthController::class, 'changepassword']);
+       // Route::post('update', [UserAuthController::class, 'update']);
+       // Route::post('changepassword', [UserAuthController::class, 'changepassword']);
         Route::post('getbookings', [UsersController::class, 'getbookings']);
         Route::post('addteam', [TeamsController::class, 'addteam']);
         Route::post('updateteam', [TeamsController::class, 'updateteam']);
