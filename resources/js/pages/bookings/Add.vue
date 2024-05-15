@@ -274,7 +274,7 @@ export default {
             openlogindialog: false,
             haveaccount: true,
             bookingform: false,
-            credits:0,
+            credits: 0,
             slots: [],
             days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
             time: [],
@@ -539,7 +539,7 @@ export default {
                 });
                 return;
             }
-           // availableCredit =  this.totalprice - (this.advanceprice + this.credits)
+            // availableCredit =  this.totalprice - (this.advanceprice + this.credits)
             axios.post('/api/addbooking', {
                 slot: this.selection,
                 category: this.selecteditem,
