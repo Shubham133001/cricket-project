@@ -116,7 +116,12 @@ class UserAuthController extends Controller
         $user = auth()->user();
         $credit =  \App\Models\Credittransaction::where(['credit_type'=> 1 , 'user_id'=>auth()->user()->id])->sum('amount');
         $debit =  \App\Models\Credittransaction::where(['credit_type'=> 2 , 'user_id'=>auth()->user()->id])->sum('amount');
-        $user->credits = $credit - $debit;
+        
+        $credits = $credit - $debit;
+        $data = \App\Models\User::with('team')->findOrFail(auth()->user()->id);
+        $data->credits = $credits;
+        $data->save();
+        $user->credits = $credits;
         return response()->json([
             'success' => true,
             'user' => $user

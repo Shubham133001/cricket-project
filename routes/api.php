@@ -31,19 +31,19 @@ use App\Http\Controllers\AbandonedbookingsController;
 */
 
 Route::get('category/{id}', [CategoriesController::class, 'editcategories'])->name('getcategory');
-Route::get('store', [CommonController::class, 'store']);
-Route::get('categories', [CategoriesController::class, 'getcategorieswithslots']);
-Route::post('slots', [SlotsController::class, 'getslots']);
-Route::get('getgateways', [PaymentgatewaysController::class, 'getgateways']);
-Route::post('addbooking', [CommonController::class, 'addbooking']);
-Route::get('getinvoicebyid/{id}', [InvoicesController::class, 'getInvoiceById']);
-Route::post('changegateway', [InvoicesController::class, 'changegateway']);
-Route::get('downloadpdf/{id}', [InvoicesController::class, 'downloadPdf']);
-Route::get('viewpdf/{id}', [InvoicesController::class, 'viewpdf']);
+Route::get('store', [CommonController::class, 'store'])->name('settingstore');
+Route::get('categories', [CategoriesController::class, 'getcategorieswithslots'])->name('getcategorieswithslots');
+Route::post('slots', [SlotsController::class, 'getslots'])->name('getslots');
+Route::get('getgateways', [PaymentgatewaysController::class, 'getgateways'])->name('getgateways');
+Route::post('addbooking', [CommonController::class, 'addbooking'])->name('addbooking');
+Route::get('getinvoicebyid/{id}', [InvoicesController::class, 'getInvoiceById'])->name('getInvoiceById');
+Route::post('changegateway', [InvoicesController::class, 'changegateway'])->name('changegateway');
+Route::get('downloadpdf/{id}', [InvoicesController::class, 'downloadPdf'])->name('downloadPdf');
+Route::get('viewpdf/{id}', [InvoicesController::class, 'viewpdf'])->name('viewpdf');
 
 // add admin group with middleware
 Route::group(['prefix' => 'admin'], function () {
-    Route::post('signin', [AdminAuthController::class, 'signin']);
+    Route::post('signin', [AdminAuthController::class, 'signin'])->name('admin.signin');
     Route::group(['middleware' => ['auth:sanctum', 'checkadmin', 'CheckDisable']], function () {
 
         Route::get('/getadmins', [App\Http\Controllers\AdminAuthController::class, 'getadmins'])->name('admin.getadmins');
@@ -57,7 +57,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/me', [App\Http\Controllers\AdminAuthController::class, 'me'])->name('admin.me');
 
 
-        Route::get('/getadmins', [App\Http\Controllers\AdminContoller::class, 'getadmins'])->name('admin.getadmins');
+       // Route::get('/getadmins', [App\Http\Controllers\AdminContoller::class, 'getadmins'])->name('admin.getadmins');
         Route::post('/addadminuser', [App\Http\Controllers\AdminContoller::class, 'addadminuser'])->name('admin.addadminuser');
         Route::post('/updateadminuser/{id}', [App\Http\Controllers\AdminContoller::class, 'updateadminuser'])->name('admin.updateadminuser');
         Route::get('/deleteadminuser/{id}', [App\Http\Controllers\AdminContoller::class, 'deleteadminuser'])->name('admin.deleteadminuser');
@@ -73,8 +73,8 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('/getroutes', [App\Http\Controllers\AdminContoller::class, 'getRouters'])->name('admin.getroutes');
 
-        Route::get('/gettodaypayments', [App\Http\Controllers\PaymentsController::class, 'todaytransactions'])->name('payments.gettodaypayments');
-        Route::get('/getpayments', [App\Http\Controllers\PaymentsController::class, 'getpayments'])->name('payments.getpayments');
+        Route::get('/gettodaypayments', [App\Http\Controllers\PaymentsController::class, 'todaytransactions'])->name('admin.payments.gettodaypayments');
+        Route::get('/getpayments', [App\Http\Controllers\PaymentsController::class, 'getpayments'])->name('admin.payments.getpayments');
         Route::post('/deletetransaction/{id}', [App\Http\Controllers\PaymentsController::class, 'deletetransaction'])->name('admin.deletetransaction');
 
 
@@ -85,79 +85,80 @@ Route::group(['prefix' => 'admin'], function () {
         // Route::post('/settings/sms/update', [App\Http\Controllers\admin\SettingsController::class, 'smsupdate'])->name('storedetails.smsupdate');
         // Route::post('/settings/smtp/test', [App\Http\Controllers\admin\SettingsController::class, 'testsmtp'])->name('storedetails.smtptest');
 
-        Route::post('addpaymentgateways', [PaymentgatewaysController::class, 'addpaymentgateways']);
-        Route::post('removepaymentgateways', [PaymentgatewaysController::class, 'removepaymentgateways']);
-        Route::get('getpaymentgateways', [PaymentgatewaysController::class, 'getpaymentgateways']);
-        Route::get('getconfig/{gateway}', [PaymentgatewaysController::class, 'getconfig']);
-        Route::post('saveconfig', [PaymentgatewaysController::class, 'saveconfig']);
-        Route::post('signout', [AdminAuthController::class, 'signout']);
-        Route::post('settings/update', [CommonController::class, 'storeupdate']);
+        Route::post('addpaymentgateways', [PaymentgatewaysController::class, 'addpaymentgateways'])->name('admin.addpaymentgateways');
+        Route::post('removepaymentgateways', [PaymentgatewaysController::class, 'removepaymentgateways'])->name('admin.removepaymentgateways');
+        Route::get('getpaymentgateways', [PaymentgatewaysController::class, 'getpaymentgateways'])->name('admin.getpaymentgateways');
+        Route::get('getconfig/{gateway}', [PaymentgatewaysController::class, 'getconfig'])->name('admin.getconfig');
+        Route::post('saveconfig', [PaymentgatewaysController::class, 'saveconfig'])->name('admin.saveconfig');
+        Route::post('signout', [AdminAuthController::class, 'signout'])->name('admin.signout');
+        Route::post('settings/update', [CommonController::class, 'storeupdate'])->name('admin.storeupdate');
         Route::group(['prefix' => 'category'], function () {
-            Route::post('add', [CategoriesController::class, 'add']);
-            Route::get('list', [CategoriesController::class, 'getcategories']);
-            Route::post('getsubcategories', [CategoriesController::class, 'getsubcategories']);
-            Route::get('listwithslots', [CategoriesController::class, 'getcategorieswithslots']);
-            Route::post('getwithslots', [CategoriesController::class, 'getcategorywithslots']);
-            Route::get('edit/{id}', [CategoriesController::class, 'editcategories']);
-            Route::post('update', [CategoriesController::class, 'updatecategories']);
-            Route::post('changetype', [CategoriesController::class, 'changetype']);
-            Route::post('delete', [CategoriesController::class, 'delete']);
-            Route::get('all', [CategoriesController::class, 'getallcategories']);
+            Route::post('add', [CategoriesController::class, 'add'])->name('admin.category.add');
+            Route::get('list', [CategoriesController::class, 'getcategories'])->name('admin.category.getcategories');
+            Route::post('getsubcategories', [CategoriesController::class, 'getsubcategories'])->name('admin.category.getsubcategories');
+            Route::get('listwithslots', [CategoriesController::class, 'getcategorieswithslots'])->name('admin.category.getcategorieswithslots');
+            Route::post('getwithslots', [CategoriesController::class, 'getcategorywithslots'])->name('admin.category.getcategorywithslots');
+            Route::get('edit/{id}', [CategoriesController::class, 'editcategories'])->name('admin.category.editcategories');
+            Route::post('update', [CategoriesController::class, 'updatecategories'])->name('admin.category.updatecategories');
+            Route::post('changetype', [CategoriesController::class, 'changetype'])->name('admin.category.changetype');
+            Route::post('delete', [CategoriesController::class, 'delete'])->name('admin.category.delete');
+            Route::get('all', [CategoriesController::class, 'getallcategories'])->name('admin.category.getallcategories');
         });
         Route::group(['prefix' => 'slots'], function () {
-            Route::post('add', [SlotsController::class, 'add']);
-            Route::post('list', [SlotsController::class, 'getallslotsforcategory']);
-            Route::post('get', [SlotsController::class, 'getslots']);
-            Route::get('all', [SlotsController::class, 'getallslots']);
-            Route::get('edit/{id}', [SlotsController::class, 'editslots']);
-            Route::post('update', [SlotsController::class, 'updateslots']);
-            Route::post('delete', [SlotsController::class, 'delete']);
+            Route::post('add', [SlotsController::class, 'add'])->name('admin.slots.add');
+            Route::post('list', [SlotsController::class, 'getallslotsforcategory'])->name('admin.slots.getallslotsforcategory');
+            Route::post('get', [SlotsController::class, 'getslots'])->name('admin.slots.getslots');
+            Route::get('all', [SlotsController::class, 'getallslots'])->name('admin.slots.getallslots');
+            Route::get('edit/{id}', [SlotsController::class, 'editslots'])->name('admin.slots.editslots');
+            Route::post('update', [SlotsController::class, 'updateslots'])->name('admin.slots.updateslots');
+            Route::post('delete', [SlotsController::class, 'delete'])->name('admin.slots.delete');
         });
         Route::group(['prefix' => 'invoices'], function () {
-            Route::post('add', [InvoicesController::class, 'add']);
-            Route::get('list', [InvoicesController::class, 'getallinvoices']);
-            Route::get('all', [InvoicesController::class, 'getallinvoices']);
-            Route::get('edit/{id}', [InvoicesController::class, 'edit']);
-            Route::post('update', [InvoicesController::class, 'update']);
-            Route::post('delete', [InvoicesController::class, 'delete']);
-            Route::post('payinvoice', [InvoicesController::class, 'payinvoice']);
-            Route::post('addpayments', [PaymentsController::class, 'addpayments']);
+            Route::post('add', [InvoicesController::class, 'add'])->name('admin.invoices.add');
+            Route::get('list', [InvoicesController::class, 'getallinvoices'])->name('admin.invoices.list');
+            Route::get('all', [InvoicesController::class, 'getallinvoices'])->name('admin.invoices.all');
+            Route::get('edit/{id}', [InvoicesController::class, 'edit'])->name('admin.invoices.edit');
+            Route::post('update', [InvoicesController::class, 'update'])->name('admin.invoices.update');
+            Route::post('delete', [InvoicesController::class, 'delete'])->name('admin.invoices.delete');
+            Route::post('payinvoice', [InvoicesController::class, 'payinvoice'])->name('admin.invoices.payinvoice');
+            Route::post('addpayments', [PaymentsController::class, 'addpayments'])->name('admin.invoices.addpayments');
         });
         Route::group(['prefix' => 'bookings'], function () {
-            Route::post('list', [CommonController::class, 'getbookings']);
-            Route::post('abandonedbookings', [AbandonedbookingsController::class, 'getabandonedbookings']);
-            Route::post('deleteabandonedbooking', [AbandonedbookingsController::class, 'removeabandonedbookings']);
-            Route::post('update', [CommonController::class, 'updatebooking']);
-            Route::post('delete', [CommonController::class, 'deletebooking']);
-            Route::get('edit/{id}', [CommonController::class, 'editbooking']);
-            Route::post('update', [CommonController::class, 'updatebooking']);
-            Route::get('cancellationrequests', [CommonController::class, 'cancellationrequests']);
-            Route::post('cancelbooking', [CommonController::class, 'cancelbooking']);
-            Route::post('rejectcancellation', [CommonController::class, 'rejectcancellation']);
-            Route::post('approvebooking', [CommonController::class, 'approvebooking']);
-            Route::post('completebooking', [CommonController::class, 'completebooking']);
+            Route::post('list', [CommonController::class, 'getbookings'])->name('admin.bookings.getbookings');
+            Route::post('abandonedbookings', [AbandonedbookingsController::class, 'getabandonedbookings'])->name('admin.bookings.getabandonedbookings');
+            Route::post('deleteabandonedbooking', [AbandonedbookingsController::class, 'removeabandonedbookings'])->name('admin.bookings.removeabandonedbookings');
+            Route::post('update', [CommonController::class, 'updatebooking'])->name('admin.bookings.updatebooking');
+            Route::post('delete', [CommonController::class, 'deletebooking'])->name('admin.bookings.deletebooking');
+            Route::get('edit/{id}', [CommonController::class, 'editbooking'])->name('admin.bookings.editbooking');
+            //Route::post('update', [CommonController::class, 'updatebooking'])->name('bookings.');
+            Route::get('cancellationrequests', [CommonController::class, 'cancellationrequests'])->name('admin.bookings.cancellationrequests');
+            Route::post('cancelbooking', [CommonController::class, 'cancelbooking'])->name('admin.bookings.cancelbooking');
+            Route::post('rejectcancellation', [CommonController::class, 'rejectcancellation'])->name('admin.bookings.rejectcancellation');
+            Route::post('approvebooking', [CommonController::class, 'approvebooking'])->name('admin.bookings.approvebooking');
+            Route::post('completebooking', [CommonController::class, 'completebooking'])->name('admin.bookings.completebooking');
         });
     });
 });
 
 Route::group(['prefix' => 'user',], function () {
-    Route::post('signin', [UserAuthController::class, 'signin']);
-    Route::post('signup', [UserAuthController::class, 'signup']);
+    Route::post('signin', [UserAuthController::class, 'signin'])->name('user.signin');
+    Route::post('signup', [UserAuthController::class, 'signup'])->name('user.signup');
     Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/me', [UserAuthController::class, 'me'])->name('user.me');
-        Route::post('signout', [UserAuthController::class, 'signout']);
+        Route::post('signout', [UserAuthController::class, 'signout'])->name('user.signout');
        // Route::post('update', [UserAuthController::class, 'update']);
        // Route::post('changepassword', [UserAuthController::class, 'changepassword']);
-        Route::post('getbookings', [UsersController::class, 'getbookings']);
-        Route::post('addteam', [TeamsController::class, 'addteam']);
-        Route::post('updateteam', [TeamsController::class, 'updateteam']);
-        Route::post('deleteteam', [TeamsController::class, 'deleteteam']);
-        Route::get('getuserteam', [TeamsController::class, 'getuserteam']);
-        Route::post('pay', [PaymentsController::class, 'paynow']);
-        Route::get('editinvoice/{id}', [InvoicesController::class, 'edit']);
+        Route::post('getbookings', [UsersController::class, 'getbookings'])->name('user.getbookings');
+        Route::get('bookingdetails', [UsersController::class, 'bookingdetails'])->name('user.bookingdetails');
+        Route::post('addteam', [TeamsController::class, 'addteam'])->name('user.addteam');
+        Route::post('updateteam', [TeamsController::class, 'updateteam'])->name('user.updateteam');
+        Route::post('deleteteam', [TeamsController::class, 'deleteteam'])->name('user.deleteteam');
+        Route::get('getuserteam', [TeamsController::class, 'getuserteam'])->name('user.getuserteam');
+        Route::post('pay', [PaymentsController::class, 'paynow'])->name('user.paynow');
+        Route::get('editinvoice/{id}', [InvoicesController::class, 'edit'])->name('user.edit');
         Route::post('update', [UsersController::class, 'updateuser'])->name('user.updateuser');
-        Route::post('cancelrequest', [CommonController::class, 'cancelrequest']);
-        Route::post('cancelbooking', [CommonController::class, 'cancelbooking']);
+        Route::post('cancelrequest', [CommonController::class, 'cancelrequest'])->name('user.cancelrequest');
+        Route::post('cancelbooking', [CommonController::class, 'cancelbooking'])->name('user.cancelbooking');
     });
 });
 

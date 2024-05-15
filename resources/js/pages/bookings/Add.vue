@@ -4,26 +4,22 @@
             <v-img height="300px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                 :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/114/1920/450" cover>
                 <v-row>
-                    <v-col cols="12" md="8" class=" d-flex align-end"
-                        style="justify-content: flex-end; flex-direction: column;">
-                        <v-card-title class="text-h4  pl-8" style="color: #fff; width: 100%;">
+                    <v-col cols="12" md="8" class="d-flex align-end"
+                        style="justify-content: flex-end; flex-direction: column">
+                        <v-card-title class="text-h4 pl-8" style="color: #fff; width: 100%">
                             {{ selecteditem.name }}
                         </v-card-title>
 
-                        <v-card-subtitle class="pl-8" style="color: #fff; width: 100%;">
+                        <v-card-subtitle class="pl-8" style="color: #fff; width: 100%">
                             {{ selecteditem.description }}<br />
-
                         </v-card-subtitle>
                     </v-col>
                     <v-col cols="12" md="4">
                         <Mapview ref="mapview"></Mapview>
                         <v-btn color="primary" class="mt-2" @click="opendirection"><v-icon
-                                small>mdi-directions</v-icon>Get
-                            Directions</v-btn>
+                                small>mdi-directions</v-icon>Get Directions</v-btn>
                     </v-col>
                 </v-row>
-
-
             </v-img>
         </v-row>
         <v-container>
@@ -42,13 +38,24 @@
                                         <template v-slot:default="{ active }">
                                             <v-list-item-content>
                                                 <v-list-item-title>
-                                                    <p class="text-h6 ma-0">{{ slot.title }} <span class="mr-3  ml-2"
-                                                            style="font-size: 14px; font-weight: 400px;">({{
-                    slot.start_time + ' - ' + slot.end_time }})</span><v-chip
-                                                            :color="(slot.bookings.length == 0) ? 'green' : (slot.bookings.length >= slot.bookings_allowed) ? 'red' : 'orange'"
-                                                            small dark>Slot(s) {{ slot.bookings.length }}
+                                                    <p class="text-h6 ma-0">
+                                                        {{ slot.title }}
+                                                        <span class="mr-3 ml-2"
+                                                            style="font-size: 14px; font-weight: 400px">({{
+                    slot.start_time + " - " + slot.end_time
+                }})</span><v-chip :color="slot.bookings.length == 0
+                        ? 'green'
+                        : slot.bookings.length >=
+                            slot.bookings_allowed
+                            ? 'red'
+                            : 'orange'
+                    " small dark>Slot(s) {{ slot.bookings.length }}
                                                             /
-                                                            {{ slot.bookings_allowed }}</v-chip></p>
+                                                            {{ slot.bookings_allowed }}</v-chip>
+                                                        <v-btn x-small color="primary"
+                                                            v-if="slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed"
+                                                            @click="showbookings(slot)">Booked By</v-btn>
+                                                    </p>
                                                 </v-list-item-title>
                                                 <!-- <v-list-item-subtitle>
                                                     {{ slot.start_time + ' - ' + slot.end_time }}<br />
@@ -64,12 +71,10 @@
                                                 </v-list-item-subtitle> -->
                                             </v-list-item-content>
                                             <v-list-item-action>
-                                                <v-checkbox v-model="selection"
-                                                    :disabled="slot.bookings.length >= slot.bookings_allowed" multiple
-                                                    :value="slot" @change="addbookings(slot, $event)"></v-checkbox>
+                                                <v-checkbox v-model="selection" :disabled="slot.bookings.length >= slot.bookings_allowed
+                    " multiple :value="slot" @change="addbookings(slot, $event)"></v-checkbox>
                                             </v-list-item-action>
                                         </template>
-
                                     </v-list-item>
                                 </v-list-item-group>
                             </v-list>
@@ -77,16 +82,17 @@
                         <v-card-text v-else>
                             <p>No slots available for this date</p>
                         </v-card-text>
-
                     </v-card>
                 </v-col>
                 <v-col cols="12" md="5">
                     <v-card>
-                        <v-card-title class="text-h5" style="background: var(--v-primary-base); color:#fff;">Booking
+                        <v-card-title class="text-h5" style="background: var(--v-primary-base); color: #fff">Booking
                             Summary</v-card-title>
                         <v-card-text>
-                            <p class="text-h5 mt-2">{{ selecteditem.name }} {{ (this.timeperiod !=
-                    '') ? '(' + this.timeperiod + ')' : '' }}</p>
+                            <p class="text-h5 mt-2">
+                                {{ selecteditem.name }}
+                                {{ this.timeperiod != "" ? "(" + this.timeperiod + ")" : "" }}
+                            </p>
                             <v-divider class="mb-2"> </v-divider>
                             <v-simple-table v-if="selection.length > 0">
                                 <tr>
@@ -96,8 +102,8 @@
                                     </td>
                                     <td>
                                         <v-chip color="" small v-for="slot in selection" :key="slot.id"
-                                            class="mr-1 mb-1" style="font-size: 11px">{{ slot.start_time }} -
-                                            {{ slot.end_time }}</v-chip>
+                                            class="mr-1 mb-1" style="font-size: 11px">{{ slot.start_time }} - {{
+                    slot.end_time }}</v-chip>
                                     </td>
                                 </tr>
                                 <tr>
@@ -141,7 +147,9 @@
                                 <tr>
                                     <td colspan="2">
                                         <h3 style="float: left">Balance</h3>
-                                        <span style="float: right">{{ totalprice - (advanceprice + credits) }}</span>
+                                        <span style="float: right">{{
+                    totalprice - (advanceprice + credits)
+                }}</span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -156,14 +164,13 @@
                                             <v-radio :label="gateway" :value="gateway" v-for="gateway in gateways"
                                                 :key="gateway"></v-radio>
                                         </v-radio-group>
-
                                     </td>
                                 </tr>
                             </v-simple-table>
                         </v-card-text>
-                        <v-card-actions style="background:var(--v-primary-base);">
-                            <p class="pa-0 ma-0" style="width: 100%; text-align: center; color: #fff;">{{
-                    selection.length }}
+                        <v-card-actions style="background: var(--v-primary-base)">
+                            <p class="pa-0 ma-0" style="width: 100%; text-align: center; color: #fff">
+                                {{ selection.length }}
                                 Slot(s) Selected
                                 <v-btn color="default" v-if="!isUserlogin" small @click.stop="openlogindialogfun">
                                     Login/Signup
@@ -186,23 +193,23 @@
                             <v-list-item v-for="booking in bookings" :key="booking.id">
                                 <v-list-item-content>
                                     <v-list-item-title>
-                                        <v-avatar size="50" color="#efefef" style="float: left;">
+                                        <v-avatar size="50" color="#efefef" style="float: left">
                                             <v-img :lazy-src="temimagecurrent"
                                                 :src="'/storage/uploads/team/' + booking.team.image"
                                                 v-if="booking.team.image != ''" class="align-center" />
-                                            <span class="headline text-h1" v-else>{{ booking.team.name.charAt(0)
+                                            <span class="headline text-h1" v-else>{{
+                                                booking.team.name.charAt(0)
                                                 }}</span>
                                         </v-avatar>
-                                        <h3 style="float: left; clear: right;" class="mt-0 ml-1">{{
-                    booking.team.name }}<br /><v-chip color="orange" dark small
-                                                style="font-family:'Pacifico';">{{ booking.team.designation }}</v-chip>
+                                        <h3 style="float: left; clear: right" class="mt-0 ml-1">
+                                            {{ booking.team.name }}<br /><v-chip color="orange" dark small
+                                                style="font-family: 'Pacifico'">{{ booking.team.designation }}</v-chip>
                                         </h3>
                                     </v-list-item-title>
                                 </v-list-item-content>
                             </v-list-item>
                         </v-list>
                     </v-card-text>
-
                 </v-card>
             </v-dialog>
             <!-- <v-navigation-drawer v-model="openlogindialog" app temporary right style="max-width: 450px;" width="80%">
@@ -248,21 +255,17 @@
             </v-navigation-drawer> -->
         </v-container>
         <confirm ref="confirm"></confirm>
-
     </div>
 </template>
 
 
 <script>
-import axios from 'axios'
-import moment, { duration } from 'moment'
-import confirm from '@/components/common/Confirm.vue'
+import axios from "axios";
+import moment, { duration } from "moment";
+import confirm from "@/components/common/Confirm.vue";
 import { EventBus } from "../../event-bus.js";
-import Mapview from '@/components/common/Mapview.vue'
-import {
-    mapState,
-    mapActions
-} from "vuex";
+import Mapview from "@/components/common/Mapview.vue";
+import { mapState, mapActions } from "vuex";
 export default {
     components: {
         confirm,
@@ -345,10 +348,10 @@ export default {
         },
 
         async getcategory() {
-            await axios.get('/api/category/' + this.$route.params.id)
-                .then(response => {
+            await axios
+                .get("/api/category/" + this.$route.params.id)
+                .then((response) => {
                     if (response.data.success) {
-
                         let category = response.data.category;
                         this.selecteditem = category;
                         let location = category.location;
@@ -360,7 +363,7 @@ export default {
                         console.log(response.data.message);
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.log(error);
                 });
         },
@@ -368,10 +371,11 @@ export default {
             this.loadingslots = true;
             if (this.selection.length > 0) {
                 const ok = await this.$refs.confirm.open({
-                    title: 'Are you sure?',
-                    message: 'Are you sure you want to change the date? It will clear all your selected slots.',
-                    okButtonText: 'Yes',
-                    cancelButtonText: 'No',
+                    title: "Are you sure?",
+                    message:
+                        "Are you sure you want to change the date? It will clear all your selected slots.",
+                    okButtonText: "Yes",
+                    cancelButtonText: "No",
                     options: {
                         color: "error",
                         width: 290,
@@ -380,10 +384,10 @@ export default {
                     icon: "mdi-delete",
                 });
                 if (ok) {
-                    let selectedslotsid = this.selection.map(slot => slot.id);
+                    let selectedslotsid = this.selection.map((slot) => slot.id);
                     if (selectedslotsid.length > 0) {
-                        selectedslotsid.forEach(slotid => {
-                            this.slots.forEach(slot => {
+                        selectedslotsid.forEach((slotid) => {
+                            this.slots.forEach((slot) => {
                                 if (slot.id == slotid) {
                                     slot.bookings.pop();
                                 }
@@ -395,20 +399,18 @@ export default {
                     this.newbookings = [];
                     this.advanceprice = 0;
                     this.totalprice = 0;
-                }
-                else {
+                } else {
                     this.timeperiod = this.timeperiodold;
                     return;
                 }
-            }
-            else {
+            } else {
                 this.timeperiodold = this.timeperiod;
                 // console.log(this.timeperiod)
                 // timeperiod is less than today
-                if (moment(this.timeperiod).isBefore(moment().format('YYYY-MM-DD'))) {
-                    this.$toasted.show('Please select a valid date', {
-                        type: 'error',
-                        duration: 3000
+                if (moment(this.timeperiod).isBefore(moment().format("YYYY-MM-DD"))) {
+                    this.$toasted.show("Please select a valid date", {
+                        type: "error",
+                        duration: 3000,
                     });
                     return;
                 }
@@ -416,24 +418,24 @@ export default {
                 this.advanceprice = 0;
                 this.totalprice = 0;
                 this.selection = [];
-                await axios.post('/api/slots', {
-                    id: this.selecteditem.id,
-                    date: this.timeperiod,
-                    day: new Date(this.timeperiod).getDay()
-                })
-                    .then(response => {
+                await axios
+                    .post("/api/slots", {
+                        id: this.selecteditem.id,
+                        date: this.timeperiod,
+                        day: new Date(this.timeperiod).getDay(),
+                    })
+                    .then((response) => {
                         if (response.data.success) {
                             this.slots = response.data.slots;
                             // add dummy bookings
                             // this.slots.forEach(slot => {
 
-
                             // });
-                        }
-                        else {
+                        } else {
                             console.log(response.data.message);
                         }
-                    }).catch(error => {
+                    })
+                    .catch((error) => {
                         console.log(error);
                     });
             }
@@ -441,7 +443,7 @@ export default {
         },
         getalloweddates(val) {
             // check if val is less than today
-            if (moment(val).isBefore(moment().format('YYYY-MM-DD'))) {
+            if (moment(val).isBefore(moment().format("YYYY-MM-DD"))) {
                 return false;
             }
             return true;
@@ -457,15 +459,13 @@ export default {
             if (this.userdetails) {
                 this.bookingform = true;
                 this.showbooking = false;
-            }
-            else {
+            } else {
                 this.haveaccount = true;
             }
             this.bookingform = true;
             this.showbooking = false;
         },
         addbookings(slot, event) {
-
             // console.log(slot.bookings.length, slot.bookings_allowed);
 
             let newbookingdata = {
@@ -477,12 +477,13 @@ export default {
                 advance: slot.advanceprice,
                 credits: this.credits,
                 total: slot.price,
-                time: slot.start_time + ' - ' + slot.end_time,
+                time: slot.start_time + " - " + slot.end_time,
                 team_id: this.team.id,
                 team: this.team,
-                user_id: localStorage.getItem('userdetails') ? JSON.parse(localStorage.getItem('userdetails')).id : 0,
-
-            }
+                user_id: localStorage.getItem("userdetails")
+                    ? JSON.parse(localStorage.getItem("userdetails")).id
+                    : 0,
+            };
 
             // else {
 
@@ -491,24 +492,22 @@ export default {
             this.advanceprice = 0;
             this.totalprice = 0;
             this.newbookings = [];
-            this.selection.forEach(booking => {
+            this.selection.forEach((booking) => {
                 this.advanceprice += parseInt(booking.advanceprice);
                 this.totalprice += parseInt(booking.price);
                 this.newbookings.push(newbookingdata);
             });
 
-
-            console.log(this.selection, 'newbookings');
+            console.log(this.selection, "newbookings");
         },
         getuserteam() {
-            if (localStorage.getItem('userdetails') == null) {
+            if (localStorage.getItem("userdetails") == null) {
                 return;
             }
-            axios.get('/api/user/getuserteam')
-                .then(response => {
-                    this.team = response.data.team;
-                    this.temimagecurrent = this.team.image;
-                })
+            axios.get("/api/user/getuserteam").then((response) => {
+                this.team = response.data.team;
+                this.temimagecurrent = this.team.image;
+            });
         },
 
         getusercredits() {
@@ -633,7 +632,6 @@ export default {
 
 .v-future .v-btn::before {
     background-color: #0096c7 !important;
-
 }
 
 .v-future .theme--light.v-btn:focus {

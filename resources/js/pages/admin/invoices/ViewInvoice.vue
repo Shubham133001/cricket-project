@@ -6,20 +6,17 @@
                 <v-row>
                     <v-col cols="12" class="d-flex">
                         <div class="mr-4">
-                            <p class=""><strong>Invoice #:</strong>137</p>
+                            <p class=""><strong>Invoice #:</strong>{{invoice.id}}</p>
                         </div>
                         <div class="mr-4">
-                            <p class=""><strong>Invoice Created:</strong>137</p>
-                        </div>
-                        <div>
-                            <p class=""><strong>Due Date:</strong>137</p>
+                            <p class=""><strong>Invoice Created: </strong>{{invoice.created_at}}</p>
                         </div>
                         <v-spacer></v-spacer>
                         <v-btn color="red" v-if="invoice.status == 0" large outlined class="pl-4 pr-4">Unpaid</v-btn>
                         <v-btn color="green" v-else-if="invoice.status == 1" large outlined
                             class="pl-4 pr-4">Paid</v-btn>
                         <v-btn color="warning" v-else-if="invoice.status == 2" large outlined class="pl-4 pr-4">Partial
-                            Paid</v-btn>
+                            Partial Paid</v-btn>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -123,6 +120,7 @@ export default {
             storeaddress: '',
             storecontact: '',
             storeemail: '',
+           
             invoice: {
                 user: {
                     name: '',
@@ -132,7 +130,9 @@ export default {
                 items: [],
                 payments: [],
                 gateways: [],
+                 status: '',
             },
+            gateways: [],
         }
     },
     created() {
@@ -152,14 +152,11 @@ export default {
             });
         },
         async getinvoice() {
-            await axios.get('/api/getInvoiceById/' + this.$route.params.id).then(response => {
+            await axios.get('/api/getinvoicebyid/' + this.$route.params.id).then(response => {
                 this.invoice = response.data.invoice;
                 this.showloading = false;
                 this.isAdmin = this.$route.path.includes('admin');
-                if (this.invoice.gateway == 'paystack') {
-                    this.iframeurl = 'https://paystack.com/pay/' + this.invoice.id;
-                    this.showpaymentbox = true;
-                }
+                
             }).catch(error => {
                 console.log(error);
             });

@@ -111,7 +111,11 @@ class UsersController extends Controller
             foreach($resp as $user){
                 $credit =  \App\Models\Credittransaction::where(['credit_type'=> 1 , 'user_id'=>$user->id])->sum('amount');
                 $debit =  \App\Models\Credittransaction::where(['credit_type'=> 2 , 'user_id'=>$user->id])->sum('amount');
-                $user->credits = $credit - $debit;
+                $credits = $credit - $debit;
+                $data = \App\Models\User::with('team')->findOrFail($user->id);
+                $data->credits = $credits;
+                $data->save();
+                $user->credits = $credits;
             }   
             
             return response()->json([
@@ -134,7 +138,7 @@ class UsersController extends Controller
             $credit =  \App\Models\Credittransaction::where(['credit_type' => 1, 'user_id' => $request->id])->sum('amount');
             $debit =  \App\Models\Credittransaction::where(['credit_type' => 2, 'user_id' => $request->id])->sum('amount');
             $data->credits = $credit - $debit;
-            
+            $data->save();
             return response()->json([
                 'success' => true,
                 'data' => $data
@@ -159,8 +163,11 @@ class UsersController extends Controller
             $data->name = $request->name;
             $data->email = $request->email;
             $data->phone = $request->phone;
-
+            $credit =  \App\Models\Credittransaction::where(['credit_type'=> 1 , 'user_id'=>$request->id])->sum('amount');
+            $debit =  \App\Models\Credittransaction::where(['credit_type'=> 2 , 'user_id'=>$request->id])->sum('amount');
+            $data->credits = $credit - $debit;
             $data->update();
+            
             if($request->team_name){
                 $team = \App\Models\Team::where('user_id', $request->id)->first();
                 $team->name = $request->team_name;
@@ -174,9 +181,7 @@ class UsersController extends Controller
                 }
                 $team->save();
             }
-            $credit =  \App\Models\Credittransaction::where(['credit_type'=> 1 , 'user_id'=>$request->id])->sum('amount');
-            $debit =  \App\Models\Credittransaction::where(['credit_type'=> 2 , 'user_id'=>$request->id])->sum('amount');
-            $data->credits = $credit - $debit;
+            
             return response()->json([
                 'success' => true,
                 'data' => $data
@@ -230,6 +235,37 @@ class UsersController extends Controller
                 ->where('user_id', auth()->user()->id)
                 ->orderBy('id', 'desc')
                 ->get();
+        
+            return response()->json([
+                'success' => true,
+                'bookings' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function bookingdetails(Request $request)
+    {
+        // echo "<pre>";
+        // print_r($request->all());
+        // die('sgfsgfsf');
+        try {
+            if (!auth()->user()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not logged in'
+                ], 401);
+            }
+        
+            $data = \App\Models\Booking::with('user', 'slot', 'team')
+                ->where('user_id', auth()->user()->id)
+                ->where('invoice_id', $request->id)
+                ->orderBy('id', 'desc')
+                ->first();
         
             return response()->json([
                 'success' => true,

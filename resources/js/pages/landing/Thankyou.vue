@@ -12,39 +12,32 @@
                     <v-card-text v-else>
 
                         <div class="text-center" style="max-width: 550px; margin: auto;">
-                            <v-icon color="success" class="mb-3" size="100">mdi-check-circle</v-icon>
-                            <h1>#{{ appointment.id }} Appointment Booked Successfully</h1>
+                            <v-icon v-if="appointment.status == 'Approved'" color="success" class="mb-3" size="100">mdi-check-circle</v-icon>
+                            <v-icon v-if="appointment.status == 'Pending'" color="error" class="mb-3" size="100">mdi-close-circle</v-icon>
+                            <h1>Slot Booked Successfully</h1>
 
                         </div>
                         <div class="pa-2 elevation-1 mt-3" style="max-width: 450px; margin: auto; border: solid 1px #efefef; background: #f8f8f8; font-size: 18px; text-align: center;">
                             <p style="border-bottom: solid 2px #a8a8a8; font-weight: 600" class="pb-1">Your Booking Details are as below.</p>
 
 
-                            <p><strong>Appointment Date:</strong> {{ appointment.booking_date }} {{ appointment.time_slot }}</p>
-
-                            <p><strong>Doctor Name:</strong> {{ appointment.doctor.name }}</p>
-                            <p><strong>Patient Name:</strong> {{ appointment.patient.name }}</p>
-                            <p><strong>Patient Phone Number:</strong> {{ appointment.patient.phonenumber }}</p>
+                            <p><strong>Booking  Date:</strong> {{ appointment.booking_date }}</p>
+                            <p><strong>Booking  Slot Time:</strong>  {{ appointment.time_slot }}</p>
                             <p><strong>Your Booking Status:</strong>
-                                <v-chip class="ma-0" small color="primary" v-if="appointment.status == '0'">Waiting</v-chip>
-                                <v-chip class="ma-0" small color="success" v-if="appointment.status == '1'">Confirmed</v-chip>
-                                <v-chip class="ma-0" small color="teal" v-if="appointment.status == '2'">Engaged</v-chip>
-                                <v-chip class="ma-0" small color="success" v-if="appointment.status == '3'">Checkedout</v-chip>
-                                <v-chip class="ma-0" small color="errro" v-if="appointment.status == '4'">Cancelled</v-chip>
+                                <v-chip class="ma-0" small color="warning" v-if="appointment.status == 'Pending'">Pending</v-chip>
+                                <v-chip class="ma-0" small color="success" v-if="appointment.status == 'Approved'">Approved</v-chip>
+                                <v-chip class="ma-0" small color="errro" v-if="appointment.status == 'Cancelled'">Cancelled</v-chip>
                             </p>
-                            <p><strong>Your Payment Status:</strong> <v-chip class="ma-0" small color="success">Paid</v-chip></p>
-                            <p><strong>Payment ID:</strong> {{ appointment.invoice.payment.payment_id }}</p>
+                            <p><strong>Your Payment Status:</strong> 
+                            <v-chip class="ma-0" small color="warning" v-if="appointment.payment_status == 'Pending'">{{ appointment.payment_status }}</v-chip>
+                            <v-chip class="ma-0" small color="success" v-if="appointment.payment_status == 'Paid'">{{ appointment.payment_status }}</v-chip>
+                            <v-chip class="ma-0" small color="errro" v-if="appointment.payment_status == 'Cancelled'">{{ appointment.payment_status }}</v-chip>
+                            </p>
+                            <!-- <p><strong>Payment ID:</strong> {{ appointment.invoice.payment.payment_id }}</p> -->
                         </div>
                         <h3 class="mt-2 text-center">Thank you for your Booking </h3>
-                        <div class="text-center"><v-btn color="primary" class="mt-3" @click="printInvoice">Download PDF <v-icon>mdi-file-pdf</v-icon></v-btn></div>
+                        <div class="text-center"><v-btn color="primary" class="mt-3" @click="viewInvoice">View Invoice </v-btn></div>
                     </v-card-text>
-                    <div class="text-center mt-3 mb-2" v-if="isAdmin == false">
-                        <router-link to="/" class="btn btn-primary mb-2">Back to Home Page</router-link>
-                    </div>
-                    <div class="text-center mt-3" v-else>
-                        <router-link to="/admin/appointments" class="btn btn-primary">Back to Appointments</router-link>
-                    </div>
-
                 </v-card>
             </v-col>
         </v-row>
@@ -57,41 +50,37 @@
             return {
                 // check if url contains admin
 
-                showloading: true,
-                isAdmin: false,
+                showloading: false,
+               // isAdmin: false,
                 appointment: {
                     id: 1,
-                    patient: {
-                        name: 'John Doe'
-                    },
+                    status: "",
                     booking_date: '2021-01-01',
                     time_slot: '04:30:00 - 05:00:00',
-                    doctor: {
-                        name: 'Dr. John Doe'
-                    }
+                    payment_status: '',
                 }
             }
         },
-        created() {
+        mounted() {
             this.getAppointment();
         },
         methods: {
-            async getAppointment() {
-                this.isAdmin = this.$route.path.includes('admin');
-
-                var appointmentid = this.$route.params.id;
-                await axios.get('/api/appointments/getappointment/' + appointmentid + '').then(response => {
-                    this.appointment = response.data.data;
-                    this.appointment.booking_date = moment(this.appointment.booking_date).format('DD-MM-YYYY');
-                    this.showloading = false;
+             getAppointment() {
+                var invoiceid = this.$route.params.id;
+                 axios.get('/api/user/bookingdetails?id='+ invoiceid).then(response => {
+                    console.log(response.data);
+                    this.appointment.booking_date = response.data.bookings.date;
+                    this.appointment.time_slot = response.data.bookings.slot.start_time + "-" +response.data.bookings.slot.end_time;
+                    this.appointment.status = response.data.bookings.status;
+                    this.appointment.payment_status = response.data.bookings.payment_status;
                 });
             },
-            printInvoice() {
-                window.open('/admin/downloadReceipt/' + this.appointment.id, '_blank');
+            viewInvoice() {
+                var invoiceid = this.$route.params.id;
+                this.$router.push({
+                    path: '/invoice/'+invoiceid,
+                });
             },
-            sendToPay() {
-                this.$router.push('/admin/invoices/add/' + this.appointment.id);
-            }
         }
     }
 </script>
