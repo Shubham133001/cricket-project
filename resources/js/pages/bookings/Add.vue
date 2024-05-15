@@ -54,7 +54,7 @@
                                                             {{ slot.bookings_allowed }}</v-chip>
                                                         <v-btn x-small color="primary"
                                                             v-if="slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed"
-                                                            @click="showbookings(slot)">Booked By</v-btn>
+                                                            text @click="showbookings(slot)">Booked By</v-btn>
                                                     </p>
                                                 </v-list-item-title>
                                                 <!-- <v-list-item-subtitle>
