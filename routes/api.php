@@ -149,6 +149,7 @@ Route::group(['prefix' => 'user',], function () {
        // Route::post('update', [UserAuthController::class, 'update']);
        // Route::post('changepassword', [UserAuthController::class, 'changepassword']);
         Route::post('getbookings', [UsersController::class, 'getbookings']);
+        Route::get('bookingdetails', [UsersController::class, 'bookingdetails']);
         Route::post('addteam', [TeamsController::class, 'addteam']);
         Route::post('updateteam', [TeamsController::class, 'updateteam']);
         Route::post('deleteteam', [TeamsController::class, 'deleteteam']);

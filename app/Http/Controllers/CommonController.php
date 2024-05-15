@@ -83,11 +83,12 @@ class CommonController extends Controller
             $invoicedata['created_by'] = 0;
             $invoicedata['gateway'] = $request->gateway;
 
-            $invoice = new \App\Models\Invoice();
-            $invoice->create($invoicedata);
+            // $invoice = new \App\Models\Invoice();
+            // $invoice->create($invoicedata);
+            $invoice = \App\Models\Invoice::create($invoicedata);
             // get last insert id
-            $lastinvoice = $invoice->orderBy('id', 'desc')->first();
-            if ($request->credit > 0) {
+            $lastinvoice = $invoice;
+            if ($request->credit > ($totalamount - $firstpayment)) {
                 $amount =   $totalamount - $firstpayment;
                 $credittransaction = new  \App\Models\Credittransaction;
                 $credittransaction->user_id = $request['user']['id'];
@@ -99,19 +100,33 @@ class CommonController extends Controller
 
                 $lastinvoice->status = 1;
                 $lastinvoice->save();
-                $bookings = \App\Models\Booking::where('invoice_id', $lastinvoice->id)->get();
-                foreach ($bookings as $book) {
-                    \App\Models\Booking::where('id', $book->id)->update(['status' => 'Approved', 'payment_status' => $status]);
-                }
-
+                $data['user_id'] = $request->user['id'];
+                $data['category_id'] = $request->category['id'];
+                $data['slot_id'] = $value['id'];
+                $data['date'] = $request->date;
+                $data['team_id'] = $request->team_id;
                 $data['invoice_id'] = $lastinvoice->id;
-            }
-            if ($lastinvoice) {
+                $data['status'] = 'Approved';
+                $data['payment_status'] = 'Paid';
+                $booking->create($data);
+                $data['invoice_id'] = $lastinvoice->id;
+                $invoiceitemsdata = [];
+                $invoiceitemsdata['invoice_id'] = $lastinvoice->id;
+                $invoiceitemsdata['quantity'] = 1;
+                $invoiceitemsdata['slot_id'] = $value['id'];
+                $invoiceitemsdata['price'] = $value['price'];
+                $invoiceitemsdata['total'] = $value['price'];
+                $invoiceitemsdata['description'] = 'Booking for ' . $value['title'] . ' on ' . $request->date . ' at ' . $value['category']['name'];
+                $invoiceitemsdata['status'] = 1;
+                $invoiceitems = new \App\Models\InvoiceItem();
+                $invoiceitems->create($invoiceitemsdata);
+            }else {
                 $lastinv = \App\Models\Invoice::where('id', $lastinvoice->id)->first();
                 foreach ($request->slot as $key => $value) {
                     // check if booking exists and booking is more than bookings_allowed
 
                     $check = \App\Models\Booking::where('slot_id', $value['id'])->where('date', $request->date)->count();
+                    
                     if ($check >= $value['bookings_allowed']) {
                         return response()->json([
                             'success' => false,
@@ -137,17 +152,12 @@ class CommonController extends Controller
                     $data['team_id'] = $request->team_id;
                     $data['invoice_id'] = $invoice_id;
                     $booking->create($data);
+                 
                 }
+                $data['invoice_status'] = $lastinv->status;
+            } 
 
-                if ($lastinv->status = 1) {
-                    //  $data['invoice_id'] = $lastinv->id;
-                    $data['invoice_status'] = $lastinv->status;
-                } else {
-                    $data['invoice_status'] = $lastinv->status;
-                }
-            } else {
-                $invoice_id = 0;
-            }
+           // print_r($data); die;
             return response()->json([
                 'success' => true,
                 'data' => $data
@@ -288,6 +298,8 @@ class CommonController extends Controller
     }
     public function cancelbooking(Request $request)
     {
+        // echo "<pre>";
+        // print_r($request->all()); die;
         try {
             $canceldata = CancellationRequest::where('id', $request->id)->first();
             $booking = \App\Models\Booking::with('slot', 'invoice', 'cancellation_request')->find($canceldata->booking_id);
@@ -305,6 +317,12 @@ class CommonController extends Controller
 
                 $booking->status = "Cancelled";
                 $booking->save();
+
+                $credit =  \App\Models\Credittransaction::where(['credit_type'=> 1 , 'user_id'=>$booking->user_id])->sum('amount');
+                $debit =  \App\Models\Credittransaction::where(['credit_type'=> 2 , 'user_id'=>$booking->user_id])->sum('amount');
+                $data = \App\Models\User::find($booking->user_id);
+                $data->credits = $credit - $debit;
+                $data->update();
             } else {
                 return response()->json([
                     'success' => false,

@@ -123,6 +123,7 @@ export default {
             storeaddress: '',
             storecontact: '',
             storeemail: '',
+           
             invoice: {
                 user: {
                     name: '',
@@ -132,7 +133,9 @@ export default {
                 items: [],
                 payments: [],
                 gateways: [],
+                 status: '',
             },
+            gateways: [],
         }
     },
     created() {
@@ -152,14 +155,11 @@ export default {
             });
         },
         async getinvoice() {
-            await axios.get('/api/getInvoiceById/' + this.$route.params.id).then(response => {
+            await axios.get('/api/getinvoicebyid/' + this.$route.params.id).then(response => {
                 this.invoice = response.data.invoice;
                 this.showloading = false;
                 this.isAdmin = this.$route.path.includes('admin');
-                if (this.invoice.gateway == 'paystack') {
-                    this.iframeurl = 'https://paystack.com/pay/' + this.invoice.id;
-                    this.showpaymentbox = true;
-                }
+                
             }).catch(error => {
                 console.log(error);
             });
