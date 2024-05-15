@@ -85,7 +85,7 @@
                     </v-card>
                 </v-col>
                 <v-col cols="12" md="5">
-                    <v-card>
+                    <v-card v-if="selection.length > 0">
                         <v-card-title class="text-h5" style="background: var(--v-primary-base); color: #fff">Booking
                             Summary</v-card-title>
                         <v-card-text>
@@ -173,7 +173,7 @@
                                 {{ selection.length }}
                                 Slot(s) Selected
                                 <v-btn color="default" v-if="!isUserlogin" small @click.stop="openlogindialogfun">
-                                    Login/Signup
+                                    Proceed
                                 </v-btn>
                                 <v-btn color="default" v-if="isUserlogin && selection.length > 0" small
                                     @click.stop="bookslot">
@@ -198,8 +198,8 @@
                                                 :src="'/storage/uploads/team/' + booking.team.image"
                                                 v-if="booking.team.image != ''" class="align-center" />
                                             <span class="headline text-h1" v-else>{{
-                                                booking.team.name.charAt(0)
-                                                }}</span>
+                    booking.team.name.charAt(0)
+                }}</span>
                                         </v-avatar>
                                         <h3 style="float: left; clear: right" class="mt-0 ml-1">
                                             {{ booking.team.name }}<br /><v-chip color="orange" dark small
