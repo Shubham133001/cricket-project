@@ -119,7 +119,7 @@
           </v-card>
         </v-col>
         <v-col cols="12" md="5">
-          <v-card>
+          <v-card v-if="selection.length > 0">
             <v-card-title
               class="text-h5"
               style="background: var(--v-primary-base); color: #fff"
@@ -228,7 +228,7 @@
                   small
                   @click.stop="openlogindialogfun"
                 >
-                  Login/Signup
+                  Proceed
                 </v-btn>
                 <v-btn
                   color="default"
