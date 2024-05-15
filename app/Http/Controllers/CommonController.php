@@ -292,7 +292,8 @@ class CommonController extends Controller
             $canceldata = CancellationRequest::where('id', $request->id)->first();
             $booking = \App\Models\Booking::with('slot', 'invoice', 'cancellation_request')->find($canceldata->booking_id);
             $currentDate = Carbon::now();
-            $dateToCheck = Carbon::createFromFormat('Y-m-d', $booking->slot->start_date);
+            $dateToCheck = Carbon::createFromFormat('Y-m-d', $booking->date);
+
             if ($dateToCheck->greaterThan($currentDate)) {
                 $credit_trans = new \App\Models\Credittransaction;
                 $credit_trans->user_id = $booking->user_id;
