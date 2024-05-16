@@ -294,10 +294,7 @@ class UsersController extends Controller
             $data = \App\Models\Invoice::with('user', 'booking', 'items')
                 ->where('user_id', auth()->user()->id)
                 ->orderBy('id', 'desc')
-                ->get();
-
-            // echo "<pre>";
-            // print_r($data); die;    
+                ->get();  
             foreach ($data as $key => $value) {
                 if($value->status == 1){
                     $value->status = "Paid";
