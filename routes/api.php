@@ -112,6 +112,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('edit/{id}', [SlotsController::class, 'editslots'])->name('admin.slots.editslots');
             Route::post('update', [SlotsController::class, 'updateslots'])->name('admin.slots.updateslots');
             Route::post('delete', [SlotsController::class, 'delete'])->name('admin.slots.delete');
+            Route::get('slotwithcatId', [SlotsController::class, 'slotsWithCatID'])->name('admin.slots.catid');
         });
         Route::group(['prefix' => 'invoices'], function () {
             Route::post('add', [InvoicesController::class, 'add'])->name('admin.invoices.add');

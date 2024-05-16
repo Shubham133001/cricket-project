@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use DB;
 
 class CategoriesController extends Controller
 {
@@ -68,9 +69,22 @@ class CategoriesController extends Controller
     {
         try {
             $data = \App\Models\Category::get();
+            $list = [];
+
+            foreach ($data as $key => $value) {
+                $value->slot_count = \App\Models\Slot::where('category_id', $value->id)->count();
+                $slots = \App\Models\Slot::where('category_id', $value->id)
+                    ->select('start_date', DB::raw('COUNT(*) as slot_count'), DB::raw('"' . $value->name . '" as category_name'), DB::raw('"' . $value->id . '" as id'))
+                    ->groupBy('start_date')
+                    ->get();
+
+                if ($slots->isNotEmpty()) {
+                    $list = array_merge($list, $slots->toArray());
+                }
+            }
             return response()->json([
                 'success' => true,
-                'categories' => $data
+                'categories' => $list
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);

@@ -100,11 +100,9 @@ class SlotsController extends Controller
     {
         try {
             $options = $request->options;
-
             $limit = $options['itemsPerPage'] ?? 10;
             $page = $request->page ?? 1;
             $search = $request->search ?? '';
-
             $resp = \App\Models\Slot::with('category')
                 ->where(function ($query) use ($search) {
                     if ($search) {
@@ -174,6 +172,41 @@ class SlotsController extends Controller
         }
     }
 
+    public function slotsWithCatID(Request $request)
+    {
+        try {
+            $date = strtotime($request->date);
+            $date = date('Y-m-d', $date);
+
+            $data = \App\Models\Slot::where('category_id', $request->id)
+                ->whereDate('start_date', '<=', $date)
+                ->whereDate('end_date', '>=', $date)
+                ->with(['bookings' => function ($query) use ($date) {
+                    $query->where('date', $date)->where('status','!=','Cancelled')->with(['user', 'team']);
+                }])
+                ->with('category')
+                ->get();
+            $data->map(function ($item) {
+                $item->slot_time = $item->start_time . " - " . $item->end_time;
+                $item->slot_date = $item->start_date . " - " . $item->end_date;
+                $item->days = explode(',', $item->days);
+                return $item;
+            });
+
+            return response()->json([
+                'success' => true,
+                'slots' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    
+    
     public function getallslotsforcategory(Request $request)
     {
         try {
