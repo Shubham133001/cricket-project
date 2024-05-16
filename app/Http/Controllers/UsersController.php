@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Invoice;
 
 class UsersController extends Controller
 {
@@ -283,36 +285,37 @@ class UsersController extends Controller
 
     public function userInvoice()
     {
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not logged in',
+            ], 401);
+        }
+    
         try {
-            if (!auth()->user()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'User not logged in'
-                ], 401);
-            }
-           
-            $data = \App\Models\Invoice::with('user', 'booking', 'items')
-                ->where('user_id', auth()->user()->id)
+            $user = Auth::user();
+            $data = Invoice::with('user', 'booking', 'items')
+                ->where('user_id', $user->id)
                 ->orderBy('id', 'desc')
-                ->get();  
-            foreach ($data as $key => $value) {
-                if($value->status == 1){
-                    $value->status = "Paid";
-                }elseif ($value->status == 2) {
-                    $value->status = "Partial Paid";
-                }else{
-                    $value->status = "Unpaid";
-                }
-            }
-        
+                ->get();
+    
+            $statusMap = [
+                1 => 'Paid',
+                2 => 'Partial Paid',
+            ];
+    
+            $data->each(function ($item) use ($statusMap) {
+                $item->status = $statusMap[$item->status] ?? 'Unpaid';
+            });
+    
             return response()->json([
                 'success' => true,
-                'invoice' => $data
+                'invoice' => $data,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => 'An error occurred while fetching invoices: ' . $e->getMessage(),
             ], 500);
         }
     }
