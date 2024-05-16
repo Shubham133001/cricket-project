@@ -2,9 +2,10 @@
   <div>
     <v-row style="display: flex;justify-content: center;align-items: center;">
       <v-col cols="12" md="8">
-        <h2 style="text-align: center;color: #0096c7;margin-bottom: 25px;">Cancellation and Refund Policy of Mohali ENT Clinic</h2>
+        <h2 style="text-align: center;color: #0096c7;margin-bottom: 25px;">Cancellation and Refund Policy of
+          {{ storeDetails.name }}</h2>
 
-        <p>At Mohali ENT Clinic, we understand that there may be times when you need to cancel or reschedule your
+        <p>At {{ storeDetails.name }}, we understand that there may be times when you need to cancel or reschedule your
           appointment. Please review our Cancellation and Refund Policy below:</p>
 
         <p><strong>1. Cancellation</strong></p>
@@ -20,14 +21,17 @@
           our availability.</p>
 
         <p><strong>3. Refunds</strong></p>
-        <p style="padding-left: 20px;">3.1. We do not provide refunds for canceled appointments. Instead, we encourage you
+        <p style="padding-left: 20px;">3.1. We do not provide refunds for canceled appointments. Instead, we encourage
+          you
           to reschedule your appointment for a more suitable time.</p>
-        <p style="padding-left: 20px;">3.2. In the event of an exceptional circumstance, please contact us to discuss your
+        <p style="padding-left: 20px;">3.2. In the event of an exceptional circumstance, please contact us to discuss
+          your
           situation, and we will consider your request on a case-by-case basis.</p>
 
         <p><strong>4. Contact Us</strong></p>
-        <p style="padding-left: 20px;">If you have questions or concerns about our Cancellation and Refund Policy, please
-          contact us at <b>mohalientclinic@gmail.com</b>.</p>
+        <p style="padding-left: 20px;">If you have questions or concerns about our Cancellation and Refund Policy,
+          please
+          contact us at <b>{{ storeDetails.email }}</b>.</p>
       </v-col>
     </v-row>
   </div>

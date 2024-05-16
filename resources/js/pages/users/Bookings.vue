@@ -7,6 +7,11 @@
             <v-card-title>My Bookings</v-card-title>
             <v-card-text>
               <v-data-table :headers="headers" :items="bookings" item-key="id" class="elevation-1">
+                <template v-slot:item.invoice_id="{ item }">
+                  <strong style="border-bottom: dashed 1px #000; cursor:pointer;"
+                    @click="openinvoice(item.invoice_id)">{{
+            item.invoice_id }}</strong>
+                </template>
                 <template v-slot:item.action="{ item }">
                   <v-btn color="red" dark rounded
                     v-if="item.status != 'Cancelled' && item.status != 'Cancellation Requested'"
@@ -96,6 +101,14 @@ export default {
     this.getbookings()
   },
   methods: {
+    openinvoice(id) {
+      this.$router.push({
+        name: 'adminviewinvoice',
+        params: {
+          id: id
+        }
+      })
+    },
     async cancelbooking(id) {
       this.selectedid = id;
       const ok = await this.$refs.confirm.open({

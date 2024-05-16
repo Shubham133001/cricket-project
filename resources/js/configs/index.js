@@ -11,7 +11,7 @@ import navigation from './navigation'
 export default {
   // product display information
   product: {
-    name: 'Mohali ENT Clinic',
+    name: 'Best Cricket Academy',
     version: ''
   },
 

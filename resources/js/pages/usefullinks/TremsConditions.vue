@@ -1,12 +1,15 @@
 <template>
   <div>
     <v-row style="display: flex;justify-content: center;align-items: center;">
-        <v-col cols="12" md="8">
-        <h2 style="text-align: center;color: #0096c7;margin-bottom: 25px;">Terms and Conditions for Mohali ENT Clinic Appointment Website</h2>
+      <v-col cols="12" md="8">
+        <h2 style="text-align: center;color: #0096c7;margin-bottom: 25px;">Terms and Conditions for {{
+          storeDetails.name }} Appointment Website</h2>
         <p><strong>1. Acceptance of Terms</strong></p>
-        <p style="padding-left: 20px;">By using the services provided by this Mohali Ent Clinic appointment website, you
+        <p style="padding-left: 20px;">By using the services provided by this {{
+          storeDetails.name }} appointment website, you
           agree
-          to abide by and accept the following terms and conditions. If you do not agree with these terms, you should not
+          to abide by and accept the following terms and conditions. If you do not agree with these terms, you should
+          not
           use
           this website.</p>
 
@@ -22,7 +25,8 @@
         <p style="padding-left: 20px;">3.1. All appointment requests are subject to availability and approval by the
           hospital.
         </p>
-        <p style="padding-left: 20px;">3.2. The website provides estimated appointment times, but actual appointment times
+        <p style="padding-left: 20px;">3.2. The website provides estimated appointment times, but actual appointment
+          times
           may
           vary based on hospital availability and scheduling.</p>
 
@@ -64,7 +68,8 @@
           purposes only. It does not constitute medical advice or diagnosis.</p>
 
         <p><strong>10. Limitation of Liability</strong></p>
-        <p style="padding-left: 20px;">10.1. The hospital is not liable for any direct, indirect, or consequential damages
+        <p style="padding-left: 20px;">10.1. The hospital is not liable for any direct, indirect, or consequential
+          damages
           resulting from the use or inability to use this website.</p>
 
         <p><strong>11. Changes to Terms</strong></p>
@@ -77,9 +82,12 @@
         <p><strong>13. Contact Information</strong></p>
         <p style="padding-left: 20px;">13.1. If you have any questions or concerns about these terms and conditions,
           please
-          contact us at <b>mohalientclinic@gmail.com</b></p>
+          contact us at <b>{{
+          storeDetails.email }}</b></p>
 
-        <p style="padding-left: 20px;">By using this Mohali Ent Clinic appointment website, you acknowledge that you have
+        <p style="padding-left: 20px;">By using this {{
+          storeDetails.name }} appointment website, you acknowledge that you
+          have
           read
           and understood these terms and agree to be bound by them.</p>
         <p style="padding-left: 20px;">Last Updated: <b>24/Oct/2023</b></p>
