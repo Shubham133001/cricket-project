@@ -138,10 +138,18 @@ export default [{
     layout: 'landing'
   }
 },
-{
+{ 
   path: '/mybookings',
   name: 'mybookings',
   component: () => import('@/pages/users/Bookings.vue'),
+  meta: {
+    layout: 'landing'
+  }
+},
+{ 
+  path: '/myinvoice',
+  name: 'myinvoice',
+  component: () => import('@/pages/users/Invoice.vue'),
   meta: {
     layout: 'landing'
   }

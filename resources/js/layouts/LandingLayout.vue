@@ -60,6 +60,14 @@
                   <v-list-item-title>My Bookings</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
+              <v-list-item @click="invoice">
+                <v-list-item-icon>
+                  <v-icon small>mdi-calendar</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>My Invoice</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
               <v-list-item @click="logout">
                 <v-list-item-icon>
                   <v-icon small>mdi-logout-variant</v-icon>
@@ -366,6 +374,11 @@ export default {
     bookings() {
       this.$router.push({
         name: "mybookings",
+      });
+    },
+    invoice() {
+      this.$router.push({
+        name: "myinvoice",
       });
     },
     register() {

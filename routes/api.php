@@ -149,6 +149,7 @@ Route::group(['prefix' => 'user',], function () {
        // Route::post('update', [UserAuthController::class, 'update']);
        // Route::post('changepassword', [UserAuthController::class, 'changepassword']);
         Route::post('getbookings', [UsersController::class, 'getbookings'])->name('user.getbookings');
+        Route::get('invoice', [UsersController::class, 'userInvoice'])->name('user.invoice');
         Route::get('bookingdetails', [UsersController::class, 'bookingdetails'])->name('user.bookingdetails');
         Route::post('addteam', [TeamsController::class, 'addteam'])->name('user.addteam');
         Route::post('updateteam', [TeamsController::class, 'updateteam'])->name('user.updateteam');

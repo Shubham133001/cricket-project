@@ -248,6 +248,8 @@ class UsersController extends Controller
         }
     }
 
+
+
     public function bookingdetails(Request $request)
     {
         // echo "<pre>";
@@ -270,6 +272,45 @@ class UsersController extends Controller
             return response()->json([
                 'success' => true,
                 'bookings' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function userInvoice()
+    {
+        try {
+            if (!auth()->user()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not logged in'
+                ], 401);
+            }
+           
+            $data = \App\Models\Invoice::with('user', 'booking', 'items')
+                ->where('user_id', auth()->user()->id)
+                ->orderBy('id', 'desc')
+                ->get();
+
+            // echo "<pre>";
+            // print_r($data); die;    
+            foreach ($data as $key => $value) {
+                if($value->status == 1){
+                    $value->status = "Paid";
+                }elseif ($value->status == 2) {
+                    $value->status = "Partial Paid";
+                }else{
+                    $value->status = "Unpaid";
+                }
+            }
+        
+            return response()->json([
+                'success' => true,
+                'invoice' => $data
             ]);
         } catch (\Exception $e) {
             return response()->json([
