@@ -7,54 +7,41 @@
 
     <v-card>
       <v-card-text>
-        <v-col cols="6" class="d-flex align-center">
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            hide-details
-          ></v-text-field>
-        </v-col>
+        <!-- <v-col cols="6" class="d-flex align-center">
+          <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line
+            hide-details></v-text-field>
+        </v-col> -->
         <v-expansion-panels>
-          <v-expansion-panel
-            v-for="(category, index) in categories"
-            :key="index"
-          >
-            <v-expansion-panel-header 
-              @click="handleClick(category.id,category.start_date)"
-            >
-            <strong>{{ category.category_name }} :  {{ category.start_date }} </strong>
+          <v-expansion-panel v-for="(category, index) in categories" :key="index">
+            <v-expansion-panel-header>
+              <strong>{{ category.name }}</strong> <v-spacer></v-spacer> Total Slots ({{ category.slot_count }})
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-data-table
-                :headers="headers"
-                :items="slots"
-                sort-by="id"
-                :options.sync="options"
-                :search="search"
-                :loading="loading"
-                class="elevation-1"
-              >
-                <template v-slot:item.days="{ item }">
-                  <v-chip
-                    v-for="(day, index) in item.days"
-                    :key="index"
-                    color="green"
-                    outlined
-                    dark
-                    class="mr-1 mb-1"
-                    style="font-size: 11px; padding: 0px 5px; height: 20px"
-                  >
-                    {{ getDayName(day) }}
-                  </v-chip>
-                </template>
-                <template v-slot:item.actions="{ item }">
-                  <v-btn color="red" icon fab small @click="deleteSlot(item)"
-                    ><v-icon small color="red">mdi-delete</v-icon></v-btn
-                  >
-                </template>
-              </v-data-table>
+              <v-expansion-panels>
+                <v-expansion-panel v-for="(dates, index) in category.dates" :key="index" v-if="dates != null">
+                  <v-expansion-panel-header>
+                    <strong>{{ fomartdate(dates.start_date) }} </strong><v-spacer></v-spacer> {{ dates.slots.length }}
+                    Slots
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-data-table :headers="headers" :items="dates.slots" sort-by="id" :options.sync="options"
+                      :search="search" :loading="loading" class="elevation-1">
+                      <template v-slot:item.days="{ item }">
+                        <v-chip v-for="(day, index) in item.days" :key="index" color="green" outlined dark
+                          class="mr-1 mb-1" style="font-size: 11px; padding: 0px 5px; height: 20px">
+                          {{ getDayName(day) }}
+                        </v-chip>
+                      </template>
+                      <template v-slot:item.actions="{ item }">
+                        <v-btn color="red" icon fab small @click="deleteSlot(item)"><v-icon small
+                            color="red">mdi-delete</v-icon></v-btn>
+                      </template>
+                    </v-data-table>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+
+
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -67,6 +54,7 @@
 <script>
 import axios from "axios";
 import Confirm from "@/components/common/Confirm.vue";
+import moment from "moment";
 export default {
   components: {
     Confirm,
@@ -101,11 +89,11 @@ export default {
           text: "Available Days",
           value: "days",
         },
-        {
-          text: "Category Name",
-          value: "category.name",
-          sortable: false,
-        },
+        // {
+        //   text: "Category Name",
+        //   value: "category.name",
+        //   sortable: false,
+        // },
         {
           text: "Advance Price",
           value: "advanceprice",
@@ -152,6 +140,10 @@ export default {
   //       },
   //   },
   methods: {
+    fomartdate(date) {
+      return moment(date).format("DD MMM YYYY (dddd)");
+    },
+
     getDayName(day) {
       const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       return dayNames[parseInt(day)];
@@ -162,11 +154,11 @@ export default {
         const response = axios
           .get(
             "/api/admin/category/all?page=" +
-              this.options.page +
-              "&limit=" +
-              this.options.itemsPerPage +
-              "&search=" +
-              this.search
+            this.options.page +
+            "&limit=" +
+            this.options.itemsPerPage +
+            "&search=" +
+            this.search
           )
           .then((response) => {
             this.categories = response.data.categories;
@@ -175,23 +167,23 @@ export default {
         console.error(error);
       }
     },
-    async handleClick(id,startdate) {
-     
+    async handleClick(id, startdate) {
+
       this.selectedId = id;
       this.selecteddate = startdate;
       try {
         const response = await axios
           .get(
             "/api/admin/slots/slotwithcatId?id=" +
-              id +
-              "&date=" +
-             this.selecteddate +
-              "&page=" +
-              this.options.page +
-              "&limit=" +
-              this.options.itemsPerPage +
-              "&search=" +
-              this.search
+            id +
+            "&date=" +
+            this.selecteddate +
+            "&page=" +
+            this.options.page +
+            "&limit=" +
+            this.options.itemsPerPage +
+            "&search=" +
+            this.search
           )
           .then((response) => {
             // console.log(response);
@@ -273,8 +265,7 @@ export default {
   background: #0096c7 !important;
 }
 
-.v-present .theme--light.v-btn:focus::before {
-}
+.v-present .theme--light.v-btn:focus::before {}
 
 .v-future .v-btn::before {
   background-color: #0096c7 !important;

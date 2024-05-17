@@ -73,14 +73,25 @@ class CategoriesController extends Controller
 
             foreach ($data as $key => $value) {
                 $value->slot_count = \App\Models\Slot::where('category_id', $value->id)->count();
-                $slots = \App\Models\Slot::where('category_id', $value->id)
-                    ->select('start_date', DB::raw('COUNT(*) as slot_count'), DB::raw('"' . $value->name . '" as category_name'), DB::raw('"' . $value->id . '" as id'))
-                    ->groupBy('start_date')
-                    ->get();
-
-                if ($slots->isNotEmpty()) {
-                    $list = array_merge($list, $slots->toArray());
+                $value->dates = \App\Models\Slot::where('category_id', $value->id)->select('start_date')->groupBy('start_date')->get();
+                foreach ($value->dates as $key => $date) {
+                    $date->slots = \App\Models\Slot::where('category_id', $value->id)->where('start_date', $date->start_date)->get();
+                    $date->slots->map(function ($item) {
+                        $item->slot_time = $item->start_time . " - " . $item->end_time;
+                        $item->slot_date = $item->start_date . " - " . $item->end_date;
+                        $item->days = explode(',', $item->days);
+                        return $item;
+                    });
                 }
+                // $slots = \App\Models\Slot::where('category_id', $value->id)
+                //     ->select('start_date', DB::raw('COUNT(*) as slot_count'), DB::raw('"' . $value->name . '" as category_name'), DB::raw('"' . $value->id . '" as id'))
+                //     ->groupBy('start_date')
+                //     ->get();
+
+                // if ($slots->isNotEmpty()) {
+                //     $list = array_merge($list, $slots->toArray());
+                // }
+                $list[] = $value;
             }
             return response()->json([
                 'success' => true,
