@@ -8,7 +8,6 @@ use Nette\Utils\Arrays;
 
 class SlotsController extends Controller
 {
-    //
     public function add(Request $request)
     {
         try {
@@ -212,21 +211,26 @@ class SlotsController extends Controller
         try {
             // get day from date
             $date = strtotime($request->date);
-            $date = date('Y-m-d', $date);
-            $data = \App\Models\Slot::where(
-                'category_id',
-                $request->id
-            )->with('category')->get();
-
-            $data->map(function ($item) {
-                // $item->time = explode('-', $item->time);
-                $item->days = explode(',', $item->days);
-                // $item->slotdate = explode(',', $item->slotdate);
-                return $item;
-            });
+            $date = date('Y-m-d', $date);  
+            $data = \App\Models\Category::where('id',$request->id)->get();
+            $list = [];
+            foreach ($data as $key => $value) {
+                $value->slot_count = \App\Models\Slot::where('category_id', $value->id)->count();
+                $value->dates = \App\Models\Slot::where('category_id', $value->id)->select('start_date')->groupBy('start_date')->get();
+                foreach ($value->dates as $key => $date) {
+                    $date->slots = \App\Models\Slot::where('category_id', $value->id)->where('start_date', $date->start_date)->get();
+                    $date->slots->map(function ($item) {
+                        $item->slot_time = $item->start_time . " - " . $item->end_time;
+                        $item->slot_date = $item->start_date . " - " . $item->end_date;
+                        $item->days = explode(',', $item->days);
+                        return $item;
+                    });
+                }
+                $list[] = $value;
+            }
             return response()->json([
                 'success' => true,
-                'slots' => $data
+                'slots' => $list
             ]);
         } catch (\Exception $e) {
             // Handle the exception

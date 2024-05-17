@@ -40,8 +40,6 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
-
-
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -122,23 +120,8 @@ export default {
     };
   },
   mounted() {
-    //this.getSlots();
     this.getCategories();
   },
-  //  watch: {
-  //       options: {
-  //           handler() {
-  //               this.initialize()
-  //           },
-  //           deep: true,
-  //       },
-  //       search: {
-  //           handler() {
-  //               this.getSlots()
-  //           },
-  //           deep: true,
-  //       },
-  //   },
   methods: {
     fomartdate(date) {
       return moment(date).format("DD MMM YYYY (dddd)");
@@ -167,43 +150,7 @@ export default {
         console.error(error);
       }
     },
-    async handleClick(id, startdate) {
 
-      this.selectedId = id;
-      this.selecteddate = startdate;
-      try {
-        const response = await axios
-          .get(
-            "/api/admin/slots/slotwithcatId?id=" +
-            id +
-            "&date=" +
-            this.selecteddate +
-            "&page=" +
-            this.options.page +
-            "&limit=" +
-            this.options.itemsPerPage +
-            "&search=" +
-            this.search
-          )
-          .then((response) => {
-            // console.log(response);
-            this.slots = response.data.slots;
-          });
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    // async getSlots() {
-    //   try {
-    //     const response = await axios
-    //       .get('/api/admin/slots/all?page=' + this.options.page + '&limit=' + this.options.itemsPerPage + '&search=' + this.search)
-    //       .then((response) => {
-    //         this.slots = response.data.slots.data;
-    //       });
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // },
     async deleteSlot(slot) {
       const ok = await this.$refs.confirm.open({
         title: "Are you sure?",
@@ -226,7 +173,7 @@ export default {
                 duration: 2000,
               });
             });
-          this.handleClick(this.selectedId);
+         this.getCategories();
         } catch (error) {
           console.error(error);
         }

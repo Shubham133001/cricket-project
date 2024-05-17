@@ -8,13 +8,12 @@
             <v-card-text>
               <v-data-table :headers="headers" :items="invoice" item-key="id" class="elevation-1">
                 <template v-slot:item.status="{ item }">
-                  <v-btn v-if="item.status =='Paid'" color="blue" dark rounded>{{item.status}}</v-btn>
-                  <v-btn v-if="item.status =='Unpaid'" color="red" dark rounded>{{item.status}}</v-btn>
-                  <v-btn v-if="item.status =='Partial Paid'" color="warning" dark rounded>{{item.status}}</v-btn>
+                  <v-chip v-if="item.status == 'Paid'" color="success" dark rounded>{{ item.status }}</v-chip>
+                  <v-chip v-if="item.status == 'Unpaid'" color="red" dark rounded>{{ item.status }}</v-chip>
+                  <v-chip v-if="item.status == 'Partial Paid'" color="warning" dark rounded>{{ item.status }}</v-chip>
                 </template>
                 <template v-slot:item.action="{ item }">
-                  <v-btn color="green" dark rounded
-                    @click="viewInvoice(item.id)">View Invoice</v-btn>
+                  <v-btn color="primary" dark @click="viewInvoice(item.id)">View Invoice</v-btn>
                 </template>
               </v-data-table>
             </v-card-text>
@@ -51,7 +50,7 @@ export default {
         text: 'Item',
         sortable: false,
         value: 'items[0].description'
-        
+
       },
       {
         text: 'Amount',
@@ -70,7 +69,7 @@ export default {
       },
       {
         text: 'Date',
-      // sortable: false,
+        // sortable: false,
         value: 'created_at'
       },
       {
@@ -88,10 +87,10 @@ export default {
   methods: {
     async viewInvoice(id) {
       this.$router.push({
-            path: '/invoice/'+id,
-        });
+        path: '/invoice/' + id,
+      });
     },
-    
+
     async getInvoice() {
       await axios.get('/api/user/invoice', {}).then(response => {
         // console.log(response.data);

@@ -270,13 +270,6 @@ export default {
             axios.post('/api/admin/bookings/list', { options: this.options, search: this.search, page: this.options.page })
                 .then(response => {
                     let bookings = response.data.bookings.data;
-
-                    let newbookings = [];
-                    // bookings.forEach(booking => {
-                    //     booking.date = moment(booking.date).format('YYYY-MM-DD');
-                    //     booking.time = moment(booking.time, 'HH:mm:ss').format('hh:mm A');
-                    //     newbookings.push(booking);
-                    // });
                     this.bookings = bookings;
                     this.totalbookings = response.data.bookings.total;
                     this.loading = false;
