@@ -58,7 +58,7 @@
                                             </v-col>
                                             <v-col cols="12" md="2">
                                                 <v-text-field type="number" v-model="slot.bookings_allowed"
-                                                    label="Bookings Per Slot"></v-text-field>
+                                                    label="Bookings Per Slot" :max="2" :min="0"></v-text-field>
                                             </v-col>
                                             <v-col cols="12" md="2">
                                                 <v-select v-model="slot.time_start" :items="time"
@@ -70,10 +70,10 @@
                                             </v-col>
                                             <v-col cols="12" md="2">
                                                 <v-text-field type="number" v-model="slot.advanceprice"
-                                                    label="Advance Price" value="0"></v-text-field>
+                                                    label="Advance Price" :min="1" value="0"></v-text-field>
                                             </v-col>
                                             <v-col cols="12" md="2">
-                                                <v-text-field type="number" v-model="slot.price" label="Price"
+                                                <v-text-field type="number" :min="1" v-model="slot.price" label="Price"
                                                     value="0"></v-text-field>
                                             </v-col>
 

@@ -156,7 +156,7 @@ export default {
     async getSlots() {
       try {
         const response = await axios
-          .post("/api/admin/slots/list", { id: this.$route.params.id })
+          .post("/api/admin/slots/slotsforcategory", { id: this.$route.params.id })
           .then((response) => {
             this.slots = response.data.slots;
           });

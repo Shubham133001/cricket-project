@@ -40,13 +40,12 @@
                                         <template v-slot:default="{ active }">
                                             <v-list-item-action>
 
-                                                <v-checkbox v-model="selection"
+                                                Half<v-checkbox v-model="selection"
                                                     :disabled="slot.bookings.length >= slot.bookings_allowed" multiple
-                                                    :value="slot" @change="addbookings(slot, $event)"></v-checkbox>
-                                                <!-- <v-checkbox v-model="selection"
+                                                    :value="slot" @change="addbookings(slot, $event,'half')"></v-checkbox>
+                                                Full<v-checkbox v-model="selection"
                                                     :disabled="slot.bookings.length >= slot.bookings_allowed" multiple
-                                                    :value="slot" @change="addallbookings(slot, $event)"></v-checkbox> -->
-
+                                                    :value="slot" @change="addbookings(slot, $event,'full')"></v-checkbox>      
                                             </v-list-item-action>
                                             <v-list-item-content style="border-bottom: solid 1px #ececec">
 
@@ -645,6 +644,8 @@ export default {
         selectdate() {
             this.slots = [];
             this.slots = this.selecteditem.slots;
+
+            
             // this.getUserLogin();
         },
         getgateways() {
