@@ -8,7 +8,6 @@ use Nette\Utils\Arrays;
 
 class SlotsController extends Controller
 {
-    //
     public function add(Request $request)
     {
         try {
@@ -212,23 +211,9 @@ class SlotsController extends Controller
         try {
             // get day from date
             $date = strtotime($request->date);
-            $date = date('Y-m-d', $date);
-            // $data = \App\Models\Slot::where(
-            //     'category_id',
-            //     $request->id
-            // )->with('category')->get();
-
-            // $data->map(function ($item) {
-            //     $item->days = explode(',', $item->days);
-            //     return $item;
-            // });
-            // echo "<pre>";
-            // print_r($request->id); die;    
+            $date = date('Y-m-d', $date);  
             $data = \App\Models\Category::where('id',$request->id)->get();
-            // echo "<pre>";
-            // print_r($data); die;
             $list = [];
-
             foreach ($data as $key => $value) {
                 $value->slot_count = \App\Models\Slot::where('category_id', $value->id)->count();
                 $value->dates = \App\Models\Slot::where('category_id', $value->id)->select('start_date')->groupBy('start_date')->get();

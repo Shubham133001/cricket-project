@@ -200,7 +200,7 @@ class CommonController extends Controller
                 $resp->orderBy($options['sortBy'][0], $options['sortDesc'] ? 'desc' : 'asc');
             }
             $data = $resp->paginate($limit);
-
+            
             return response()->json([
                 'success' => true,
                 'bookings' => $data
