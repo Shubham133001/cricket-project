@@ -198,8 +198,8 @@
                                                 :src="'/storage/uploads/team/' + booking.team.image"
                                                 v-if="booking.team.image != ''" class="align-center" />
                                             <span class="headline text-h1" v-else>{{
-                    booking.team.name.charAt(0)
-                }}</span>
+                                                booking.team.name.charAt(0)
+                                                }}</span>
                                         </v-avatar>
                                         <h3 style="float: left; clear: right" class="mt-0 ml-1">
                                             {{ booking.team.name }}<br /><v-chip color="orange" dark small
@@ -332,6 +332,9 @@ export default {
     created() {
         EventBus.$on("isUserLogin", (status) => {
             this.isUserlogin = status;
+            this.userdetails = localStorage.getItem("userdetails");
+            this.getuserteam();
+            this.getusercredits();
         });
     },
     methods: {

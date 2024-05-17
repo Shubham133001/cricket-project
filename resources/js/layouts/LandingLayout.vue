@@ -2,10 +2,7 @@
   <div>
     <v-app-bar flat height="80">
       <v-container class="py-0 px-0 px-sm-2 fill-height">
-        <router-link
-          to="/"
-          class="d-flex align-center text-decoration-none mr-2"
-        >
+        <router-link to="/" class="d-flex align-center text-decoration-none mr-2">
           <img :src="storeDetails.logo" height="36" />
           <h1 v-if="storeDetails.logo == null">{{ storeDetails.name }}</h1>
         </router-link>
@@ -13,21 +10,10 @@
         <v-spacer></v-spacer>
 
         <div class="d-none d-md-block">
-          <v-menu
-            offset-y
-            left
-            transition="slide-y-transition"
-            v-if="isUserlogin == true"
-          >
+          <v-menu offset-y left transition="slide-y-transition" v-if="isUserlogin == true">
             <template v-slot:activator="{ on }">
               <v-btn icon class="elevation-2" v-on="on">
-                <v-badge
-                  color="success"
-                  dot
-                  bordered
-                  offset-x="10"
-                  offset-y="10"
-                >
+                <v-badge color="success" dot bordered offset-x="10" offset-y="10">
                   <v-avatar size="40">
                     <v-img src="/images/avatars/avatar1.svg"></v-img>
                   </v-avatar>
@@ -78,42 +64,19 @@
               </v-list-item>
             </v-list>
           </v-menu>
-          <v-btn text @click="openlogindialog = true" v-else
-            ><v-avatar
-              color=""
-              x-small
-              style="min-width: 28px; max-width: 28px"
-              class="mr-1"
-            >
+          <v-btn text @click="openlogindialog = true" v-else><v-avatar color="" x-small
+              style="min-width: 28px; max-width: 28px" class="mr-1">
               <v-icon dark> mdi-account-circle </v-icon>
             </v-avatar>
-            Login</v-btn
-          >
+            Login</v-btn>
         </div>
       </v-container>
     </v-app-bar>
-    <v-navigation-drawer
-      v-model="openlogindialog"
-      app
-      temporary
-      right
-      style="max-width: 450px"
-      width="80%"
-    >
-      <v-img
-        src="/images/sportsbg.png"
-        lazy-src="https://picsum.photos/id/11/10/6"
-        height="80px"
-        class="white--text align-start"
-        style="opacity: 0.5"
-        gradient="to bottom, rgba(255,255,255,.8), rgba(255,255,255,1)"
-      >
-        <v-btn
-          icon
-          @click="openlogindialog = false"
-          class="black--text"
-          style="float: right"
-        >
+    <v-navigation-drawer v-model="openlogindialog" app temporary right style="max-width: 450px" width="80%">
+      <v-img src="/images/sportsbg.png" lazy-src="https://picsum.photos/id/11/10/6" height="80px"
+        class="white--text align-start" style="opacity: 0.5"
+        gradient="to bottom, rgba(255,255,255,.8), rgba(255,255,255,1)">
+        <v-btn icon @click="openlogindialog = false" class="black--text" style="float: right">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-img>
@@ -123,18 +86,9 @@
 
       <v-row v-if="haveaccount">
         <v-col cols="12" md="12" class="pl-6 pr-6">
-          <v-text-field
-            label="Email"
-            v-model="booking.email"
-            outlined
-          ></v-text-field>
+          <v-text-field label="Email" v-model="booking.email" outlined></v-text-field>
 
-          <v-text-field
-            label="Password"
-            type="password"
-            outlined
-            v-model="booking.password"
-          ></v-text-field>
+          <v-text-field label="Password" type="password" outlined v-model="booking.password"></v-text-field>
           <p class="text-center">
             Don't have an account?
             <v-btn text @click="haveaccount = false" small>Register</v-btn>
@@ -144,43 +98,13 @@
       </v-row>
       <v-row v-else>
         <v-col cols="12" md="12" class="pl-6 pr-6">
-          <v-text-field
-            label="Name"
-            v-model="booking.name"
-            outlined
-            required
-          ></v-text-field>
-          <v-text-field
-            label="Phone"
-            v-model="booking.phone"
-            outlined
-          ></v-text-field>
-          <v-text-field
-            label="Team name"
-            v-model="booking.team.name"
-            outlined
-            required
-          ></v-text-field>
-          <v-select
-            label="Team Skill"
-            v-model="booking.team.designation"
-            outlined
-            :items="designations"
-            required
-          ></v-select>
-          <v-text-field
-            label="Email"
-            v-model="booking.email"
-            outlined
-            required
-          ></v-text-field>
-          <v-text-field
-            label="Password"
-            type="password"
-            outlined
-            v-model="booking.password"
-            required
-          ></v-text-field>
+          <v-text-field label="Name" v-model="booking.name" outlined required></v-text-field>
+          <v-text-field label="Phone" v-model="booking.phone" outlined></v-text-field>
+          <v-text-field label="Team name" v-model="booking.team.name" outlined required></v-text-field>
+          <v-select label="Team Skill" v-model="booking.team.designation" outlined :items="designations"
+            required></v-select>
+          <v-text-field label="Email" v-model="booking.email" outlined required></v-text-field>
+          <v-text-field label="Password" type="password" outlined v-model="booking.password" required></v-text-field>
           <p class="text-center">
             Already have an account?
             <v-btn text @click="haveaccount = true" small>Login</v-btn>
@@ -195,33 +119,19 @@
 
       <v-footer color="transparent">
         <v-container class="py-5">
-          <v-row
-            style="display: flex; justify-content: center; align-items: center"
-          >
+          <v-row style="display: flex; justify-content: center; align-items: center">
             <v-col cols="12" md="4">
               <div class="text-h6 text-lg-h5 font-weight-bold">
                 Contact Information
               </div>
               <div style="width: 80px; height: 2px" class="mb-5 mt-1 primary" />
-              <div
-                class="d-flex mb-2 font-weight-bold"
-                v-if="storeDetails.address != ''"
-              >
-                <v-icon color="primary lighten-1" class="mr-2"
-                  >mdi-map-marker-outline</v-icon
-                >
+              <div class="d-flex mb-2 font-weight-bold" v-if="storeDetails.address != ''">
+                <v-icon color="primary lighten-1" class="mr-2">mdi-map-marker-outline</v-icon>
                 {{ storeDetails.address }}
               </div>
-              <div
-                class="d-flex mb-2 font-weight-bold"
-                v-if="storeDetails.contact != ''"
-              >
-                <v-icon color="primary lighten-1" class="mr-2"
-                  >mdi-phone-outline</v-icon
-                >
-                <a href="#" class="text-decoration-none text--primary"
-                  >Mobile: {{ storeDetails.contact }}</a
-                >
+              <div class="d-flex mb-2 font-weight-bold" v-if="storeDetails.contact != ''">
+                <v-icon color="primary lighten-1" class="mr-2">mdi-phone-outline</v-icon>
+                <a href="#" class="text-decoration-none text--primary">Mobile: {{ storeDetails.contact }}</a>
               </div>
             </v-col>
           </v-row>
@@ -357,9 +267,9 @@ export default {
             type: "success",
             duration: 5000,
           });
-          this.$router.push({
-            path: "/",
-          });
+          // this.$router.push({
+          //   path: "/",
+          // });
           // reload the vue
           // location.reload();
         } else {
@@ -400,9 +310,10 @@ export default {
               type: "success",
               duration: 5000,
             });
-            this.$router.push({
-              path: "/",
-            });
+            EventBus.$emit("isUserLogin", true);
+            // this.$router.push({
+            //   path: "/",
+            // });
             // reload the vue
             // location.reload();
           } else {
@@ -443,7 +354,7 @@ export default {
           //   path: "/",
           // });
           // reload the vue
-           location.reload();
+          location.reload();
         })
         .catch((error) => {
           localStorage.removeItem("userdetails");
