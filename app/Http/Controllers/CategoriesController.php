@@ -83,14 +83,6 @@ class CategoriesController extends Controller
                         return $item;
                     });
                 }
-                // $slots = \App\Models\Slot::where('category_id', $value->id)
-                //     ->select('start_date', DB::raw('COUNT(*) as slot_count'), DB::raw('"' . $value->name . '" as category_name'), DB::raw('"' . $value->id . '" as id'))
-                //     ->groupBy('start_date')
-                //     ->get();
-
-                // if ($slots->isNotEmpty()) {
-                //     $list = array_merge($list, $slots->toArray());
-                // }
                 $list[] = $value;
             }
             return response()->json([

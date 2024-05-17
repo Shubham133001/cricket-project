@@ -213,20 +213,39 @@ class SlotsController extends Controller
             // get day from date
             $date = strtotime($request->date);
             $date = date('Y-m-d', $date);
-            $data = \App\Models\Slot::where(
-                'category_id',
-                $request->id
-            )->with('category')->get();
+            // $data = \App\Models\Slot::where(
+            //     'category_id',
+            //     $request->id
+            // )->with('category')->get();
 
-            $data->map(function ($item) {
-                // $item->time = explode('-', $item->time);
-                $item->days = explode(',', $item->days);
-                // $item->slotdate = explode(',', $item->slotdate);
-                return $item;
-            });
+            // $data->map(function ($item) {
+            //     $item->days = explode(',', $item->days);
+            //     return $item;
+            // });
+            // echo "<pre>";
+            // print_r($request->id); die;    
+            $data = \App\Models\Category::where('id',$request->id)->get();
+            // echo "<pre>";
+            // print_r($data); die;
+            $list = [];
+
+            foreach ($data as $key => $value) {
+                $value->slot_count = \App\Models\Slot::where('category_id', $value->id)->count();
+                $value->dates = \App\Models\Slot::where('category_id', $value->id)->select('start_date')->groupBy('start_date')->get();
+                foreach ($value->dates as $key => $date) {
+                    $date->slots = \App\Models\Slot::where('category_id', $value->id)->where('start_date', $date->start_date)->get();
+                    $date->slots->map(function ($item) {
+                        $item->slot_time = $item->start_time . " - " . $item->end_time;
+                        $item->slot_date = $item->start_date . " - " . $item->end_date;
+                        $item->days = explode(',', $item->days);
+                        return $item;
+                    });
+                }
+                $list[] = $value;
+            }
             return response()->json([
                 'success' => true,
-                'slots' => $data
+                'slots' => $list
             ]);
         } catch (\Exception $e) {
             // Handle the exception
