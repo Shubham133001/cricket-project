@@ -31,12 +31,25 @@
                     </v-card>
                     <v-card class="mx-auto mt-2" :loading="loadingslots" v-if="timeperiod != ''">
                         <v-card-title class="text-h5">Available Slots</v-card-title>
+                        <v-divider class="mt-0 pb-0"></v-divider>
                         <v-card-text v-if="slots.length > 0">
                             <v-list dense two-line>
                                 <v-list-item-group>
                                     <v-list-item v-for="(slot, index) in slots" :key="index">
+
                                         <template v-slot:default="{ active }">
-                                            <v-list-item-content>
+                                            <v-list-item-action>
+
+                                                <v-checkbox v-model="selection"
+                                                    :disabled="slot.bookings.length >= slot.bookings_allowed" multiple
+                                                    :value="slot" @change="addbookings(slot, $event)"></v-checkbox>
+                                                <!-- <v-checkbox v-model="selection"
+                                                    :disabled="slot.bookings.length >= slot.bookings_allowed" multiple
+                                                    :value="slot" @change="addallbookings(slot, $event)"></v-checkbox> -->
+
+                                            </v-list-item-action>
+                                            <v-list-item-content style="border-bottom: solid 1px #ececec">
+
                                                 <v-list-item-title>
                                                     <p class="text-h6 ma-0">
                                                         {{ slot.title }}
@@ -52,9 +65,10 @@
                     " small dark>Slot(s) {{ slot.bookings.length }}
                                                             /
                                                             {{ slot.bookings_allowed }}</v-chip>
-                                                        <v-btn x-small color="primary"
+                                                        <v-btn small color="primary"
                                                             v-if="slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed"
-                                                            text @click="showbookings(slot)">Booked By</v-btn>
+                                                            style="text-decoration: underline;" text
+                                                            @click="showbookings(slot)">Booked By</v-btn>
                                                     </p>
                                                 </v-list-item-title>
                                                 <!-- <v-list-item-subtitle>
@@ -70,10 +84,7 @@
                                                         Booking</v-btn>
                                                 </v-list-item-subtitle> -->
                                             </v-list-item-content>
-                                            <v-list-item-action>
-                                                <v-checkbox v-model="selection" :disabled="slot.bookings.length >= slot.bookings_allowed
-                    " multiple :value="slot" @change="addbookings(slot, $event)"></v-checkbox>
-                                            </v-list-item-action>
+
                                         </template>
                                     </v-list-item>
                                 </v-list-item-group>
@@ -91,7 +102,8 @@
                         <v-card-text>
                             <p class="text-h5 mt-2">
                                 {{ selecteditem.name }}
-                                {{ this.timeperiod != "" ? "(" + this.timeperiod + ")" : "" }}
+                                {{ this.timeperiod != "" ? " - " + fomartdate(this.timeperiod) + "" : ""
+                                }}
                             </p>
                             <v-divider class="mb-2"> </v-divider>
                             <v-simple-table v-if="selection.length > 0">
@@ -100,10 +112,46 @@
                                         <!-- <v-icon color="primary">mdi-clock</v-icon> -->
                                         Selected Slots
                                     </td>
+                                </tr>
+                                <tr>
                                     <td>
-                                        <v-chip color="" small v-for="slot in selection" :key="slot.id"
-                                            class="mr-1 mb-1" style="font-size: 11px">{{ slot.start_time }} - {{
-                    slot.end_time }}</v-chip>
+                                        <v-simple-table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Slot</th>
+                                                    <th>Advance Price</th>
+                                                    <th>Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="slot in selection" :key="slot.id">
+                                                    <td>
+                                                        {{ slot.title }}<br />
+                                                        {{ slot.start_time + " - " + slot.end_time }}
+                                                    </td>
+                                                    <td>
+                                                        ₹{{ slot.advanceprice }} INR
+                                                    </td>
+                                                    <td>
+                                                        ₹{{ slot.price }} INR
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <tfoot>
+
+                                                <tr>
+                                                    <td>
+                                                        <h3>Sub Total</h3>
+                                                    </td>
+                                                    <td>
+                                                        <h3>₹{{ advanceprice }} INR</h3>
+                                                    </td>
+                                                    <td>
+                                                        <h3>₹{{ totalprice }} INR</h3>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </v-simple-table>
                                     </td>
                                 </tr>
                                 <tr>
@@ -111,7 +159,7 @@
                                         <v-divider class="mt-2 pb-2"></v-divider>
                                     </td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <td colspan="2">
                                         <h3 style="float: left">Slot's Payment</h3>
                                         <span style="float: right">{{ totalprice }}</span>
@@ -121,11 +169,13 @@
                                     <td colspan="2">
                                         <v-divider class="mt-2 pb-2"></v-divider>
                                     </td>
-                                </tr>
+                                </tr> -->
+
+
                                 <tr>
                                     <td colspan="2">
-                                        <h3 style="float: left">Advance Payment</h3>
-                                        <span style="float: right">{{ advanceprice }}</span>
+                                        <h3 style="float: left">Available Credits</h3>
+                                        <span style="float: right">₹{{ credits }} INR</span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -135,8 +185,8 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <h3 style="float: left">Available Credits</h3>
-                                        <span style="float: right">{{ credits }}</span>
+                                        <h3 style="float: left">Total (Amount Payable)</h3>
+                                        <span style="float: right">₹{{ advanceprice }} INR</span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -147,9 +197,9 @@
                                 <tr>
                                     <td colspan="2">
                                         <h3 style="float: left">Balance</h3>
-                                        <span style="float: right">{{
+                                        <span style="float: right">₹{{
                     totalprice - (advanceprice + credits)
-                }}</span>
+                }} INR</span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -168,16 +218,15 @@
                                 </tr>
                             </v-simple-table>
                         </v-card-text>
-                        <v-card-actions style="background: var(--v-primary-base)">
+                        <v-card-actions>
                             <p class="pa-0 ma-0" style="width: 100%; text-align: center; color: #fff">
-                                {{ selection.length }}
-                                Slot(s) Selected
-                                <v-btn color="default" v-if="!isUserlogin" small @click.stop="openlogindialogfun">
-                                    Proceed
+
+                                <v-btn color="primary" v-if="!isUserlogin" @click.stop="openlogindialogfun" block large>
+                                    Proceed <v-icon right>mdi-arrow-right</v-icon>
                                 </v-btn>
-                                <v-btn color="default" v-if="isUserlogin && selection.length > 0" small
+                                <v-btn color="primary" v-if="isUserlogin && selection.length > 0" block large
                                     @click.stop="bookslot">
-                                    Book Now
+                                    Book Now <v-icon right>mdi-arrow-right</v-icon>
                                 </v-btn>
                             </p>
                         </v-card-actions>
@@ -198,7 +247,7 @@
                                                 :src="'/storage/uploads/team/' + booking.team.image"
                                                 v-if="booking.team.image != ''" class="align-center" />
                                             <span class="headline text-h1" v-else>{{
-                                                booking.team.name.charAt(0)
+                    booking.team.name.charAt(0)
                                                 }}</span>
                                         </v-avatar>
                                         <h3 style="float: left; clear: right" class="mt-0 ml-1">
@@ -307,7 +356,7 @@ export default {
                 image: ''
             },
             gateways: [],
-            gateway: '',
+            gateway: 'Phonepe',
         }
     },
     watch: {
@@ -338,6 +387,9 @@ export default {
         });
     },
     methods: {
+        fomartdate(date) {
+            return moment(date).format("DD MMM YYYY (dddd)");
+        },
         opendirection() {
             window.open('https://www.google.com/maps/dir/?api=1&destination=' + this.selecteditem.location, '_blank');
         },
@@ -468,10 +520,18 @@ export default {
             this.bookingform = true;
             this.showbooking = false;
         },
+        addallbookings(slot, event) {
+
+            for (let i = 0; i < slot.bookings_allowed; i++) {
+                this.addbookings(slot, event);
+            }
+
+        },
         addbookings(slot, event) {
             // console.log(slot.bookings.length, slot.bookings_allowed);
 
             let newbookingdata = {
+                random: Math.random(),
                 slot_id: slot.id,
                 category_id: this.selecteditem.id,
                 date: this.timeperiod,
