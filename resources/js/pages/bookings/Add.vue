@@ -40,12 +40,13 @@
                                         <template v-slot:default="{ active }">
                                             <v-list-item-action>
 
-                                                Half<v-checkbox v-model="selection"
+                                                <v-checkbox v-model="selection"
                                                     :disabled="slot.bookings.length >= slot.bookings_allowed" multiple
                                                     :value="slot" @change="addbookings(slot, $event,'half')"></v-checkbox>
-                                                Full<v-checkbox v-model="selection"
-                                                    :disabled="slot.bookings.length >= slot.bookings_allowed" multiple
-                                                    :value="slot" @change="addbookings(slot, $event,'full')"></v-checkbox>      
+                                                    <!-- <v-checkbox
+                                                    :disabled="slot.bookings.length >= slot.bookings_allowed"
+                                                    v-if="slot.bookings.length == 0 && slot.bookings_allowed > 1" multiple
+                                                    :value="slot" @change="bookfullslot(slot, $event)" ></v-checkbox>   -->
                                             </v-list-item-action>
                                             <v-list-item-content style="border-bottom: solid 1px #ececec">
 
@@ -69,6 +70,10 @@
                                                             style="text-decoration: underline;" text
                                                             @click="showbookings(slot)">Booked By</v-btn>
                                                     </p>
+                                                    <v-spacer></v-spacer>
+                                                    <v-switch v-model="slot.bookfull" color="primary" label="Book Full Slot"
+                                                        @change="bookfullslot(slot,$event)" :disabled="slot.bookings.length >= slot.bookings_allowed"
+                                                    v-if="slot.bookings.length == 0 && slot.bookings_allowed > 1 && bookfull[slot.id] == true"></v-switch>
                                                 </v-list-item-title>
                                                 <!-- <v-list-item-subtitle>
                                                     {{ slot.start_time + ' - ' + slot.end_time }}<br />
@@ -241,17 +246,15 @@
                             <v-list-item v-for="booking in bookings" :key="booking.id">
                                 <v-list-item-content>
                                     <v-list-item-title>
-                                        <v-avatar size="50" color="#efefef" style="float: left">
+                                        <v-avatar size="70" color="#efefef" style="float: left">
                                             <v-img :lazy-src="temimagecurrent"
                                                 :src="'/storage/uploads/team/' + booking.team.image"
-                                                v-if="booking.team.image != ''" class="align-center" />
-                                            <span class="headline text-h1" v-else>{{
-                    booking.team.name.charAt(0)
-                                                }}</span>
+                                                v-if="booking.team.image != '' && booking.team.image != null" class="align-center" />
+                                            <span class="headline" style="text-transform: capitalize" v-else>{{ booking.team.name.charAt(0)  }}</span>
                                         </v-avatar>
-                                        <h3 style="float: left; clear: right" class="mt-0 ml-1">
-                                            {{ booking.team.name }}<br /><v-chip color="orange" dark small
-                                                style="font-family: 'Pacifico'">{{ booking.team.designation }}</v-chip>
+                                        <h3 style="float: left; clear: right; text-transform: capitalize;" class="mt-0 ml-1 text-h4">
+                                            {{ booking.team.name }}<br /><v-chip color="orange" dark
+                                                style="font-family: 'Pacifico'" >{{ booking.team.designation }}</v-chip>
                                         </h3>
                                     </v-list-item-title>
                                 </v-list-item-content>
@@ -336,6 +339,7 @@ export default {
             timeperiod: moment().format('YYYY-MM-DD'),
             showbooking: false,
             newbookings: [],
+            bookfull:[],
             booking: {
                 name: '',
                 phone: '',
@@ -357,6 +361,7 @@ export default {
             gateways: [],
             gateway: 'Phonepe',
         }
+    
     },
     watch: {
         // selection: function (val) {
@@ -442,6 +447,7 @@ export default {
                     if (selectedslotsid.length > 0) {
                         selectedslotsid.forEach((slotid) => {
                             this.slots.forEach((slot) => {
+                                this.bookfull[slot.id] = false;
                                 if (slot.id == slotid) {
                                     slot.bookings.pop();
                                 }
@@ -519,10 +525,47 @@ export default {
             this.bookingform = true;
             this.showbooking = false;
         },
-        addallbookings(slot, event) {
+        bookfullslot(slot, event) {
+            // find the index of slot in newbookings
+            let newbookingdata = {
+                random: Math.random(),
+                slot_id: slot.id,
+                category_id: this.selecteditem.id,
+                date: this.timeperiod,
+                qty: 1,
+                // slot: slot,
+                // category: this.selecteditem,
+                advance: slot.advanceprice,
+                credits: this.credits,
+                total: slot.price,
+                time: slot.start_time + " - " + slot.end_time,
+                team_id: this.team.id,
+                team: this.team,
+                user_id: localStorage.getItem("userdetails")
+                    ? JSON.parse(localStorage.getItem("userdetails")).id
+                    : 0,
+            };
+            
+            if (event) {
+                this.advanceprice += parseInt(slot.advanceprice);
+                this.totalprice += parseInt(slot.price);
+                this.newbookings.push(newbookingdata);
+                this.selection.push(slot);
+            } else {
+                this.advanceprice -= parseInt(slot.advanceprice);
+                this.totalprice -= parseInt(slot.price);
+                // find the index of the slot in newbooking and selection and remove only one
+                let index = this.newbookings.findIndex((booking) => booking.slot_id == slot.id);
+                this.newbookings.splice(index, 1);
+                
+                index = this.selection.findIndex((item) => item.id == slot.id);
+                this.selection.splice(index, 1);
 
-            for (let i = 0; i < slot.bookings_allowed; i++) {
-                this.addbookings(slot, event);
+                
+                // this.newbookings = this.newbookings.filter(
+                //     (booking) => booking.slot_id != slot.id
+                // );
+                // this.selection = this.selection.filter((item) => item.id != slot.id);
             }
 
         },
@@ -534,6 +577,7 @@ export default {
                 slot_id: slot.id,
                 category_id: this.selecteditem.id,
                 date: this.timeperiod,
+                qty: 1,
                 // slot: slot,
                 // category: this.selecteditem,
                 advance: slot.advanceprice,
@@ -554,7 +598,9 @@ export default {
             this.advanceprice = 0;
             this.totalprice = 0;
             this.newbookings = [];
+            this.bookfull = [];
             this.selection.forEach((booking) => {
+                this.bookfull[booking.id] = true;
                 this.advanceprice += parseInt(booking.advanceprice);
                 this.totalprice += parseInt(booking.price);
                 this.newbookings.push(newbookingdata);
