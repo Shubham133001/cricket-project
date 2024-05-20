@@ -67,11 +67,17 @@ class UsersController extends Controller
             $data->save();
 
             // add team
-            if (isset($request->team)) {
+            if ($request->team_name) {
                 $team = new \App\Models\Team();
                 $team->user_id = $data->id;
-                $team->name = $request->team->name;
-                $team->designation = $request->team->designation;
+                $team->name = $request->team_name;
+                $team->description = $request->description;
+                $team->experience = $request->experience;
+                $team->designation = $request->designation;
+                if ($request->hasFile('image')) {
+                    $path = $this->uploadTeamImage($request->file('image'));
+                    $team->image = $path;
+                }
                 $team->save();
             }
             return response()->json([

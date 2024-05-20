@@ -18,16 +18,6 @@
 
     <div class="my-2">
       <div>
-        <!-- <v-card v-if="!user.status" class="warning mb-4" light>
-          <v-card-title>User Disabled</v-card-title>
-          <v-card-subtitle>This user has been disabled! Login accesss has been revoked.</v-card-subtitle>
-          <v-card-text>
-            <v-btn dark @click="user.status = true">
-              <v-icon left small>mdi-account-check</v-icon>Enable User
-            </v-btn>
-          </v-card-text>
-        </v-card> -->
-
         <v-card :loading="loadingdata">
           <v-card-title>Basic Information</v-card-title>
           <v-card-text>
@@ -51,12 +41,73 @@
                   </div> -->
                 </div>
 
-                <div class="mt-2">
-                  <v-btn color="primary" @click="adduser">Add</v-btn>
-                </div>
+                
               </div>
             </div>
           </v-card-text>
+        </v-card>
+        <v-card>
+          <v-card-title>Team Information</v-card-title>
+            <v-card-text>
+              <div class="d-flex flex-column flex-sm-row">
+                <v-hover v-slot:default="{ hover }">
+                  <v-avatar
+                    :size="150"
+                    :color="hover ? 'primary' : ''"
+                    color="#cccccc"
+                  >
+                    <v-img
+                      :lazy-src="temimagecurrent"
+                      :src="'/storage/' + user.team.image"
+                      v-if="user.team.image != '' && user.team.image != null"
+                      class="align-center"
+                    />
+                    <span class="headline text-h1" v-else>{{
+                      user.team.name.charAt(0)
+                    }}</span>
+                    <v-fade-transition>
+                      <v-overlay v-if="hover" absolute color="#036358">
+                        <v-btn icon fab small @click="handleFileImport"
+                          ><v-icon>mdi-pencil</v-icon></v-btn
+                        >
+                      </v-overlay>
+                    </v-fade-transition>
+                  </v-avatar>
+                </v-hover>
+                <div class="flex-grow-1 pt-2 pa-sm-2">
+                  <input
+                    type="file"
+                    ref="uploader"
+                    style="display: none"
+                    @change="onfilechange"
+                  />
+                  <v-text-field
+                    v-model="user.team.name"
+                    label="Team Name"
+                    placeholder="name"
+                    outlined
+                  ></v-text-field>
+                  <v-select
+                    v-model="user.team.designation"
+                    :items="designations"
+                    outlined
+                    label="Designation"
+                  ></v-select>
+                  <v-text-field
+                    v-model="user.team.experience"
+                    label="Experience (How old is your team?)"
+                    outlined
+                  ></v-text-field>
+                  
+                  <v-textarea v-model="user.team.description" outlined label="Description"></v-textarea>
+                  <div class="d-flex flex-column mt-2">
+                  </div>
+                </div>
+              </div>
+              <div class="mt-2">
+                  <v-btn color="primary" @click="adduser">Add</v-btn>
+                </div>
+            </v-card-text>
         </v-card>
       </div>
     </div>
@@ -101,9 +152,18 @@ export default {
         'email': '',
         'name': '',
         'password': null,
-        'confirm_password': ''
+        'confirm_password': '',
+        'team':{
+          "name": '',
+          "image": '',
+          "designation": '',
+          "description": '',
+          "experience": '',
+        }
       },
       loadingdata: false,
+      temimagecurrent: "",
+      designations: ["Beginner", "Intermediate", "Expert"],
       tab: null,
       askpassword: false,
       breadcrumbs: [{
@@ -121,6 +181,19 @@ export default {
 
   },
   methods: {
+     onfilechange(e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      const files = e.target.files[0];
+      this.user.team.image = files;
+      reader.onload = (e) => {
+        this.temimagecurrent = e.target.result;
+      };
+    },
+    handleFileImport() {
+      this.$refs.uploader.click();
+    },
     async adduser() {
 
       if (!this.user.email || !this.user.name || !this.user.password) {
@@ -135,7 +208,20 @@ export default {
         }).goAway(2000);
         return;
       }
-      await axios.post('/api/admin/user/add', this.user).then(response => {
+
+      let formdata = new FormData();
+      //formdata.append("id", this.user.id);
+      formdata.append("name", this.user.name);
+      formdata.append("email", this.user.email);
+      formdata.append("phone", this.user.phone);
+      formdata.append("password", this.user.password);
+      formdata.append("team_name", this.user.team.name);
+      formdata.append("designation", this.user.team.designation);
+      formdata.append("experience", this.user.team.experience);
+      formdata.append("description", this.user.team.description);
+      formdata.append("image", this.user.team.image);
+
+      await axios.post('/api/admin/user/add', formdata).then(response => {
         // console.log(response.data.userdata);
         if (response.data.success) {
           // response.data.userdata.status = (response.data.userdata.status == 1) ? true : false;
