@@ -21,8 +21,9 @@ class CategoriesController extends Controller
             //check if image is present
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
+                
                 foreach ($image as $img) {
-                    $name = time() . '.' . $img->getClientOriginalExtension();
+                    $name = $img->getClientOriginalName() . '.' . $img->getClientOriginalExtension();
                     $destinationPath = storage_path('app/public/images');
 
                     $img->move(
@@ -166,8 +167,9 @@ class CategoriesController extends Controller
 
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                foreach ($image as $img) {
-                    $name = time() . '.' . $img->getClientOriginalExtension();
+                
+                foreach ($image as $k =>$img) {
+                    $name = $img->getClientOriginalName() . '.' . $img->getClientOriginalExtension();
                     $destinationPath = storage_path('app/public/images');
 
                     $img->move($destinationPath, $name);

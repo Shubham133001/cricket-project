@@ -56,7 +56,6 @@ Route::group(['prefix' => 'admin'], function () {
         //Global Routes
         Route::get('/me', [App\Http\Controllers\AdminAuthController::class, 'me'])->name('admin.me');
 
-
        // Route::get('/getadmins', [App\Http\Controllers\AdminContoller::class, 'getadmins'])->name('admin.getadmins');
         Route::post('/addadminuser', [App\Http\Controllers\AdminContoller::class, 'addadminuser'])->name('admin.addadminuser');
         Route::post('/updateadminuser/{id}', [App\Http\Controllers\AdminContoller::class, 'updateadminuser'])->name('admin.updateadminuser');

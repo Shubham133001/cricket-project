@@ -117,6 +117,7 @@
                           label="Advance Price"
                           :min="1"
                           value="1"
+                         
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" md="2">
@@ -126,6 +127,7 @@
                           v-model="slot.price"
                           label="Price"
                           value="0"
+                      
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -604,6 +606,8 @@ export default {
     },
 
     async saveslots() {
+       // console.log(this.slot.price,"slotada");
+         if (this.$refs.form.validate()) {
       await axios
         .post("/api/admin/slots/add", {
           slots: this.slots,
@@ -626,6 +630,7 @@ export default {
             duration: 2000,
           });
         });
+    }
     },
   },
 };
