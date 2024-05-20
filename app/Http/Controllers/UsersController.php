@@ -14,8 +14,6 @@ class UsersController extends Controller
     {
         try {
             if (!auth()->check()) {
-                // validate user
-
                 $userauth = new UserAuthController();
                 $user = $userauth->signin($request);
                 $resp = $user->getData();
@@ -62,7 +60,6 @@ class UsersController extends Controller
             }
 
             $data = new \App\Models\User();
-
             $data->name = $request->name;
             $data->email = $request->email;
             $data->password = bcrypt($request->password);
@@ -96,7 +93,6 @@ class UsersController extends Controller
             $limit = $options['itemsPerPage'] ?? 10;
             $page = $request->page ?? 1;
             $search = $request->search ?? '';
-
             $resp = \App\Models\User::with('team')
                 ->where(function ($query) use ($search) {
                     if ($search) {
@@ -199,7 +195,6 @@ class UsersController extends Controller
 
     public function deleteuser(Request $request)
     {
-
         try {
             $data = \App\Models\User::find($request->id);
             $team = \App\Models\Team::where('user_id', $request->id)->first();
@@ -251,13 +246,8 @@ class UsersController extends Controller
         }
     }
 
-
-
     public function bookingdetails(Request $request)
     {
-        // echo "<pre>";
-        // print_r($request->all());
-        // die('sgfsgfsf');
         try {
             if (!auth()->user()) {
                 return response()->json([
