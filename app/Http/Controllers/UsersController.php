@@ -70,11 +70,13 @@ class UsersController extends Controller
             $data->save();
 
             // add team
-            $team = new \App\Models\Team();
-            $team->user_id = $data->id;
-            $team->name = $request->team->name;
-            $team->designation = $request->team->designation;
-            $team->save();
+            if (isset($request->team)) {
+                $team = new \App\Models\Team();
+                $team->user_id = $data->id;
+                $team->name = $request->team->name;
+                $team->designation = $request->team->designation;
+                $team->save();
+            }
             return response()->json([
                 'success' => true,
                 'data' => $data
@@ -94,14 +96,14 @@ class UsersController extends Controller
             $limit = $options['itemsPerPage'] ?? 10;
             $page = $request->page ?? 1;
             $search = $request->search ?? '';
-            
+
             $resp = \App\Models\User::with('team')
                 ->where(function ($query) use ($search) {
                     if ($search) {
                         $query
-                        ->whereHas('team', function ($userQuery) use ($search) {
-                            $userQuery->where('name', 'like', '%' . $search . '%');
-                        })
+                            ->whereHas('team', function ($userQuery) use ($search) {
+                                $userQuery->where('name', 'like', '%' . $search . '%');
+                            })
                             ->orWhere('name', 'like', '%' . $search . '%')
                             ->orWhere('email', 'like', '%' . $search . '%')
                             ->orWhere('created_at', 'like', '%' . $search . '%');
@@ -109,17 +111,17 @@ class UsersController extends Controller
                 })
                 ->orderByDesc('created_at')
                 ->paginate($limit);
-            
-            foreach($resp as $user){
-                $credit =  \App\Models\Credittransaction::where(['credit_type'=> 1 , 'user_id'=>$user->id])->sum('amount');
-                $debit =  \App\Models\Credittransaction::where(['credit_type'=> 2 , 'user_id'=>$user->id])->sum('amount');
+
+            foreach ($resp as $user) {
+                $credit =  \App\Models\Credittransaction::where(['credit_type' => 1, 'user_id' => $user->id])->sum('amount');
+                $debit =  \App\Models\Credittransaction::where(['credit_type' => 2, 'user_id' => $user->id])->sum('amount');
                 $credits = $credit - $debit;
                 $data = \App\Models\User::with('team')->findOrFail($user->id);
                 $data->credits = $credits;
                 $data->save();
                 $user->credits = $credits;
-            }   
-            
+            }
+
             return response()->json([
                 'success' => true,
                 'users' => $resp
@@ -130,7 +132,6 @@ class UsersController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
-        
     }
 
     public function edituser(Request $request)
@@ -155,7 +156,7 @@ class UsersController extends Controller
 
     public function updateuser(Request $request)
     {
-        
+
         try {
             $data = \App\Models\User::find($request->id);
             $password = $request->password;
@@ -165,25 +166,25 @@ class UsersController extends Controller
             $data->name = $request->name;
             $data->email = $request->email;
             $data->phone = $request->phone;
-            $credit =  \App\Models\Credittransaction::where(['credit_type'=> 1 , 'user_id'=>$request->id])->sum('amount');
-            $debit =  \App\Models\Credittransaction::where(['credit_type'=> 2 , 'user_id'=>$request->id])->sum('amount');
+            $credit =  \App\Models\Credittransaction::where(['credit_type' => 1, 'user_id' => $request->id])->sum('amount');
+            $debit =  \App\Models\Credittransaction::where(['credit_type' => 2, 'user_id' => $request->id])->sum('amount');
             $data->credits = $credit - $debit;
             $data->update();
-            
-            if($request->team_name){
+
+            if ($request->team_name) {
                 $team = \App\Models\Team::where('user_id', $request->id)->first();
                 $team->name = $request->team_name;
                 $team->description = $request->description;
                 $team->experience = $request->experience;
                 $team->designation = $request->designation;
-            
+
                 if ($request->hasFile('image')) {
                     $path = $this->uploadTeamImage($request->file('image'));
                     $team->image = $path;
                 }
                 $team->save();
             }
-            
+
             return response()->json([
                 'success' => true,
                 'data' => $data
@@ -232,12 +233,12 @@ class UsersController extends Controller
                     'message' => 'User not logged in'
                 ], 401);
             }
-        
+
             $data = \App\Models\Booking::with('user', 'slot', 'team')
                 ->where('user_id', auth()->user()->id)
                 ->orderBy('id', 'desc')
                 ->get();
-        
+
             return response()->json([
                 'success' => true,
                 'bookings' => $data
@@ -264,13 +265,13 @@ class UsersController extends Controller
                     'message' => 'User not logged in'
                 ], 401);
             }
-        
+
             $data = \App\Models\Booking::with('user', 'slot', 'team')
                 ->where('user_id', auth()->user()->id)
                 ->where('invoice_id', $request->id)
                 ->orderBy('id', 'desc')
                 ->first();
-        
+
             return response()->json([
                 'success' => true,
                 'bookings' => $data
@@ -291,23 +292,23 @@ class UsersController extends Controller
                 'message' => 'User not logged in',
             ], 401);
         }
-    
+
         try {
             $user = Auth::user();
             $data = Invoice::with('user', 'booking', 'items')
                 ->where('user_id', $user->id)
                 ->orderBy('id', 'desc')
                 ->get();
-    
+
             $statusMap = [
                 1 => 'Paid',
                 2 => 'Partial Paid',
             ];
-    
+
             $data->each(function ($item) use ($statusMap) {
                 $item->status = $statusMap[$item->status] ?? 'Unpaid';
             });
-    
+
             return response()->json([
                 'success' => true,
                 'invoice' => $data,
@@ -322,11 +323,10 @@ class UsersController extends Controller
 
     public function uploadTeamImage($imagefile)
     {
-       // $file = $imagefile;
+        // $file = $imagefile;
         $extension = $imagefile->getClientOriginalExtension();
         $filename = time() . '.' . $extension;
         $path = $imagefile->storeAs('uploads/team/image/', $filename, 'public');
         return $path;
     }
-
 }
