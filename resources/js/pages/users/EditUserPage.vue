@@ -219,6 +219,13 @@ export default {
         email: "bfitchew0@ezinearticles.com",
         name: "Bartel Fitchew",
         password: null,
+        team:{
+          image:'',
+          name:'',
+          experience:'',
+          description:'',
+          designation:'',
+        }
       },
       designations: ["Beginner", "Intermediate", "Expert"],
       loadingdata: true,
@@ -272,6 +279,7 @@ export default {
         });
     },
     async updateuser() {
+      
       let formdata = new FormData();
       formdata.append("id", this.user.id);
       formdata.append("name", this.user.name);

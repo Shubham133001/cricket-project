@@ -86,6 +86,7 @@
                     label="Team Name"
                     placeholder="name"
                     outlined
+                    :rules="[v => !!v || 'Name is required']" required
                   ></v-text-field>
                   <v-select
                     v-model="user.team.designation"
@@ -204,6 +205,13 @@ export default {
       }
       if (this.user.password != this.user.confirm_password) {
         this.$toasted.show('Password does not match', {
+          type: 'error'
+        }).goAway(2000);
+        return;
+      }
+
+      if (!this.user.team.name) {
+        this.$toasted.show('Team Name Required', {
           type: 'error'
         }).goAway(2000);
         return;
