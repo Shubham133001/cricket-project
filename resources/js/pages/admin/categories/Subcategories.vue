@@ -168,8 +168,8 @@ export default {
                 this.$router.push(`/admin/category/slots/${category.id}`);
             }
         },
-        deleteCategory(category) {
-            const ok = this.$refs.confirm.open({
+       async deleteCategory(category) {
+            const ok =await this.$refs.confirm.open({
                 title: "Are you sure?",
                 message: "Are you sure you want to delete this Sub Category?",
                 okButtonText: "Yes",
@@ -183,7 +183,7 @@ export default {
             });
             if (ok) {
                 try {
-                    axios
+                  await  axios
                         .post("/api/admin/category/delete/", {
                             id: category.id,
                         })

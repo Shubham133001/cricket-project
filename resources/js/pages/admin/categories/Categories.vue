@@ -225,8 +225,8 @@ export default {
                 ? description.substring(0, maxLength) + '...'
                 : description;
             },
-    deleteCategory(category) {
-      const ok = this.$refs.confirm.open({
+   async deleteCategory(category) {
+      const ok = await this.$refs.confirm.open({
         title: "Are you sure?",
         message: "Are you sure you want to delete this Category?",
         okButtonText: "Yes",
@@ -240,7 +240,7 @@ export default {
       });
       if (ok) {
         try {
-          axios
+         await axios
             .post("/api/admin/category/delete/", {
               id: category.id,
             })
