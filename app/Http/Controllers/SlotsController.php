@@ -314,6 +314,7 @@ class SlotsController extends Controller
     public function delete(Request $request)
     {
         try {
+            \App\Models\Booking::where('slot_id',$request->id)->delete();
             $data = \App\Models\Slot::find($request->id);
             $data->delete();
             return response()->json([
