@@ -11,19 +11,10 @@
         <v-btn color="primary" to="/admin/category/add">Add New Category</v-btn>
       </v-card-title>
       <v-card-text>
-        <v-simple-table
-          :headers="headers"
-          :items="categories"
-          item-key="name"
-          class="elevation-0"
-        >
+        <v-simple-table :headers="headers" :items="categories" item-key="name" class="elevation-0">
           <thead style="background: #ececec">
             <tr>
-              <th
-                v-for="header in headers"
-                :key="header.text"
-                :class="`text-${header.align || 'start'}`"
-              >
+              <th v-for="header in headers" :key="header.text" :class="`text-${header.align || 'start'}`">
                 {{ header.text }}
               </th>
             </tr>
@@ -35,33 +26,18 @@
               </td>
               <td>
                 <div class="mt-1 mb-1 categ_image" @click="opencategory(item)">
-                  <v-img
-                    :src="'/storage/images/' + image"
-                    height="200px"
-                    width="350px"
-                    gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                    lazy-src="https://picsum.photos/id/11/350/200"
-                    v-if="item.image == null || item.image == ''"
-                  >
+                  <v-img :src="'/storage/images/' + image" height="200px" width="350px"
+                    gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" lazy-src="https://picsum.photos/id/11/350/200"
+                    v-if="item.image == null || item.image == ''">
                   </v-img>
                   <v-carousel hide-delimiters cycle show-arrows-on-hover v-else>
-                    <v-carousel-item
-                      v-for="(image, i) in item.image"
-                      :key="i"
-                      class="white--text align-center mt-0"
-                    >
-                      <v-img
-                        :src="'/storage/images/' + image"
-                        height="200px"
+                    <v-carousel-item v-for="(image, i) in item.image" :key="i" class="white--text align-center mt-0">
+                      <v-img :src="'/storage/images/' + image" height="200px"
                         gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                        lazy-src="https://picsum.photos/id/11/350/200"
-                      >
+                        lazy-src="https://picsum.photos/id/11/350/200">
                       </v-img>
                     </v-carousel-item>
-                    <h3
-                      class="text-h5 pl-1 pb-1"
-                      style="position: absolute; bottom: 0px; color: #fff"
-                    >
+                    <h3 class="text-h5 pl-1 pb-1" style="position: absolute; bottom: 0px; color: #fff">
                       {{ item.name }}
                     </h3>
                   </v-carousel>
@@ -83,15 +59,7 @@
               <td>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      fab
-                      icon
-                      color="primary"
-                      @click="edit(item)"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
+                    <v-btn small fab icon color="primary" @click="edit(item)" v-bind="attrs" v-on="on">
                       <v-icon small>mdi-pencil</v-icon>
                     </v-btn>
                   </template>
@@ -99,15 +67,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      fab
-                      icon
-                      color="red"
-                      @click="deleteCategory(item)"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
+                    <v-btn small fab icon color="red" @click="deleteCategory(item)" v-bind="attrs" v-on="on">
                       <v-icon small>mdi-delete</v-icon>
                     </v-btn>
                   </template>
@@ -115,15 +75,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      fab
-                      icon
-                      color="info"
-                      @click="viewcategory(item)"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
+                    <v-btn small fab icon color="info" @click="viewcategory(item)" v-bind="attrs" v-on="on">
                       <v-icon small>mdi-format-list-bulleted-square</v-icon>
                     </v-btn>
                   </template>
@@ -131,15 +83,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      icon
-                      fab
-                      color="green"
-                      @click="addslot(item)"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
+                    <v-btn small icon fab color="green" @click="addslot(item)" v-bind="attrs" v-on="on">
                       <v-icon small>mdi-plus</v-icon>
                     </v-btn>
                   </template>
@@ -147,15 +91,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      icon
-                      fab
-                      color="info"
-                      @click="viewslot(item)"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
+                    <v-btn small icon fab color="info" @click="viewslot(item)" v-bind="attrs" v-on="on">
                       <v-icon small>mdi-eye</v-icon>
                     </v-btn>
                   </template>
@@ -220,12 +156,12 @@ export default {
   },
   methods: {
     truncatedDescription(description) {
-            const maxLength = 50; // Adjust the character limit as needed
-            return description.length > maxLength
-                ? description.substring(0, maxLength) + '...'
-                : description;
-            },
-   async deleteCategory(category) {
+      const maxLength = 50; // Adjust the character limit as needed
+      return description.length > maxLength
+        ? description.substring(0, maxLength) + '...'
+        : description;
+    },
+    async deleteCategory(category) {
       const ok = await this.$refs.confirm.open({
         title: "Are you sure?",
         message: "Are you sure you want to delete this Category?",
@@ -240,14 +176,14 @@ export default {
       });
       if (ok) {
         try {
-         await axios
-            .post("/api/admin/category/delete/", {
+          await axios
+            .post("/api/admin/category/delete", {
               id: category.id,
             })
             .then((response) => {
               if (response.data.success) {
                 this.$toasted.success("Category deleted successfully", {
-                    duration: 2000,
+                  duration: 2000,
                 });
                 this.getcategories();
               }
