@@ -23,7 +23,7 @@ class CategoriesController extends Controller
                 $image = $request->file('image');
                 
                 foreach ($image as $img) {
-                    $name = $img->getClientOriginalName() . '.' . $img->getClientOriginalExtension();
+                    $name = $img->getClientOriginalName();
                     $destinationPath = storage_path('app/public/images');
 
                     $img->move(
@@ -169,7 +169,7 @@ class CategoriesController extends Controller
                 $image = $request->file('image');
                 
                 foreach ($image as $k =>$img) {
-                    $name = $img->getClientOriginalName() . '.' . $img->getClientOriginalExtension();
+                    $name = $img->getClientOriginalName();
                     $destinationPath = storage_path('app/public/images');
 
                     $img->move($destinationPath, $name);
