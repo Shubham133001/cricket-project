@@ -35,8 +35,13 @@
         </v-card> -->
 
           <v-card :loading="loadingdata">
-            <div class="d-flex  flex-sm-row"><v-card-title>Basic Information</v-card-title>
-            <v-card-title style="padding: 0 285px;">Credits Balance : {{user.credits}} INR</v-card-title></div>
+            <div class="d-flex flex-sm-row">
+              <v-card-title>Basic Information</v-card-title>
+              <v-spacer></v-spacer>
+              <v-card-title 
+                >Credits Balance : {{ user.credits }} INR</v-card-title
+              >
+            </div>
             <v-card-text>
               <div class="d-flex flex-column flex-sm-row">
                 <div class="flex-grow-1 pt-2 pa-sm-2">
@@ -56,6 +61,7 @@
                     v-model="user.phone"
                     label="Phone"
                     outlined
+                    type="number"
                   ></v-text-field>
                   <v-text-field
                     v-model="user.password"
@@ -148,7 +154,11 @@
                     class=""
                     outlined
                   ></v-text-field> -->
-                  <v-textarea v-model="user.team.description" outlined label="Description"></v-textarea>
+                  <v-textarea
+                    v-model="user.team.description"
+                    outlined
+                    label="Description"
+                  ></v-textarea>
                   <div class="d-flex flex-column mt-2">
                     <!-- <v-checkbox v-model="user.status" dense label="Email Verified"></v-checkbox> -->
                     <!-- <div>
@@ -273,7 +283,7 @@ export default {
       formdata.append("experience", this.user.team.experience);
       formdata.append("description", this.user.team.description);
       formdata.append("image", this.user.team.image);
-      
+
       axios.post("/api/admin/user/update", formdata).then((response) => {
         if (response.data.success) {
           this.me();

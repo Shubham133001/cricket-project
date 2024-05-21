@@ -217,4 +217,21 @@ class InvoicesController extends Controller
             print_r($th->getMessage());
         }
     }
+
+    public function delete(Request $request)
+    {
+        try {
+            $data = Invoice::find($request->id);
+            $data->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Invoice deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
 }

@@ -190,7 +190,7 @@ export default {
                 icon: "mdi-delete",
             });
             if (ok) {
-                axios.post('/api/admin/deleteInvoice/' + item.id).then(response => {
+                axios.post('/api/admin/invoices/delete/' + item.id).then(response => {
                     if (response.data.success) {
                         this.$toasted.show('Invoice Deleted Succesfully', {
                             type: 'success',

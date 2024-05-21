@@ -119,7 +119,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('all', [InvoicesController::class, 'getallinvoices'])->name('admin.invoices.all');
             Route::get('edit/{id}', [InvoicesController::class, 'edit'])->name('admin.invoices.edit');
             Route::post('update', [InvoicesController::class, 'update'])->name('admin.invoices.update');
-            Route::post('delete', [InvoicesController::class, 'delete'])->name('admin.invoices.delete');
+            Route::post('delete/{id}', [InvoicesController::class, 'delete'])->name('admin.invoices.delete');
             Route::post('payinvoice', [InvoicesController::class, 'payinvoice'])->name('admin.invoices.payinvoice');
             Route::post('addpayments', [PaymentsController::class, 'addpayments'])->name('admin.invoices.addpayments');
         });

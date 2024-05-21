@@ -306,7 +306,7 @@ class CommonController extends Controller
             $currentDate = Carbon::now();
             $dateToCheck = Carbon::createFromFormat('Y-m-d', $booking->date);
 
-            if ($dateToCheck->greaterThan($currentDate)) {
+            if ($dateToCheck->greaterThan($currentDate) && $booking->invoice->status == 1) {
                 $credit_trans = new \App\Models\Credittransaction;
                 $credit_trans->user_id = $booking->user_id;
                 $credit_trans->amount = $booking->slot->price;
@@ -326,7 +326,7 @@ class CommonController extends Controller
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cancelled date expired'
+                    'message' => 'Cancelled date expired or invoice not paid' 
                 ]);
             }
 

@@ -27,7 +27,7 @@
                   :rules="[v => !!v || 'Name is required']" required outlined></v-text-field>
                 <v-text-field v-model="user.email" label="Email" :rules="[v => !!v || 'Email is required']" required
                   outlined></v-text-field>
-                <v-text-field v-model="user.phone" label="Phone" outlined></v-text-field>
+                <v-text-field v-model="user.phone" label="Phone"  type="number" outlined></v-text-field>
                 <v-text-field v-model="user.password" label="Password" class=""
                   :rules="[v => !!v || 'Password is required']" required outlined></v-text-field>
                 <v-text-field v-model="user.confirm_password" label="Confirm Password" class=""

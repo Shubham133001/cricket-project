@@ -99,7 +99,7 @@
       <v-row v-else>
         <v-col cols="12" md="12" class="pl-6 pr-6">
           <v-text-field label="Name" v-model="booking.name" outlined required></v-text-field>
-          <v-text-field label="Phone" v-model="booking.phone" outlined></v-text-field>
+          <v-text-field label="Phone" v-model="booking.phone"  type="number" outlined></v-text-field>
           <v-text-field label="Team name" v-model="booking.team.name" outlined required></v-text-field>
           <v-select label="Team Skill" v-model="booking.team.designation" outlined :items="designations"
             required></v-select>

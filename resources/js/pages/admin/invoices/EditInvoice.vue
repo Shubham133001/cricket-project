@@ -5,8 +5,8 @@
             <v-card-title>
                 <span class="headline">Edit Invoice</span>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="downloadpdf"> <v-icon>mdi-download</v-icon></v-btn>
-                <v-btn color="warning" @click="viewpdf"> <v-icon>mdi-eye</v-icon></v-btn>
+                <v-btn color="primary mx-1" @click="downloadpdf"> <v-icon>mdi-download</v-icon></v-btn>
+                <v-btn color="warning mx-1" @click="viewpdf"> <v-icon>mdi-eye</v-icon></v-btn>
                 <v-btn color="success" @click.stop="dialog = true">Add Payment</v-btn>
             </v-card-title>
             <v-card-text>

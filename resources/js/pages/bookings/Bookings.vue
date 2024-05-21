@@ -15,7 +15,7 @@
                             </v-card-title>
 
                             <v-card-subtitle style="color: #fff;">
-                                {{ item.description }}<br />
+                                 {{ truncatedDescription(item.description) }}<br />
                                 <v-chip small color="primary">{{ item.slotslength }} Slots
                                 </v-chip>
                             </v-card-subtitle>
@@ -87,7 +87,7 @@
 
                                         </v-card-title>
                                         <v-card-subtitle class="white--text">
-                                            {{ subcategory.description }}<br />
+                                            {{ truncatedDescription(subcategory.description) }}<br />
                                             <v-chip small color="primary">{{ subcategory.slots.length }} Slots
                                             </v-chip>
                                         </v-card-subtitle>
@@ -163,6 +163,12 @@ export default {
         this.getcategories();
     },
     methods: {
+        truncatedDescription(description) {
+            const maxLength = 100; // Adjust the character limit as needed
+            return description.length > maxLength
+                ? description.substring(0, maxLength) + '...'
+                : description;
+            },
         async getcategories() {
 
             await axios.get('/api/categories')

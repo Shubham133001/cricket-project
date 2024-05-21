@@ -223,8 +223,6 @@ export default {
         .then((response) => {
           this.category = response.data.category;
           this.currentimages = this.category.image.split(",");
-          // console.log(this.currentimages,"cat image");
-          // console.log(this.category ,"category datata");
         })
         .catch((error) => {
           console.log(error);

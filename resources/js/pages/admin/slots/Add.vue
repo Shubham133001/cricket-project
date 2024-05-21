@@ -117,7 +117,7 @@
                           label="Advance Price"
                           :min="1"
                           value="1"
-                         
+                          @change="checkslots"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" md="2">
@@ -127,7 +127,7 @@
                           v-model="slot.price"
                           label="Price"
                           value="0"
-                      
+                          @change="checkslots"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -394,6 +394,39 @@ export default {
             this.allgood = true;
           }
         }
+
+        if(slot.advanceprice == ""){
+          this.$toasted.show("Advance price required", {
+            type: "error",
+            duration: 2000,
+          });
+          this.allgood = false;
+          return false;
+        }else {
+          this.allgood = true;
+        }
+
+        if(slot.price == ""){
+          this.$toasted.show("Price  required", {
+            type: "error",
+            duration: 2000,
+          });
+          this.allgood = false;
+          return false;
+        }else {
+          this.allgood = true;
+        }
+
+        if (slot.advanceprice > slot.price) {
+          this.$toasted.show("Advance price should be less than price", {
+            type: "error",
+            duration: 2000,
+          });
+          this.allgood = false;
+          return false;
+        } else {
+          this.allgood = true;
+        }
         let currentselectedtimes = this.gethoursbetween(
           moment(slot.time_start, "hh:mm A").format("HH:mm"),
           moment(slot.time_end, "hh:mm A").format("H:mm")
@@ -464,9 +497,13 @@ export default {
             }
           });
         });
+        // check advance price less then price
+        
+         
       });
     },
     async getslots() {
+    
       await axios
         .post("/api/admin/slots/list", { id: this.$route.params.id })
         .then((response) => {
@@ -606,8 +643,21 @@ export default {
     },
 
     async saveslots() {
-       // console.log(this.slot.price,"slotada");
-         if (this.$refs.form.validate()) {
+      // this.slots.forEach((slot) => {
+      // if (slot.advanceprice > slot.price) {
+      //     this.$toasted.show("Advance price should be less than price", {
+      //       type: "error",
+      //       duration: 2000,
+      //     });
+      //     this.allgood = false;
+      //     return false;
+      //   } else {
+      //     this.allgood = true;
+      //   }
+
+      //    });
+
+
       await axios
         .post("/api/admin/slots/add", {
           slots: this.slots,
@@ -630,7 +680,6 @@ export default {
             duration: 2000,
           });
         });
-    }
     },
   },
 };
