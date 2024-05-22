@@ -117,7 +117,7 @@
                           label="Advance Price"
                           :min="1"
                           value="1"
-                          @change="checkslots"
+                          @onblur="checkslots"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" md="2">
@@ -127,7 +127,7 @@
                           v-model="slot.price"
                           label="Price"
                           value="0"
-                          @change="checkslots"
+                          @onblur="checkslots"
                         ></v-text-field>
                       </v-col>
                     </v-row>

@@ -87,64 +87,6 @@ class AdminAuthController extends Controller
         }
     }
 
-    public function checktokenvalidataion(Request $request)
-    {
-        return response()->json([
-            'success' => true,
-            'message' => 'wait here pelase'
-        ], 200);
-    }
-
-    public function dummydata(Request $request)
-    {
-        $recordsdata = array();
-        for ($i = 1; $i <= 500; $i++) {
-            $recordsdata[] = array(
-                'name' => rand(0000000, 9999999) . "Checking",
-                'calories' => rand(000, 999),
-                'fat' => '0.2',
-                'carbs' => '98',
-                'protein' => '0',
-                'iron' => '2'
-            );
-        }
-        return response()->json([
-            'success' => true,
-            'message' => 'wait here pelase',
-            'total' => '24',
-            'records' => $recordsdata,
-        ], 200);
-    }
-
-    public function getadmins(Request $request)
-    {
-        try {
-            $search = (isset($request->search) && !empty($request->search)) ? $request->search : '';
-            $page = (isset($request->page) && !empty($request->page)) ? $request->page : '';
-            $itemsPerPage = (isset($request->itemsPerPage) && !empty($request->itemsPerPage)) ? $request->itemsPerPage : '';
-            $sortBy = (isset($request->sortBy) && !empty($request->sortBy)) ? $request->sortBy : '';
-            $sortDesc = ($request->sortDesc) ?  'desc' : 'asc';
-            $recordsdata = array();
-            for ($i = 1; $i <= 500; $i++) {
-                $recordsdata[] = array(
-                    'name' => rand(0000000, 9999999) . "Checking",
-                    'calories' => rand(000, 999),
-                    'fat' => '0.2',
-                    'carbs' => '98',
-                    'protein' => '0',
-                    'iron' => '2'
-                );
-            }
-            return response()->json([
-                'success' => true,
-                'message' => 'wait here pelase',
-                'total' => '24',
-                'records' => $recordsdata,
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-        }
-    }
 
     public function logout(Request $request)
     {
