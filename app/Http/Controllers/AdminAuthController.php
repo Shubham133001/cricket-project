@@ -87,7 +87,6 @@ class AdminAuthController extends Controller
         }
     }
 
-
     public function checktokenvalidataion(Request $request)
     {
         return response()->json([
@@ -98,7 +97,6 @@ class AdminAuthController extends Controller
 
     public function dummydata(Request $request)
     {
-
         $recordsdata = array();
         for ($i = 1; $i <= 500; $i++) {
             $recordsdata[] = array(

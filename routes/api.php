@@ -46,7 +46,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('signin', [AdminAuthController::class, 'signin'])->name('admin.signin');
     Route::group(['middleware' => ['auth:sanctum', 'checkadmin', 'CheckDisable']], function () {
 
-        Route::get('/getadmins', [App\Http\Controllers\AdminAuthController::class, 'getadmins'])->name('admin.getadmins');
+        Route::get('/getadmins', [App\Http\Controllers\AdminContoller::class, 'getadmins'])->name('admin.getadmins');
         Route::get('/users', [App\Http\Controllers\UsersController::class, 'getusers'])->name('admin.users');
         Route::get('/user/edit/{id}', [App\Http\Controllers\UsersController::class, 'edituser'])->name('admin.edituser');
         Route::post('/user/update/', [App\Http\Controllers\UsersController::class, 'updateuser'])->name('admin.updateuser');

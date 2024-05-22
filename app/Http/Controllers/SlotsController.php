@@ -176,7 +176,6 @@ class SlotsController extends Controller
         try {
             $date = strtotime($request->date);
             $date = date('Y-m-d', $date);
-
             $data = \App\Models\Slot::where('category_id', $request->id)
                 ->whereDate('start_date', '<=', $date)
                 ->whereDate('end_date', '>=', $date)
@@ -203,9 +202,6 @@ class SlotsController extends Controller
             ]);
         }
     }
-
-    
-    
     public function getallslotsforcategory(Request $request)
     {
         try {
@@ -306,11 +302,7 @@ class SlotsController extends Controller
             ]);
         }
     }
-
-
-
     
-
     public function delete(Request $request)
     {
         try {
