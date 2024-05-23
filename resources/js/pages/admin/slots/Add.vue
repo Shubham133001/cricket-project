@@ -117,7 +117,7 @@
                           label="Advance Price"
                           :min="1"
                           value="1"
-                          @input="checkslots"
+                          @blur="checkslots"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" md="2">
@@ -127,7 +127,7 @@
                           v-model="slot.price"
                           label="Price"
                           value="0"
-                          @input="checkslots"
+                          @blur="checkslots"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -395,7 +395,7 @@ export default {
           }
         }
 
-        if(slot.advanceprice == ""){
+        /* if(slot.advanceprice == ""){
           this.$toasted.show("Advance price required", {
             type: "error",
             duration: 2000,
@@ -415,9 +415,9 @@ export default {
           return false;
         }else {
           this.allgood = true;
-        }
+        } */
 
-        if (slot.advanceprice > slot.price) {
+        /* if (slot.advanceprice > slot.price) {
           this.$toasted.show("Advance price should be less than price", {
             type: "error",
             duration: 2000,
@@ -426,7 +426,7 @@ export default {
           return false;
         } else {
           this.allgood = true;
-        }
+        } */
         let currentselectedtimes = this.gethoursbetween(
           moment(slot.time_start, "hh:mm A").format("HH:mm"),
           moment(slot.time_end, "hh:mm A").format("H:mm")
@@ -643,21 +643,51 @@ export default {
     },
 
     async saveslots() {
-      // this.slots.forEach((slot) => {
-      // if (slot.advanceprice > slot.price) {
-      //     this.$toasted.show("Advance price should be less than price", {
-      //       type: "error",
-      //       duration: 2000,
-      //     });
-      //     this.allgood = false;
-      //     return false;
-      //   } else {
-      //     this.allgood = true;
-      //   }
+       var pricecheck = false;
+      let stopp = false;
+      this.slots.forEach((slot) => {
+        if (stopp) {
+          return false;
+        }
+        else {
+          if(slot.advanceprice == ""){
+            this.$toasted.show("Advance price required", {
+              type: "error",
+              duration: 2000,
+            });
+            pricecheck = false;
+            return false;
+          }else {
+            pricecheck = true;
+          }
 
-      //    });
+          if(slot.price==""){
+            this.$toasted.show("Price  required", {
+              type: "error",
+              duration: 2000,
+            });
+            pricecheck = false;
+            return false;
+          }else {
+            pricecheck = true;
+          }
 
+          if (slot.advanceprice > slot.price) {
+            this.$toasted.show(slot.title + " - Advance price should be less than price", {
+              type: "error",
+              duration: 2000,
+            });
+            pricecheck = false;
+            stopp = true;
+            return false;
+          } else {
+            pricecheck = true;
+          }
+        }
 
+      });
+
+    if(pricecheck){
       await axios
         .post("/api/admin/slots/add", {
           slots: this.slots,
@@ -680,8 +710,11 @@ export default {
             duration: 2000,
           });
         });
+     }
     },
+    
   },
+  
 };
 </script>
 <style>
