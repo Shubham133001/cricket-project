@@ -66,6 +66,19 @@ class CategoriesController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function allcategory()
+    {
+        try {
+            $data = \App\Models\Category::where('parent_id', 0)->with('children')->paginate(10);
+            return response()->json([
+                'success' => true,
+                'categories' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
     public function getallcategories()
     {
         try {
@@ -224,4 +237,6 @@ class CategoriesController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+
 }

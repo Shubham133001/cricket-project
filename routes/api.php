@@ -94,6 +94,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::group(['prefix' => 'category'], function () {
             Route::post('add', [CategoriesController::class, 'add'])->name('admin.category.add');
             Route::get('list', [CategoriesController::class, 'getcategories'])->name('admin.category.getcategories');
+            Route::get('allcategory', [CategoriesController::class, 'allcategory'])->name('admin.category.allcat');
             Route::post('getsubcategories', [CategoriesController::class, 'getsubcategories'])->name('admin.category.getsubcategories');
             Route::get('listwithslots', [CategoriesController::class, 'getcategorieswithslots'])->name('admin.category.getcategorieswithslots');
             Route::post('getwithslots', [CategoriesController::class, 'getcategorywithslots'])->name('admin.category.getcategorywithslots');

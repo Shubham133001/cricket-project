@@ -3,20 +3,21 @@
     <h1>Welcome to {{ companyname }}</h1>
     <v-row>
       <v-col cols="12" md="3" lg="3">
-        <IconBox label="Total Clients" class="h-full mt-2" color="#fff" :value="10" :percentage="0"
-          :percentage-label="''" height="200" />
+        <IconBox label="Total Users" class="h-full mt-2" color="#fff" :value="usercount" :percentage="0"
+          :percentage-label="''" height="200" pagename="users"  />
+          
       </v-col>
       <v-col cols="12" md="3" lg="3">
-        <IconBox label="Total Clients" class="h-full mt-2" color="#fff" :value="10" :percentage="0"
-          :percentage-label="''" height="200" />
+        <IconBox label="Total Invoices" class="h-full mt-2" color="#fff" :value="invoiceCount" :percentage="0"
+          :percentage-label="''" height="200" pagename="invoices"  />
       </v-col>
       <v-col cols="12" md="3" lg="3">
-        <IconBox label="Total Clients" class="h-full mt-2" color="#fff" :value="10" :percentage="0"
-          :percentage-label="''" height="200" />
+        <IconBox label="Total Categories" class="h-full mt-2" color="#fff" :value="categoryCount" :percentage="0"
+          :percentage-label="''" height="200" pagename="categories"  />
       </v-col>
       <v-col cols="12" md="3" lg="3">
-        <IconBox label="Total Clients" class="h-full mt-2" color="#fff" :value="10" :percentage="0"
-          :percentage-label="''" height="200" />
+        <IconBox label="Total Slots" class="h-full mt-2" color="#fff" :value="slotCount" :percentage="0"
+          :percentage-label="''" height="200" pagename="slots"  />
       </v-col>
     </v-row>
     <v-row>
@@ -38,6 +39,7 @@ import {
   mapState,
   mapActions
 } from 'vuex';
+import { reactive } from 'vue';
 export default {
   components: {
     SalesCard,
@@ -48,6 +50,10 @@ export default {
       loadingInterval: null,
       companyname: JSON.parse(localStorage.getItem('store')).name,
       role: 0,
+      usercount:0,
+      invoiceCount:0,
+      categoryCount:0,
+      slotCount:0,
       bookings: [],
       options: {
         page: 1,
@@ -73,23 +79,53 @@ export default {
   },
   mounted() {
     this.getBookings();
+    this.getUser();
+    this.getInvoice();
+    this.getCategory();
+    this.getSlot();
 
   },
   methods: {
     ...mapActions('app', ['getStoreData']),
-
-    getAdminRoles() {
-
-      axios.get('/api/admin/getcurretadmingroup')
+    getUser(){
+       axios.get('/api/admin/users')
         .then(response => {
-          this.role = response.data.data.admin_group_id;
-          // console.log(response.data.data.admin_group_id);
+          this.usercount = response.data.users.total;
         })
         .catch(error => {
-          // console.log(error)
+           console.log(error)
         })
     },
 
+    getInvoice(){
+      axios.get('/api/admin/invoices/list')
+        .then(response => {
+          this.invoiceCount = response.data.invoices.total;
+        })
+        .catch(error => {
+           console.log(error)
+        })
+    },
+
+    getCategory(){
+      axios.get('/api/admin/category/allcategory')
+        .then(response => {
+          this.categoryCount = response.data.categories.total;
+        })
+        .catch(error => {
+           console.log(error)
+        })
+    },
+
+    getSlot(){
+      axios.get('/api/admin/slots/all')
+        .then(response => {
+          this.slotCount = response.data.slots.total;
+        })
+        .catch(error => {
+           console.log(error)
+        })
+    },
     async getBookings() {
       await axios.post('/api/admin/bookings/list', { options: this.options, search: this.search, page: this.options.page })
         .then(response => {
