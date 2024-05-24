@@ -20,5 +20,6 @@
     "/dist/js/admin-login.js": "/dist/js/admin-login.js",
     "/dist/js/admin-dashboard.js": "/dist/js/admin-dashboard.js",
     "/dist/js/admin-edit.js": "/dist/js/admin-edit.js",
-    "/dist/css/app.css": "/dist/css/app.css"
+    "/dist/css/app.css": "/dist/css/app.css",
+    "/dist/js/landing-home.js": "/dist/js/landing-home.js"
 }
