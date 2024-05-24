@@ -153,12 +153,5 @@ export default [{
   meta: {
     layout: 'landing'
   }
-},{
-  path: '/thankyou/:id',
-  name: 'thankyou',
-  component: () => import('@/pages/landing/Thankyou.vue'),
-  meta: {
-    layout: 'landing'
-  }
-},
+}
 ]

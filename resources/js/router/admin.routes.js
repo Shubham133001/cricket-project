@@ -1,11 +1,4 @@
-export default [{
-  path: '/admin/',
-  name: 'admin-login',
-  component: () => import(/* webpackChunkName: "admin-login" */ '@/pages/admin/auth/SigninPage.vue'),
-  meta: {
-    layout: 'auth',
-  }
-}, {
+export default [ {
   path: '/admin/login',
   name: 'admin-login',
   component: () => import(/* webpackChunkName: "admin-login" */ '@/pages/admin/auth/SigninPage'),
@@ -26,7 +19,7 @@ export default [{
   component: () => import(/* webpackChunkName: "admin-edit" */ '@/pages/admin/adminuser/EditUserPage.vue')
 }, {
   path: '/admin/adminuser/add',
-  name: 'admin-users-add',
+  name: 'admin-add',
   component: () => import('@/pages/admin/adminuser/AddAdminUser.vue')
 }, {
   path: '/admin/adminuser/groups',
@@ -93,7 +86,7 @@ export default [{
 },
 {
   path: '/admin/category/slots/:id',
-  name: 'admin-slots-list',
+  name: 'admin-category-slots-list',
   component: () => import('@/pages/admin/slots/Viewslots.vue')
 },
 {
