@@ -27,17 +27,21 @@
     <Partners />
 
     <Stats />
+    <v-row style="background: #fff;" class="pt-4">
+      <v-col cols="12" class="text-center">
+        <h2 class="text-h4 text-sm-h4 text-md-h3 text-lg-h3">Categories</h2>
+      </v-col>
+      <Categories />
 
-    <v-container>
+    </v-row>
+    <!-- <v-container>
       <v-divider></v-divider>
-    </v-container>
-
-
-
-    <Feature1 />
+    </v-container> -->
+    <!-- <Feature1 /> -->
     <Feature2 />
-    <Pricing />
-    <Doctors />
+
+
+    <!-- <Doctors /> -->
 
     <CallToAction />
   </div>
@@ -51,6 +55,7 @@ import Feature1 from '@/components/landing/Feature1.vue'
 import CallToAction from '@/components/landing/CallToAction.vue'
 import Feature2 from '@/components/landing/Feature2.vue'
 import Doctors from '@/components/landing/Doctors.vue'
+import Categories from '@/pages/bookings/Bookings.vue'
 
 export default {
   components: {
@@ -61,7 +66,7 @@ export default {
     Feature2,
     CallToAction,
     Doctors,
-
+    Categories
   },
   data() {
     return {}

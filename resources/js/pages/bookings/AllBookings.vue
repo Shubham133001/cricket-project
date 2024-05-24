@@ -39,20 +39,26 @@
 
                                 <v-card-actions class="mb-2 pl-2 mt-0">
                                     <v-btn color="white" @click="bookslot(item)" class="px-3"
-                                        :disabled="(item == selecteditem)">Book
+                                        :disabled="(item == selecteditem)">Reserve
                                         Now</v-btn>
+
+                                    <!-- <v-chip-group v-model="item.selection" v-if="item.slots.length > 0">
+                                    <v-chip v-for="(slot, index) in item.slots" :key="slot.id"
+                                        :color="(item.selection == index) ? 'green' : 'primary'" dark>{{ slot.time
+                                        }}</v-chip>
+                                </v-chip-group> -->
 
                                 </v-card-actions>
                             </v-img>
                         </v-hover>
+
                     </v-card>
                 </v-col>
             </v-row>
             <v-col cols="12" md="12" :class="(showheading) ? 'pt-0 showcategories' : 'hidecategories'">
                 <v-row>
                     <v-col cols="12" md="4" v-for="subcategory in this.selecteditem.children" :key="subcategory.id"
-                        style="transform: scale(0);
-    opacity: 0;" :class="(showheading) ? 'showcategories1' : 'hidecategories1'">
+                        :class="(showheading) ? 'showcategories1' : 'hidecategories1'">
                         <v-card>
                             <v-hover v-slot:default="{ hover }">
                                 <v-img height="300px" class="align-end showslidebg"
@@ -70,9 +76,6 @@
                                             Slots
                                         </v-chip>
                                     </v-card-subtitle>
-
-
-
                                     <v-card-actions class="mb-2 pl-2 mt-0">
                                         <v-btn color="white" @click="bookslot(subcategory)" class="px-3"
                                             :disabled="(subcategory == selecteditem)">Book
@@ -82,15 +85,11 @@
                                 </v-img>
                             </v-hover>
                         </v-card>
-
                     </v-col>
 
                 </v-row>
             </v-col>
-            <v-col cols="12" class="text-center pt-0 mt-0" v-if="!showheading">
-                <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" color="primary" to="/categories">View all
-                    categories</v-btn>
-            </v-col>
+
         </v-container>
     </div>
 </template>
@@ -160,9 +159,10 @@ export default {
         },
         async getcategories() {
 
-            await axios.get('/api/categories?limit=3')
+            await axios.get('/api/categories')
                 .then(response => {
                     let categories = response.data.categories;
+
                     let newcatgories = [];
                     categories.forEach(category => {
                         category.is_child = false;
@@ -321,20 +321,20 @@ export default {
 }
 
 .hidecategories1 {
-    transition: all 0.5s 2s;
+    transition: all 0.5s;
     transform: scale(0);
     opacity: 0;
     height: 0;
     overflow: hidden;
-
+    transition-delay: 2s;
 }
 
 .showcategories1 {
-    transition: all 0.5s 2s;
-    transform: scale(1) !important;
-    opacity: 1 !important;
+    transition: all 0.5s;
+    transform: scale(1);
+    opacity: 1;
     height: auto;
     overflow: hidden;
-
+    transition-delay: 2s;
 }
 </style>

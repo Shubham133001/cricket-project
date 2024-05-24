@@ -12,7 +12,7 @@ Vue.use(Router)
 export const routes = [{
   path: '/',
   name: 'home',
-  component: () => import(/* webpackChunkName: "coming-soon" */ '@/pages/bookings/Bookings.vue'),
+  component: () => import(/* webpackChunkName: "coming-soon" */ '@/pages/landing/HomePage.vue'),
   meta: {
     layout: 'landing'
   }

@@ -5,7 +5,7 @@
         <div class="d-flex">
           <div class="mr-2">
             <v-sheet outlined rounded class="pa-2 elevation-1">
-              <v-icon>{{ item.icon }}</v-icon>
+              <v-icon color="primary">{{ item.icon }}</v-icon>
             </v-sheet>
           </div>
           <div>

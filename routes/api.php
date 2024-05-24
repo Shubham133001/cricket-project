@@ -40,6 +40,7 @@ Route::get('getinvoicebyid/{id}', [InvoicesController::class, 'getInvoiceById'])
 Route::post('changegateway', [InvoicesController::class, 'changegateway'])->name('changegateway');
 Route::get('downloadpdf/{id}', [InvoicesController::class, 'downloadPdf'])->name('downloadPdf');
 Route::get('viewpdf/{id}', [InvoicesController::class, 'viewpdf'])->name('viewpdf');
+Route::get('stats', [CommonController::class, 'stats'])->name('stats');
 
 // add admin group with middleware
 Route::group(['prefix' => 'admin'], function () {
@@ -56,7 +57,7 @@ Route::group(['prefix' => 'admin'], function () {
         //Global Routes
         Route::get('/me', [App\Http\Controllers\AdminAuthController::class, 'me'])->name('admin.me');
 
-       // Route::get('/getadmins', [App\Http\Controllers\AdminContoller::class, 'getadmins'])->name('admin.getadmins');
+        // Route::get('/getadmins', [App\Http\Controllers\AdminContoller::class, 'getadmins'])->name('admin.getadmins');
         Route::post('/addadminuser', [App\Http\Controllers\AdminContoller::class, 'addadminuser'])->name('admin.addadminuser');
         Route::post('/updateadminuser/{id}', [App\Http\Controllers\AdminContoller::class, 'updateadminuser'])->name('admin.updateadminuser');
         Route::get('/deleteadminuser/{id}', [App\Http\Controllers\AdminContoller::class, 'deleteadminuser'])->name('admin.deleteadminuser');
@@ -137,7 +138,6 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('rejectcancellation', [CommonController::class, 'rejectcancellation'])->name('admin.bookings.rejectcancellation');
             Route::post('approvebooking', [CommonController::class, 'approvebooking'])->name('admin.bookings.approvebooking');
             Route::post('completebooking', [CommonController::class, 'completebooking'])->name('admin.bookings.completebooking');
-            Route::get('daysale', [CommonController::class, 'daySales'])->name('admin.bookings.daysale');
         });
     });
 });
@@ -148,8 +148,8 @@ Route::group(['prefix' => 'user',], function () {
     Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/me', [UserAuthController::class, 'me'])->name('user.me');
         Route::post('signout', [UserAuthController::class, 'signout'])->name('user.signout');
-       // Route::post('update', [UserAuthController::class, 'update']);
-       // Route::post('changepassword', [UserAuthController::class, 'changepassword']);
+        // Route::post('update', [UserAuthController::class, 'update']);
+        // Route::post('changepassword', [UserAuthController::class, 'changepassword']);
         Route::post('getbookings', [UsersController::class, 'getbookings'])->name('user.getbookings');
         Route::get('invoice', [UsersController::class, 'userInvoice'])->name('user.invoice');
         Route::get('bookingdetails', [UsersController::class, 'bookingdetails'])->name('user.bookingdetails');

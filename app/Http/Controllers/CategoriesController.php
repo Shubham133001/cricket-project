@@ -21,7 +21,7 @@ class CategoriesController extends Controller
             //check if image is present
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                
+
                 foreach ($image as $img) {
                     $name = $img->getClientOriginalName();
                     $destinationPath = storage_path('app/public/images');
@@ -120,16 +120,22 @@ class CategoriesController extends Controller
         }
     }
 
-    public function getcategorieswithslots()
+    public function getcategorieswithslots(Request $request)
     {
         try {
             $data = \App\Models\Category::where('parent_id', 0)->with(['children' => function ($query) {
                 $query->with('slots', function ($query) {
+                    // where date more than today
+                    $query->where('start_date', '>=', date('Y-m-d'))->where('status', 'Active');
                     $query->with('bookings', function ($query) {
                         $query->where('date', date('Y-m-d'))->where('status', 'Active');
                     });
                 });
-            }, 'slots'])->get();
+            }, 'slots']);
+            if ($request->limit) {
+                $data->limit($request->limit);
+            }
+            $data = $data->get();
             return response()->json([
                 'success' => true,
                 'categories' => $data
@@ -180,8 +186,8 @@ class CategoriesController extends Controller
 
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                
-                foreach ($image as $k =>$img) {
+
+                foreach ($image as $k => $img) {
                     $name = $img->getClientOriginalName();
                     $destinationPath = storage_path('app/public/images');
 
@@ -237,6 +243,4 @@ class CategoriesController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
-
-
 }

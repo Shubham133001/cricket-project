@@ -67,6 +67,14 @@ export default [{
   component: () => import(/* webpackChunkName: "utility-help" */ '@/pages/utility/HelpPage.vue')
 },
 {
+  path: '/categories',
+  name: 'allcategories',
+  component: () => import('@/pages/bookings/AllBookings.vue'),
+  meta: {
+    layout: 'landing'
+  }
+},
+{
   path: '/bookings/add',
   name: 'bookings-add',
   component: () => import('@/pages/bookings/Bookings.vue'),
@@ -138,7 +146,7 @@ export default [{
     layout: 'landing'
   }
 },
-{ 
+{
   path: '/mybookings',
   name: 'mybookings',
   component: () => import('@/pages/users/Bookings.vue'),
@@ -146,14 +154,14 @@ export default [{
     layout: 'landing'
   }
 },
-{ 
+{
   path: '/myinvoice',
   name: 'myinvoice',
   component: () => import('@/pages/users/Invoice.vue'),
   meta: {
     layout: 'landing'
   }
-},{
+}, {
   path: '/thankyou/:id',
   name: 'thankyou',
   component: () => import('@/pages/landing/Thankyou.vue'),

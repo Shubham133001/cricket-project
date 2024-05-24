@@ -9,7 +9,6 @@ use App\Http\Controllers\InvoiceitemsController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CancellationRequest;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class CommonController extends Controller
 {
@@ -25,6 +24,23 @@ class CommonController extends Controller
             return response()->json([
                 'success' => true,
                 'storeDetails' => $data1
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function stats()
+    {
+        try {
+            $data = [];
+            $data['total_bookings'] = \App\Models\Booking::count();
+            $data['total_categories'] = \App\Models\Category::count();
+            $data['total_slots'] = \App\Models\Slot::count();
+            $data['total_completebookings'] = \App\Models\Booking::where('status', 'Completed')->count();
+            return response()->json([
+                'success' => true,
+                'stats' => $data
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
@@ -121,13 +137,13 @@ class CommonController extends Controller
                 $invoiceitemsdata['status'] = 1;
                 $invoiceitems = new \App\Models\InvoiceItem();
                 $invoiceitems->create($invoiceitemsdata);
-            }else {
+            } else {
                 $lastinv = \App\Models\Invoice::where('id', $lastinvoice->id)->first();
                 foreach ($request->slot as $key => $value) {
                     // check if booking exists and booking is more than bookings_allowed
 
                     $check = \App\Models\Booking::where('slot_id', $value['id'])->where('date', $request->date)->count();
-                    
+
                     if ($check >= $value['bookings_allowed']) {
                         return response()->json([
                             'success' => false,
@@ -153,12 +169,11 @@ class CommonController extends Controller
                     $data['team_id'] = $request->team_id;
                     $data['invoice_id'] = $invoice_id;
                     $booking->create($data);
-                 
                 }
                 $data['invoice_status'] = $lastinv->status;
-            } 
+            }
 
-           // print_r($data); die;
+            // print_r($data); die;
             return response()->json([
                 'success' => true,
                 'data' => $data
@@ -172,6 +187,7 @@ class CommonController extends Controller
     {
         try {
             $options = $request->options;
+
             $limit = $options['itemsPerPage'] ?? 10;
             $page = $request->page ?? 1;
             $search = $request->search ?? '';
@@ -196,10 +212,11 @@ class CommonController extends Controller
             });
 
             if ($options['sortBy']) {
+
                 $resp->orderBy($options['sortBy'][0], $options['sortDesc'] ? 'desc' : 'asc');
             }
             $data = $resp->paginate($limit);
-            
+
             return response()->json([
                 'success' => true,
                 'bookings' => $data
@@ -237,8 +254,6 @@ class CommonController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
-
-
     public function updatebooking(Request $request)
     {
         try {
@@ -319,15 +334,15 @@ class CommonController extends Controller
                 $booking->status = "Cancelled";
                 $booking->save();
 
-                $credit =  \App\Models\Credittransaction::where(['credit_type'=> 1 , 'user_id'=>$booking->user_id])->sum('amount');
-                $debit =  \App\Models\Credittransaction::where(['credit_type'=> 2 , 'user_id'=>$booking->user_id])->sum('amount');
+                $credit =  \App\Models\Credittransaction::where(['credit_type' => 1, 'user_id' => $booking->user_id])->sum('amount');
+                $debit =  \App\Models\Credittransaction::where(['credit_type' => 2, 'user_id' => $booking->user_id])->sum('amount');
                 $data = \App\Models\User::find($booking->user_id);
                 $data->credits = $credit - $debit;
                 $data->update();
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cancelled date expired or invoice not paid' 
+                    'message' => 'Cancelled date expired or invoice not paid'
                 ]);
             }
 
@@ -402,59 +417,4 @@ class CommonController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
-
-    public function daySales(Request $request)
-    {
-        try {
-            // $dayWiseAmounts = \DB::table('invoices')
-            //     ->select(\DB::raw('DATE(created_at) as booking_date'), \DB::raw('SUM(amount) as total_amount'))
-            //     ->groupBy(\DB::raw('DATE(created_at)'))
-            //     //->orderBy('created_at')
-            //     ->get();
-
-            // foreach ($dayWiseAmounts as $dayAmount) {
-            //     echo $dayAmount->booking_date . ': ' . $dayAmount->total_amount . "\n";
-            // }
-
-            $startDate = Carbon::createFromDate(2024, 5, 1);
-    $endDate = $startDate->copy()->endOfMonth();
-
-    // Generate all dates for the month
-    //$allDates = [];
-    $allDates = [];
-    for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
-        $allDates[$date->format('Y-m-d')] = 0;
-    }
-
-    // Get the daily totals from the bookings table
-    $dailyTotals = DB::table('invoices')
-        ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(amount) as total_amount'))
-        ->whereBetween('created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
-        ->groupBy(DB::raw('DATE(created_at)'))
-        ->orderBy('date')
-        ->get();
-
-            // Merge the totals with all dates
-            foreach ($dailyTotals as $dailyTotal) {
-                $allDates[$dailyTotal->date] = $dailyTotal->total_amount;
-            }
-
-            // Convert to an array of objects or any format you need
-            return collect($allDates)->map(function($totalAmount, $date) {
-                return (object) [
-                    'date' => $date,
-                    'total_amount' => $totalAmount
-                ];
-            })->values();
-            return response()->json([
-                'success' => true,
-                'message' => 'day sale',
-                'data'=> $dailyTotals
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-        }
-    }
-
-
 }

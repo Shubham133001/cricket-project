@@ -1,12 +1,12 @@
 <template>
   <v-container class="pt-0 pb-4">
     <v-row>
-      <v-col v-for="(item, i) in stats" :key="i" cols="12" sm="6" lg="3">
+      <v-col v-for="(item, i) in stats" :key="i" cols="12" sm="6" lg="3" class="showslidebg1">
         <div class="text-center">
-          <div class="text-h2 text-number font-weight-light">{{ item.value }}</div>
+          <div class="text-h2 text-number font-weight-light stattitle">{{ item.value }}</div>
           <v-responsive max-width="300" class="mx-auto">
-            <div class="font-weight-regular my-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita
-              fugit.</div>
+            <!-- <div class="font-weight-regular my-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita
+              fugit.</div> -->
             <div class="text-h6 text-lg-h5">{{ item.title }}</div>
           </v-responsive>
         </div>
@@ -19,20 +19,47 @@
 export default {
   data() {
     return {
-      stats: [{
-        title: 'Bookings',
-        value: '4,253'
-      }, {
-        title: 'Categories',
-        value: '1,283,787'
-      }, {
-        title: 'Slots',
-        value: '1,348'
-      }, {
-        title: 'Businesses',
-        value: '331,234'
-      }]
+      stats: []
+    }
+  },
+  mounted() {
+    this.getStats()
+  },
+  methods: {
+    async getStats() {
+      // Fetch stats from API
+      axios.get('/api/stats')
+        .then(response => {
+          let stats = response.data.stats;
+          this.stats = [{
+            title: 'Bookings',
+            value: stats.total_bookings + "+"
+          }, {
+            title: 'Categories',
+            value: stats.total_categories + "+"
+          }, {
+            title: 'Slots',
+            value: stats.total_slots + "+"
+          }, {
+            title: 'Successful Bookings',
+            value: stats.total_completebookings + "+"
+          }]
+        })
+        .catch(error => {
+          console.error(error)
+        })
     }
   }
 }
 </script>
+<style scoped>
+.showslidebg1 .stattitle {
+  transition: all 0.5s;
+}
+
+.showslidebg1:hover .stattitle {
+  color: var(--v-primary-base);
+  transition: all 0.5s;
+  transform: scale(1.15);
+}
+</style>

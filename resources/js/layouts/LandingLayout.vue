@@ -10,6 +10,18 @@
         <v-spacer></v-spacer>
 
         <div class="d-none d-md-block">
+          <router-link to="/" class="text-decoration-none">
+            <v-btn text>Home</v-btn>
+          </router-link>
+          <router-link to="/about" class="text-decoration-none">
+            <v-btn text>About</v-btn>
+          </router-link>
+          <router-link to="/services" class="text-decoration-none">
+            <v-btn text>Services</v-btn>
+          </router-link>
+          <router-link to="/contact" class="text-decoration-none">
+            <v-btn text>Contact</v-btn>
+          </router-link>
           <v-menu offset-y left transition="slide-y-transition" v-if="isUserlogin == true">
             <template v-slot:activator="{ on }">
               <v-btn icon class="elevation-2" v-on="on">
@@ -99,7 +111,7 @@
       <v-row v-else>
         <v-col cols="12" md="12" class="pl-6 pr-6">
           <v-text-field label="Name" v-model="booking.name" outlined required></v-text-field>
-          <v-text-field label="Phone" v-model="booking.phone"  type="number" outlined></v-text-field>
+          <v-text-field label="Phone" v-model="booking.phone" type="number" outlined></v-text-field>
           <v-text-field label="Team name" v-model="booking.team.name" outlined required></v-text-field>
           <v-select label="Team Skill" v-model="booking.team.designation" outlined :items="designations"
             required></v-select>
