@@ -417,6 +417,7 @@ class CommonController extends Controller
             $revanue = DB::table('invoices')
                 ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(amount) as total_amount'))
                 ->whereBetween('created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                ->where('status',1)
                 ->groupBy(DB::raw('DATE(created_at)'))
                 ->orderBy('date')
                 ->get();
@@ -425,6 +426,7 @@ class CommonController extends Controller
                 ->leftJoin('invoices', 'bookings.invoice_id', '=', 'invoices.id')
                 ->selectRaw('DATE(bookings.created_at) as date, COUNT(bookings.id) as booking_count')
                 ->whereBetween('bookings.created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                ->where('bookings.status','Approved')
                 ->groupBy(DB::raw('DATE(bookings.created_at)'))
                 ->orderBy('date')
                 ->get();
