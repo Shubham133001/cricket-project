@@ -11,43 +11,19 @@
       <v-card-text>
         <v-row>
           <v-col cols="12" md="4">
-            <v-select
-              v-model="slotstype"
-              :items="['Single Day', 'Multiple Days', 'Date Range']"
-              label="Slots For"
-              @change="timeperiod = ''"
-            ></v-select>
+            <v-select v-model="slotstype" :items="['Single Day', 'Multiple Days', 'Date Range']" label="Slots For"
+              @change="timeperiod = ''"></v-select>
 
-            <v-text-field
-              v-model="totalslots"
-              label="Total Slots"
-            ></v-text-field>
-            <v-select
-              v-model="availabledays"
-              v-if="slotstype == 'Date Range'"
-              :items="days"
-              multiple
-              label="Available Days"
-              @change="updatecalendar"
-            ></v-select>
+            <v-text-field v-model="totalslots" label="Total Slots"></v-text-field>
+            <v-select v-model="availabledays" v-if="slotstype == 'Date Range'" :items="days" multiple
+              label="Available Days" @change="updatecalendar"></v-select>
             <v-btn color="primary" @click="addslot">Add</v-btn>
           </v-col>
           <v-col cols="12" md="4">
-            <v-date-picker
-              v-model="timeperiod"
-              :allowed-dates="getalloweddates"
-              label="Start Date"
-              :events="events"
-              v-if="slotstype == 'Single Day'"
-            ></v-date-picker>
-            <v-date-picker
-              v-model="timeperiod"
-              multiple
-              :allowed-dates="getalloweddates"
-              label="Start Date"
-              :events="events"
-              v-if="slotstype == 'Multiple Days'"
-            ></v-date-picker>
+            <v-date-picker v-model="timeperiod" :allowed-dates="getalloweddates" label="Start Date" :events="events"
+              v-if="slotstype == 'Single Day'"></v-date-picker>
+            <v-date-picker v-model="timeperiod" multiple :allowed-dates="getalloweddates" label="Start Date"
+              :events="events" v-if="slotstype == 'Multiple Days'"></v-date-picker>
             <!-- <v-date-picker
         v-model="selectedDates"
         multiple
@@ -56,14 +32,8 @@
         :min="minDate"
         :max="maxDate"
       ></v-date-picker> -->
-            <v-date-picker
-              v-model="timeperiod"
-              range
-              :allowed-dates="getalloweddates"
-              label="Start Date"
-              :events="events"
-              v-if="slotstype == 'Date Range'"
-            ></v-date-picker>
+            <v-date-picker v-model="timeperiod" range :allowed-dates="getalloweddates" label="Start Date"
+              :events="events" v-if="slotstype == 'Date Range'"></v-date-picker>
           </v-col>
         </v-row>
         <v-form @submit.prevent="addslot">
@@ -81,66 +51,33 @@
                   <td>
                     <v-row>
                       <v-col cols="12" md="2">
-                        <v-text-field
-                          v-model="slot.title"
-                          label="Title"
-                        ></v-text-field>
+                        <v-text-field v-model="slot.title" label="Title"></v-text-field>
                       </v-col>
                       <v-col cols="12" md="2">
-                        <v-text-field
-                          type="number"
-                          v-model="slot.bookings_allowed"
-                          label="Bookings Per Slot"
-                          :max="2"
-                          :min="1"
-                        ></v-text-field>
+                        <v-text-field type="number" v-model="slot.bookings_allowed" label="Bookings Per Slot" :max="2"
+                          :min="1"></v-text-field>
                       </v-col>
                       <v-col cols="12" md="2">
-                        <v-select
-                          v-model="slot.time_start"
-                          :items="time"
-                          label="Start Time"
-                        ></v-select>
+                        <v-select v-model="slot.time_start" :items="time" label="Start Time"></v-select>
                       </v-col>
                       <v-col cols="12" md="2">
-                        <v-select
-                          v-model="slot.time_end"
-                          :items="time"
-                          label="End Time"
-                          @change="checkslots"
-                        ></v-select>
+                        <v-select v-model="slot.time_end" :items="time" label="End Time"
+                          @change="checkslots"></v-select>
                       </v-col>
                       <v-col cols="12" md="2">
-                        <v-text-field
-                          type="number"
-                          v-model="slot.advanceprice"
-                          label="Advance Price"
-                          :min="1"
-                          value="1"
-                          @blur="checkslots"
-                        ></v-text-field>
+                        <v-text-field type="number" v-model="slot.advanceprice" label="Advance Price" :min="1" value="1"
+                          @blur="checkslots"></v-text-field>
                       </v-col>
                       <v-col cols="12" md="2">
-                        <v-text-field
-                          type="number"
-                          :min="1"
-                          v-model="slot.price"
-                          label="Price"
-                          value="0"
-                          @blur="checkslots"
-                        ></v-text-field>
+                        <v-text-field type="number" :min="1" v-model="slot.price" label="Price" value="0"
+                          @blur="checkslots"></v-text-field>
                       </v-col>
                     </v-row>
                   </td>
                 </tr>
                 <tr>
                   <td colspan="2">
-                    <v-btn
-                      color="primary"
-                      @click="saveslots"
-                      v-if="allgood == true"
-                      >Save</v-btn
-                    >
+                    <v-btn color="primary" @click="saveslots" v-if="allgood == true">Save</v-btn>
                   </td>
                 </tr>
               </tbody>
@@ -323,12 +260,12 @@ export default {
                     this.allgood = false;
                     this.$toasted.show(
                       'Slot already exists for "' +
-                        date +
-                        '" (' +
-                        bookedslot.start_time +
-                        " - " +
-                        bookedslot.end_time +
-                        ") ",
+                      date +
+                      '" (' +
+                      bookedslot.start_time +
+                      " - " +
+                      bookedslot.end_time +
+                      ") ",
                       {
                         type: "error",
                         duration: 5000,
@@ -439,10 +376,10 @@ export default {
           if (alltimes.includes(times)) {
             this.$toasted.show(
               "Can not add Slot for (" +
-                moment(slot.time_start, "hh:mm A").format("H:mm") +
-                " - " +
-                moment(slot.time_end, "hh:mm A").format("H:mm") +
-                ") ",
+              moment(slot.time_start, "hh:mm A").format("H:mm") +
+              " - " +
+              moment(slot.time_end, "hh:mm A").format("H:mm") +
+              ") ",
               {
                 type: "error",
                 duration: 2000,
@@ -476,12 +413,12 @@ export default {
                   this.allgood = false;
                   this.$toasted.show(
                     'Slot already exists for "' +
-                      date +
-                      '" (' +
-                      bookedslot.start_time +
-                      " - " +
-                      bookedslot.end_time +
-                      ") ",
+                    date +
+                    '" (' +
+                    bookedslot.start_time +
+                    " - " +
+                    bookedslot.end_time +
+                    ") ",
                     {
                       type: "error",
                       duration: 2000,
@@ -498,12 +435,12 @@ export default {
           });
         });
         // check advance price less then price
-        
-         
+
+
       });
     },
     async getslots() {
-    
+
       await axios
         .post("/api/admin/slots/list", { id: this.$route.params.id })
         .then((response) => {
@@ -643,36 +580,36 @@ export default {
     },
 
     async saveslots() {
-       var pricecheck = false;
+      var pricecheck = false;
       let stopp = false;
       this.slots.forEach((slot) => {
         if (stopp) {
           return false;
         }
         else {
-          if(slot.advanceprice == ""){
+          if (slot.advanceprice == "") {
             this.$toasted.show("Advance price required", {
               type: "error",
               duration: 2000,
             });
             pricecheck = false;
             return false;
-          }else {
+          } else {
             pricecheck = true;
           }
 
-          if(slot.price==""){
+          if (slot.price == "") {
             this.$toasted.show("Price  required", {
               type: "error",
               duration: 2000,
             });
             pricecheck = false;
             return false;
-          }else {
+          } else {
             pricecheck = true;
           }
-
-          if (slot.advanceprice > slot.price) {
+          console.log(slot.advanceprice, slot.price)
+          if (parseInt(slot.advanceprice) > parseInt(slot.price)) {
             this.$toasted.show(slot.title + " - Advance price should be less than price", {
               type: "error",
               duration: 2000,
@@ -687,34 +624,34 @@ export default {
 
       });
 
-    if(pricecheck){
-      await axios
-        .post("/api/admin/slots/add", {
-          slots: this.slots,
-          date: this.timeperiod,
-          days: this.availabledays,
-          id: this.$route.params.id,
-          bookings_allowed: this.bookings_allowed,
-          ismultiple: this.slotstype == "Multiple Days" ? true : false,
-        })
-        .then((response) => {
-          this.$toasted.show("Slots added successfully", {
-            type: "success",
-            duration: 2000,
+      if (pricecheck) {
+        await axios
+          .post("/api/admin/slots/add", {
+            slots: this.slots,
+            date: this.timeperiod,
+            days: this.availabledays,
+            id: this.$route.params.id,
+            bookings_allowed: this.bookings_allowed,
+            ismultiple: this.slotstype == "Multiple Days" ? true : false,
+          })
+          .then((response) => {
+            this.$toasted.show("Slots added successfully", {
+              type: "success",
+              duration: 2000,
+            });
+            this.$router.push("/admin/category/slots/" + this.$route.params.id);
+          })
+          .catch((error) => {
+            this.$toasted.show("Error adding slots", {
+              type: "error",
+              duration: 2000,
+            });
           });
-          this.$router.push("/admin/category/slots/" + this.$route.params.id);
-        })
-        .catch((error) => {
-          this.$toasted.show("Error adding slots", {
-            type: "error",
-            duration: 2000,
-          });
-        });
-     }
+      }
     },
-    
+
   },
-  
+
 };
 </script>
 <style>
@@ -747,8 +684,7 @@ export default {
   background: #0096c7 !important;
 }
 
-.v-present .theme--light.v-btn:focus::before {
-}
+.v-present .theme--light.v-btn:focus::before {}
 
 .v-future .v-btn::before {
   background-color: #0096c7 !important;
