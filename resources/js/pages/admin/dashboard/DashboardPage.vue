@@ -62,7 +62,6 @@ export default {
         sortDesc: [true]
       },
       showchart: false,
-
       series: [],
       chartOptions: {
         chart: {
@@ -83,6 +82,7 @@ export default {
     this.getInvoice();
     this.getCategory();
     this.getSlot();
+    this.daySale();
 
   },
   methods: {
@@ -121,6 +121,17 @@ export default {
       axios.get('/api/admin/slots/all')
         .then(response => {
           this.slotCount = response.data.slots.total;
+        })
+        .catch(error => {
+           console.log(error)
+        })
+    },
+
+    daySale(){
+      axios.get('/api/admin/bookings/daysale')
+        .then(response => {
+          console.log(response,"daysale");
+         // this.slotCount = response.data.slots.total;
         })
         .catch(error => {
            console.log(error)

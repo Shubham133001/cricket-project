@@ -9,6 +9,7 @@ use App\Http\Controllers\InvoiceitemsController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CancellationRequest;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class CommonController extends Controller
 {
@@ -171,7 +172,6 @@ class CommonController extends Controller
     {
         try {
             $options = $request->options;
-
             $limit = $options['itemsPerPage'] ?? 10;
             $page = $request->page ?? 1;
             $search = $request->search ?? '';
@@ -196,7 +196,6 @@ class CommonController extends Controller
             });
 
             if ($options['sortBy']) {
-
                 $resp->orderBy($options['sortBy'][0], $options['sortDesc'] ? 'desc' : 'asc');
             }
             $data = $resp->paginate($limit);
@@ -238,6 +237,8 @@ class CommonController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+
     public function updatebooking(Request $request)
     {
         try {
@@ -401,4 +402,59 @@ class CommonController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function daySales(Request $request)
+    {
+        try {
+            // $dayWiseAmounts = \DB::table('invoices')
+            //     ->select(\DB::raw('DATE(created_at) as booking_date'), \DB::raw('SUM(amount) as total_amount'))
+            //     ->groupBy(\DB::raw('DATE(created_at)'))
+            //     //->orderBy('created_at')
+            //     ->get();
+
+            // foreach ($dayWiseAmounts as $dayAmount) {
+            //     echo $dayAmount->booking_date . ': ' . $dayAmount->total_amount . "\n";
+            // }
+
+            $startDate = Carbon::createFromDate(2024, 5, 1);
+    $endDate = $startDate->copy()->endOfMonth();
+
+    // Generate all dates for the month
+    //$allDates = [];
+    $allDates = [];
+    for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+        $allDates[$date->format('Y-m-d')] = 0;
+    }
+
+    // Get the daily totals from the bookings table
+    $dailyTotals = DB::table('invoices')
+        ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(amount) as total_amount'))
+        ->whereBetween('created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+        ->groupBy(DB::raw('DATE(created_at)'))
+        ->orderBy('date')
+        ->get();
+
+            // Merge the totals with all dates
+            foreach ($dailyTotals as $dailyTotal) {
+                $allDates[$dailyTotal->date] = $dailyTotal->total_amount;
+            }
+
+            // Convert to an array of objects or any format you need
+            return collect($allDates)->map(function($totalAmount, $date) {
+                return (object) [
+                    'date' => $date,
+                    'total_amount' => $totalAmount
+                ];
+            })->values();
+            return response()->json([
+                'success' => true,
+                'message' => 'day sale',
+                'data'=> $dailyTotals
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+
 }

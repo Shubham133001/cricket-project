@@ -137,6 +137,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('rejectcancellation', [CommonController::class, 'rejectcancellation'])->name('admin.bookings.rejectcancellation');
             Route::post('approvebooking', [CommonController::class, 'approvebooking'])->name('admin.bookings.approvebooking');
             Route::post('completebooking', [CommonController::class, 'completebooking'])->name('admin.bookings.completebooking');
+            Route::get('daysale', [CommonController::class, 'daySales'])->name('admin.bookings.daysale');
         });
     });
 });
