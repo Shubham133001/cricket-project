@@ -157,20 +157,30 @@ export default {
       axios
         .get("/api/admin/bookings/daysale")
         .then((response) => {
-          this.invoice = response.data;
-          var chartdata = this.invoice.map((daysale) => {
-            return daysale.total_amount;
+          
+          this.dailybooking = response.data.data.dailybooking;
+          //console.log(response.data,"all chart")
+          var dailyBooked = this.dailybooking.map((daysale) => {
+            return daysale.booking_count;
           });
-          var days = this.invoice.map((alldate) => {
+          this.revanue = response.data.data.revanue;  
+          var dayRevanue = this.revanue.map((rev) => {
+            return rev.total_amount;
+          });
+          var days = this.dailybooking.map((alldate) => {
             return this.formatDate(alldate.date);
           });
-          
+        
           this.series = [
             {
-              name: "Amount",
-              data: chartdata,
+              name: "Booking",
+              data: dailyBooked,
             },
           ];
+          this.series.push({
+              name: "Revenue",
+              data: dayRevanue,
+            });
           this.chartOptions = {
             xaxis: {
               categories: days,

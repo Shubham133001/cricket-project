@@ -64,7 +64,7 @@ class CommonController extends Controller
     public function addbooking(Request $request)
     {
         try {
-        
+
             $booking = new \App\Models\Booking();
             $totalamount = 0;
             $firstpayment = 0;
@@ -405,31 +405,60 @@ class CommonController extends Controller
             $startDate = Carbon::now()->startOfMonth();
             $endDate = $startDate->copy()->endOfMonth();
             $allDates = [];
+            
+            // Initialize $allDates with all dates between $startDate and $endDate
             for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
-                $allDates[$date->format('Y-m-d')] = 0;
+                $allDates[$date->format('Y-m-d')] = [
+                    'total_amount' => 0,
+                    'booking_count' => 0,
+                ];
             }
-
-            $dailyTotals = DB::table('invoices')
+            
+            $revanue = DB::table('invoices')
                 ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(amount) as total_amount'))
                 ->whereBetween('created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
                 ->groupBy(DB::raw('DATE(created_at)'))
                 ->orderBy('date')
                 ->get();
-
-            foreach ($dailyTotals as $dailyTotal) {
-                $allDates[$dailyTotal->date] = $dailyTotal->total_amount;
+            
+            $dailyTotals = DB::table('bookings')
+                ->leftJoin('invoices', 'bookings.invoice_id', '=', 'invoices.id')
+                ->selectRaw('DATE(bookings.created_at) as date, COUNT(bookings.id) as booking_count')
+                ->whereBetween('bookings.created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                ->groupBy(DB::raw('DATE(bookings.created_at)'))
+                ->orderBy('date')
+                ->get();
+            
+            foreach ($revanue as $revTotal) {
+                $allDates[$revTotal->date]['total_amount'] = $revTotal->total_amount;
             }
-
-            return collect($allDates)->map(function ($totalAmount, $date) {
+            
+            foreach ($dailyTotals as $dailyTotal) {
+                $allDates[$dailyTotal->date]['booking_count'] = $dailyTotal->booking_count;
+            }
+            
+            $dailyTotals = collect($allDates)->map(function ($data, $date) {
                 return (object) [
                     'date' => $date,
-                    'total_amount' => $totalAmount
+                    'booking_count' => $data['booking_count'],
+                    'total_amount' => $data['total_amount'],
                 ];
             })->values();
+            
+            $revanue = collect($allDates)->map(function ($data, $date) {
+                return (object) [
+                    'date' => $date,
+                    'total_amount' => $data['total_amount'],
+                ];
+            })->values();
+            
+            $data['dailybooking'] = $dailyTotals;
+            $data['revanue'] = $revanue;
+
             return response()->json([
                 'success' => true,
                 'message' => 'day sale',
-                'data' => $dailyTotals
+                'data' => $data
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
