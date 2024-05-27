@@ -169,4 +169,36 @@ export default [{
     layout: 'landing'
   }
 },
+{
+  path: '/contactus',
+  name: 'contactus',
+  component: () => import('@/pages/usefullinks/Contactus.vue'),
+  meta: {
+    layout: 'landing'
+  }
+},
+{
+  path: '/about',
+  name: 'about',
+  component: () => import('@/pages/usefullinks/About.vue'),
+  meta: {
+    layout: 'landing'
+  }
+},
+{
+  path: '/terms',
+  name: 'about',
+  component: () => import('@/pages/usefullinks/TermsConditions.vue'),
+  meta: {
+    layout: 'landing'
+  }
+},
+{
+  path: '/privacy',
+  name: 'about',
+  component: () => import('@/pages/usefullinks/PrivacyPolicy.vue'),
+  meta: {
+    layout: 'landing'
+  }
+}
 ]

@@ -16,10 +16,10 @@
           <router-link to="/about" class="text-decoration-none">
             <v-btn text>About</v-btn>
           </router-link>
-          <router-link to="/services" class="text-decoration-none">
-            <v-btn text>Services</v-btn>
+          <router-link to="/categories" class="text-decoration-none">
+            <v-btn text>Categories</v-btn>
           </router-link>
-          <router-link to="/contact" class="text-decoration-none">
+          <router-link to="/contactus" class="text-decoration-none">
             <v-btn text>Contact</v-btn>
           </router-link>
           <v-menu offset-y left transition="slide-y-transition" v-if="isUserlogin == true">
@@ -131,7 +131,16 @@
 
       <v-footer color="transparent">
         <v-container class="py-5">
-          <v-row style="display: flex; justify-content: center; align-items: center">
+          <v-row style="display: flex; justify-content: center; align-items: top">
+            <v-col cols="12" md="4">
+              <div class="">
+                <img :src="storeDetails.logo" height="36" />
+                <h1 v-if="storeDetails.logo == null">{{ storeDetails.name }}</h1>
+                <p>Lorem Ipsum Dummy Text. Lorem Ipsum Dummy Text.Lorem Ipsum Dummy Text.Lorem Ipsum Dummy Text.Lorem
+                  Ipsum
+                  Dummy Text.</p>
+              </div>
+            </v-col>
             <v-col cols="12" md="4">
               <div class="text-h6 text-lg-h5 font-weight-bold">
                 Contact Information
@@ -145,6 +154,17 @@
                 <v-icon color="primary lighten-1" class="mr-2">mdi-phone-outline</v-icon>
                 <a href="#" class="text-decoration-none text--primary">Mobile: {{ storeDetails.contact }}</a>
               </div>
+            </v-col>
+            <v-col cols="12" md="4">
+              <div class="text-h6 text-lg-h5 font-weight-bold">
+                Useful Links
+              </div>
+              <div style="width: 80px; height: 2px" class="mb-4 mt-1 primary" />
+              <router-link :to="link.to" class="text-decoration-none" v-for="link in links" :key="link.label"
+                style="width: 100%; float: left">
+                <v-btn text>{{ link.label }}</v-btn>
+              </router-link>
+
             </v-col>
           </v-row>
           <v-divider class="my-3"></v-divider>
@@ -213,41 +233,41 @@ export default {
       config,
       links: [
         {
-          label: "Overview",
-          to: "#",
+          label: "Terms & Conditions",
+          to: "/terms",
         },
         {
-          label: "Features",
-          to: "#",
+          label: "Privacy Policy",
+          to: "/privacy",
         },
         {
-          label: "Pricing",
-          to: "#",
+          label: "Categories",
+          to: "/categories",
         },
-        {
-          label: "Documentation",
-          to: "#",
-        },
-        {
-          label: "News",
-          to: "#",
-        },
-        {
-          label: "FAQ",
-          to: "#",
-        },
-        {
-          label: "About us",
-          to: "#",
-        },
-        {
-          label: "Carrers",
-          to: "#",
-        },
-        {
-          label: "Press",
-          to: "#",
-        },
+        // {
+        //   label: "Documentation",
+        //   to: "#",
+        // },
+        // {
+        //   label: "News",
+        //   to: "#",
+        // },
+        // {
+        //   label: "FAQ",
+        //   to: "#",
+        // },
+        // {
+        //   label: "About us",
+        //   to: "#",
+        // },
+        // {
+        //   label: "Carrers",
+        //   to: "#",
+        // },
+        // {
+        //   label: "Press",
+        //   to: "#",
+        // },
       ],
     };
   },

@@ -1,7 +1,7 @@
 <template>
     <div style="width: 100%">
         <v-container>
-
+            <h1 class="text-h1">Bookings</h1>
             <v-col cols="12" md="12" :class="(showheading) ? 'showheading' : 'hideheading'">
                 <v-img height="80px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                     :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/886/350/200" cover
