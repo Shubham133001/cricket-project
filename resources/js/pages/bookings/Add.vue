@@ -59,15 +59,6 @@
                   <v-list-item v-for="(slot, index) in slots" :key="index">
                     <template v-slot:default="{ active }">
                       <v-list-item-action>
-                        <v-checkbox
-                          v-model="selection"
-                          :disabled="
-                            slot.bookings.length >= slot.bookings_allowed
-                          "
-                          multiple
-                          :value="slot"
-                          @change="addbookings(slot, $event, 'half')"
-                        ></v-checkbox>
                         <!-- <v-checkbox
                                                     :disabled="slot.bookings.length >= slot.bookings_allowed"
                                                     v-if="slot.bookings.length == 0 && slot.bookings_allowed > 1" multiple
@@ -113,21 +104,38 @@
                               >Booked By</v-btn
                             >
                           </p>
-                          <v-spacer></v-spacer>
-                          <v-switch
-                            v-model="slot.bookfull"
-                            color="primary"
-                            label="Book Full Slot"
-                            @change="bookfullslot(slot, $event)"
-                            :disabled="
-                              slot.bookings.length >= slot.bookings_allowed
-                            "
-                            v-if="
-                              slot.bookings.length == 0 &&
-                              slot.bookings_allowed > 1 &&
-                              bookfull[slot.id] == true
-                            "
-                          ></v-switch>
+                          <!-- <v-spacer></v-spacer> -->
+                          <v-row>
+                             <v-col cols="3">
+                              <v-checkbox
+                                v-model="selection"
+                                label="Half"
+                                :disabled="
+                                  slot.bookings.length >= slot.bookings_allowed
+                                "
+                                multiple
+                                :value="slot"
+                                @change="addbookings(slot, $event, 'half')"
+                              ></v-checkbox>
+                            </v-col>
+                            <v-col cols="3">
+                              <v-checkbox
+                                v-model="slot.bookfull"
+                                label="Full"
+                                @change="bookfullslot(slot, $event)"
+                                :disabled="
+                                  slot.bookings.length >= slot.bookings_allowed
+                                "
+                                v-if="
+                                  slot.bookings.length == 0 &&
+                                  slot.bookings_allowed > 1 &&
+                                  bookfull[slot.id] == true
+                                "
+                              ></v-checkbox>
+                            </v-col>
+                           
+                          </v-row>
+                          
                         </v-list-item-title>
                         <!-- <v-list-item-subtitle>
                                                     {{ slot.start_time + ' - ' + slot.end_time }}<br />
@@ -238,10 +246,10 @@
                 <tr>
                   <td colspan="2" style="text-align: center">
                     <v-checkbox
-                        v-model="applyCredit"
-                        label="Apply Credit"
-                        :value="false"
-                        :disabled="isCheckboxDisabled"
+                      v-model="applyCredit"
+                      label="Apply Credit"
+                      :value="false"
+                      :disabled="isCheckboxDisabled"
                     ></v-checkbox>
                   </td>
                 </tr>
@@ -433,8 +441,8 @@ export default {
       openlogindialog: false,
       haveaccount: true,
       bookingform: false,
-      isCheckboxDisabled:true,
-      applyCredit:false,
+      isCheckboxDisabled: true,
+      applyCredit: false,
       credits: 0,
       slots: [],
       days: ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"],
@@ -485,7 +493,7 @@ export default {
     // this.getSlots();
     this.getgateways();
 
-   // console.log(this.applyCredit);
+    // console.log(this.applyCredit);
   },
   created() {
     EventBus.$on("isUserLogin", (status) => {
