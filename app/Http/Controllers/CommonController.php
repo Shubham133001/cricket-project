@@ -422,11 +422,12 @@ class CommonController extends Controller
                 ->leftJoin('invoices', 'bookings.invoice_id', '=', 'invoices.id')
                 ->selectRaw('DATE(bookings.created_at) as date, COUNT(bookings.id) as booking_count')
                 ->whereBetween('bookings.created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
-                ->where('bookings.status','Approved')
+                ->where('bookings.status','Completed')
+                ->where('invoices.status',1)
                 ->groupBy(DB::raw('DATE(bookings.created_at)'))
                 ->orderBy('date')
                 ->get();
-            
+
             foreach ($revanue as $revTotal) {
                 $allDates[$revTotal->date]['total_amount'] = $revTotal->total_amount;
             }
