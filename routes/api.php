@@ -34,6 +34,7 @@ Route::get('category/{id}', [CategoriesController::class, 'editcategories'])->na
 Route::get('store', [CommonController::class, 'store'])->name('settingstore');
 Route::get('categories', [CategoriesController::class, 'getcategorieswithslots'])->name('getcategorieswithslots');
 Route::post('slots', [SlotsController::class, 'getslots'])->name('getslots');
+Route::post('slots1', [SlotsController::class, 'getslots1'])->name('getslots1');
 Route::get('getgateways', [PaymentgatewaysController::class, 'getgateways'])->name('getgateways');
 Route::post('addbooking', [CommonController::class, 'addbooking'])->name('addbooking');
 Route::get('getinvoicebyid/{id}', [InvoicesController::class, 'getInvoiceById'])->name('getInvoiceById');

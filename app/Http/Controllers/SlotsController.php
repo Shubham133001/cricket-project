@@ -149,7 +149,7 @@ class SlotsController extends Controller
                 ->whereDate('start_date', '<=', $date)
                 ->whereDate('end_date', '>=', $date)
                 ->with(['bookings' => function ($query) use ($date) {
-                    $query->where('date', $date)->where('status','!=','Cancelled')->with(['user', 'team']);
+                    $query->where('date', $date)->where('status', '!=', 'Cancelled')->with(['user', 'team']);
                 }])
                 ->with('category')
                 ->get();
@@ -159,6 +159,36 @@ class SlotsController extends Controller
                 return $item;
             });
 
+            return response()->json([
+                'success' => true,
+                'slots' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+    public function getslots1(Request $request)
+    {
+        // get day from date
+        try {
+            $date = strtotime($request->date);
+            $date = date('Y-m-d', $date);
+
+            $data = \App\Models\Slot::where('category_id', $request->id)
+                ->whereDate('start_date', '<=', $date)
+                ->whereDate('end_date', '>=', $date)
+                ->with(['bookings' => function ($query) use ($date) {
+                    $query->where('date', $date)->where('status', '!=', 'Cancelled')->with(['user', 'team']);
+                }])
+                ->with('category')
+                ->get();
+            $data->map(function ($item) {
+                $item->days = explode(',', $item->days);
+                return $item;
+            });
             return response()->json([
                 'success' => true,
                 'slots' => $data
@@ -180,7 +210,7 @@ class SlotsController extends Controller
                 ->whereDate('start_date', '<=', $date)
                 ->whereDate('end_date', '>=', $date)
                 ->with(['bookings' => function ($query) use ($date) {
-                    $query->where('date', $date)->where('status','!=','Cancelled')->with(['user', 'team']);
+                    $query->where('date', $date)->where('status', '!=', 'Cancelled')->with(['user', 'team']);
                 }])
                 ->with('category')
                 ->get();
@@ -206,8 +236,8 @@ class SlotsController extends Controller
     {
         try {
             // get day from date
-          //  $date = strtotime($request->date);
-          //  $date = date('Y-m-d', $date);  
+            //  $date = strtotime($request->date);
+            //  $date = date('Y-m-d', $date);  
             // $data = \App\Models\Category::where('id',$request->id)->get();
             // $list = [];
             // foreach ($data as $key => $value) {
@@ -256,10 +286,10 @@ class SlotsController extends Controller
     public function slotsforcategory(Request $request)
     {
         try {
-          //  get day from date
-           $date = strtotime($request->date);
-           $date = date('Y-m-d', $date);  
-            $data = \App\Models\Category::where('id',$request->id)->get();
+            //  get day from date
+            $date = strtotime($request->date);
+            $date = date('Y-m-d', $date);
+            $data = \App\Models\Category::where('id', $request->id)->get();
             $list = [];
             foreach ($data as $key => $value) {
                 $value->slot_count = \App\Models\Slot::where('category_id', $value->id)->count();
@@ -302,11 +332,11 @@ class SlotsController extends Controller
             ]);
         }
     }
-    
+
     public function delete(Request $request)
     {
         try {
-            \App\Models\Booking::where('slot_id',$request->id)->delete();
+            \App\Models\Booking::where('slot_id', $request->id)->delete();
             $data = \App\Models\Slot::find($request->id);
             $data->delete();
             return response()->json([
