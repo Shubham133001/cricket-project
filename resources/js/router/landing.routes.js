@@ -20,5 +20,13 @@ export default [{
   meta: {
     layout: 'landing'
   }
+},
+{
+  path: '/contactus',
+  name: 'contactus',
+  component: () => import('@/pages/landing/ContactUs.vue'),
+  meta: {
+    layout: 'landing'
+  }
 }
 ]

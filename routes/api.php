@@ -40,6 +40,7 @@ Route::get('getinvoicebyid/{id}', [InvoicesController::class, 'getInvoiceById'])
 Route::post('changegateway', [InvoicesController::class, 'changegateway'])->name('changegateway');
 Route::get('downloadpdf/{id}', [InvoicesController::class, 'downloadPdf'])->name('downloadPdf');
 Route::get('viewpdf/{id}', [InvoicesController::class, 'viewpdf'])->name('viewpdf');
+Route::post('contactus', [CommonController::class, 'contactus'])->name('contactus');
 
 // add admin group with middleware
 Route::group(['prefix' => 'admin'], function () {

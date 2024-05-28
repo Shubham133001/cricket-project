@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\CancellationRequest;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\ContactUs;
+use Illuminate\Support\Facades\Validator;
 
 class CommonController extends Controller
 {
@@ -419,7 +421,7 @@ class CommonController extends Controller
                 ->get();
             
             $dailyTotals = DB::table('bookings')
-                ->leftJoin('invoices', 'bookings.invoice_id', '=', 'invoices.id')
+                ->leftJoin('invoi   ces', 'bookings.invoice_id', '=', 'invoices.id')
                 ->selectRaw('DATE(bookings.created_at) as date, COUNT(bookings.id) as booking_count')
                 ->whereBetween('bookings.created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
                 ->where('bookings.status','Completed')
@@ -462,5 +464,38 @@ class CommonController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function contactus(Request $request){
+     try {
+
+        // echo "<pre>";
+        // print_r($request->all()); die;
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'phone' => 'required|string|min:10|max:10',
+            'message' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+        $contact = new ContactUs;
+        $contact->name = $request->name;
+        $contact->email = $request->email;
+        $contact->phone = $request->phone;
+        $contact->description = $request->message;
+        $contact->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Thanks for conncecting us',
+        ]);
+     } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+     }
     }
 }
