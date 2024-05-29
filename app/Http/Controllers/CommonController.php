@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\UserAuthController;
-use App\Models\User;
-use App\Http\Controllers\InvoiceitemsController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CancellationRequest;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use App\Models\ContactUs;
+use Illuminate\Support\Facades\Validator;
 
 class CommonController extends Controller
 {
@@ -80,8 +80,7 @@ class CommonController extends Controller
     public function addbooking(Request $request)
     {
         try {
-            // echo "<pre>";
-            // print_r($request->all()); die;
+
             $booking = new \App\Models\Booking();
             $totalamount = 0;
             $firstpayment = 0;
@@ -105,7 +104,7 @@ class CommonController extends Controller
             $invoice = \App\Models\Invoice::create($invoicedata);
             // get last insert id
             $lastinvoice = $invoice;
-            if ($request->credit > ($totalamount - $firstpayment)) {
+            if ($request->credit > ($totalamount - $firstpayment) && isset($request->applycredit)) {
                 $amount =   $totalamount - $firstpayment;
                 $credittransaction = new  \App\Models\Credittransaction;
                 $credittransaction->user_id = $request['user']['id'];
@@ -314,8 +313,6 @@ class CommonController extends Controller
     }
     public function cancelbooking(Request $request)
     {
-        // echo "<pre>";
-        // print_r($request->all()); die;
         try {
             $canceldata = CancellationRequest::where('id', $request->id)->first();
             $booking = \App\Models\Booking::with('slot', 'invoice', 'cancellation_request')->find($canceldata->booking_id);
@@ -412,6 +409,117 @@ class CommonController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Booking completed'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function daySales(Request $request)
+    {
+        try {
+            $startDate = Carbon::now()->startOfMonth();
+            $endDate = $startDate->copy()->endOfMonth();
+            $allDates = [];
+
+            // Initialize $allDates with all dates between $startDate and $endDate
+            for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+                $allDates[$date->format('Y-m-d')] = [
+                    'total_amount' => 0,
+                    'booking_count' => 0,
+                ];
+            }
+
+            // $revanue = DB::table('invoices')
+            //     ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(amount) as total_amount'))
+            //     ->whereBetween('created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            //     ->where('status', 1)
+            //     ->groupBy(DB::raw('DATE(created_at)'))
+            //     ->orderBy('date')
+            //     ->get();
+            $revanue = DB::table('payments')
+                ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(amount) as total_amount'))
+                ->whereBetween('created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                // ->where('status', 1)
+                ->groupBy(DB::raw('DATE(created_at)'))
+                ->orderBy('date')
+                ->get();
+
+            $dailyTotals = DB::table('bookings')
+                ->leftJoin('invoices', 'bookings.invoice_id', '=', 'invoices.id')
+                ->selectRaw('DATE(bookings.created_at) as date, COUNT(bookings.id) as booking_count')
+                ->whereBetween('bookings.created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                ->where('bookings.status', 'Completed')
+                ->orWhere('bookings.status', 'Approved')
+                ->where('invoices.status', 1)
+                ->groupBy(DB::raw('DATE(bookings.created_at)'))
+                ->orderBy('date')
+                ->get();
+
+            foreach ($revanue as $revTotal) {
+                $allDates[$revTotal->date]['total_amount'] = $revTotal->total_amount;
+            }
+
+            foreach ($dailyTotals as $dailyTotal) {
+                $allDates[$dailyTotal->date]['booking_count'] = $dailyTotal->booking_count;
+            }
+
+            $dailyTotals = collect($allDates)->map(function ($data, $date) {
+                return (object) [
+                    'date' => $date,
+                    'booking_count' => $data['booking_count'],
+                    'total_amount' => $data['total_amount'],
+                ];
+            })->values();
+
+            $revanue = collect($allDates)->map(function ($data, $date) {
+                return (object) [
+                    'date' => $date,
+                    'total_amount' => $data['total_amount'],
+                ];
+            })->values();
+
+            $data['dailybooking'] = $dailyTotals;
+            $data['revanue'] = $revanue;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'day sale',
+                'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function contactus(Request $request)
+    {
+        try {
+
+            // echo "<pre>";
+            // print_r($request->all()); die;
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string',
+                'email' => 'required|email',
+                'phone' => 'required|string|min:10|max:10',
+                'message' => 'required|string',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()->first()
+                ]);
+            }
+            $contact = new ContactUs;
+            $contact->name = $request->name;
+            $contact->email = $request->email;
+            $contact->phone = $request->phone;
+            $contact->description = $request->message;
+            $contact->save();
+            return response()->json([
+                'success' => true,
+                'message' => 'Thanks for conncecting us',
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);

@@ -99,7 +99,6 @@
                                                         Booking</v-btn>
                                                 </v-list-item-subtitle> -->
                       </v-list-item-content>
-
                     </template>
                   </v-list-item>
                 </v-list-item-group>
@@ -195,7 +194,6 @@
                                     </td>
                                 </tr> -->
 
-
                 <tr>
                   <td colspan="2">
                     <h3 style="float: left">Available Credits</h3>
@@ -262,7 +260,7 @@
               @click="showbooking = false">mdi-close</v-icon></v-card-title>
           <v-card-text>
             <v-list>
-              <v-list-item v-for="          booking           in  bookings " :key="booking.id">
+              <v-list-item v-for="booking in  bookings" :key="booking.id">
                 <v-list-item-content>
                   <v-list-item-title>
                     <v-avatar size="70" color="#efefef" style="float: left">
@@ -282,7 +280,6 @@
           </v-card-text>
         </v-card>
       </v-dialog>
-
       <!-- <v-navigation-drawer v-model="openlogindialog" app temporary right style="max-width: 450px;" width="80%">
 
                 <v-img src="/images/sportsbg.png" lazy-src="https://picsum.photos/id/11/10/6" height="80px"
@@ -703,7 +700,6 @@ export default {
       let bookings = slot.bookings;
       this.bookings = bookings;
       this.showbooking = true;
-
     },
     selectdate() {
       this.slots = [];

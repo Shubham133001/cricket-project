@@ -29,6 +29,9 @@
                   <v-img :src="'/storage/images/' + image" height="200px" width="350px"
                     gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" lazy-src="https://picsum.photos/id/11/350/200"
                     v-if="item.image == null || item.image == ''">
+                    <h3 class="text-h5 pl-1 pb-1" style="position: absolute; bottom: 0px; color: #fff">
+                      {{ item.name }}
+                    </h3>
                   </v-img>
                   <v-carousel hide-delimiters cycle show-arrows-on-hover v-else>
                     <v-carousel-item v-for="(image, i) in item.image" :key="i" class="white--text align-center mt-0">

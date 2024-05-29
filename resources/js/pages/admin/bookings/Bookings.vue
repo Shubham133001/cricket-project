@@ -27,7 +27,7 @@
 
                             <v-card-actions>
                                 <v-btn color="primary" @click="bookslot(item)" outlined
-                                    :disabled="(item == selecteditem)">Reserve Now</v-btn>
+                                    :disabled="(item == selecteditem)">Booked Now</v-btn>
                                 <!-- <v-chip-group v-model="item.selection" v-if="item.slots.length > 0">
                                     <v-chip v-for="(slot, index) in item.slots" :key="slot.id"
                                         :color="(item.selection == index) ? 'green' : 'primary'" dark>{{ slot.time

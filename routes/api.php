@@ -42,6 +42,7 @@ Route::post('changegateway', [InvoicesController::class, 'changegateway'])->name
 Route::get('downloadpdf/{id}', [InvoicesController::class, 'downloadPdf'])->name('downloadPdf');
 Route::get('viewpdf/{id}', [InvoicesController::class, 'viewpdf'])->name('viewpdf');
 Route::get('stats', [CommonController::class, 'stats'])->name('stats');
+Route::post('contactus', [CommonController::class, 'contactus'])->name('contactus');
 
 // add admin group with middleware
 Route::group(['prefix' => 'admin'], function () {
@@ -139,6 +140,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('rejectcancellation', [CommonController::class, 'rejectcancellation'])->name('admin.bookings.rejectcancellation');
             Route::post('approvebooking', [CommonController::class, 'approvebooking'])->name('admin.bookings.approvebooking');
             Route::post('completebooking', [CommonController::class, 'completebooking'])->name('admin.bookings.completebooking');
+            Route::get('daysale', [CommonController::class, 'daySales'])->name('admin.bookings.daysales');
         });
     });
 });

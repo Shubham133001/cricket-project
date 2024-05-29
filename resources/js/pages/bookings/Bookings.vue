@@ -29,11 +29,12 @@
                                     {{ item.name }}
                                 </v-card-title>
 
-                                <v-card-subtitle style="color: #fff; position: relative; z-index: 1">
+                                <v-card-subtitle style="color: #fff;">
                                     {{ truncatedDescription(item.description) }}<br />
-                                    <v-chip small color="primary" class="mt-1">{{ item.slotslength }} Slots
+                                    <v-chip small color="primary">{{ item.slotslength }} Slots
                                     </v-chip>
                                 </v-card-subtitle>
+
 
 
 

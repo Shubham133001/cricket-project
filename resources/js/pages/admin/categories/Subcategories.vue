@@ -11,27 +11,16 @@
         </v-btn>
         <span class="headline">Sub Categories</span>
         <v-spacer></v-spacer>
-        <v-btn
-          color="primary"
-          :to="'/admin/category/addsubcategory/' + this.$route.params.id"
-          >Add New Sub-Category</v-btn>
+        <v-btn color="primary" :to="'/admin/category/addsubcategory/' + this.$route.params.id">Add New
+          Sub-Category</v-btn>
       </v-card-title>
       <v-card-text>
         <v-row> </v-row>
 
-        <v-simple-table
-          :headers="headers"
-          :items="categories"
-          item-key="name"
-          class="elevation-0"
-        >
+        <v-simple-table :headers="headers" :items="categories" item-key="name" class="elevation-0">
           <thead style="background: #ececec">
             <tr>
-              <th
-                v-for="header in headers"
-                :key="header.text"
-                :class="`text-${header.align || 'start'}`"
-              >
+              <th v-for="header in headers" :key="header.text" :class="`text-${header.align || 'start'}`">
                 {{ header.text }}
               </th>
             </tr>
@@ -42,46 +31,22 @@
                 {{ item.id }}
               </td>
               <td>
-                <div
-                  style="max-width: 350px"
-                  min-width="150px"
-                  width="auto"
-                  class="mt-1 mb-1"
-                  @click="opencategory(item)"
-                >
-                  <v-img
-                    height="200px"
-                    width="350px"
-                    gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                    lazy-src="https://picsum.photos/id/11/350/200"
-                    v-if="item.image == null || item.image == ''"
-                  >
+                <div style="max-width: 350px" min-width="150px" width="auto" class="mt-1 mb-1"
+                  @click="opencategory(item)">
+                  <v-img height="200px" width="350px" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                    lazy-src="https://picsum.photos/id/11/350/200" v-if="item.image == null || item.image == ''">
+                    <h3 class="text-h5 pl-1 pb-1" style="position: absolute; bottom: 0px; color: #fff">
+                      {{ item.name }}
+                    </h3>
                   </v-img>
-                  <v-carousel
-                    height="200"
-                    hide-delimiters
-                    cycle
-                    show-arrows-on-hover
-                    v-else
-                  >
-                    <v-carousel-item
-                      v-for="(image, i) in item.image"
-                      :key="i"
-                      class="white--text align-center mt-0"
-                    >
-                      <v-img
-                        :src="'/storage/images/' + image"
-                        height="200px"
-                        min-width="150px"
+                  <v-carousel height="200" hide-delimiters cycle show-arrows-on-hover v-else>
+                    <v-carousel-item v-for="(image, i) in item.image" :key="i" class="white--text align-center mt-0">
+                      <v-img :src="'/storage/images/' + image" height="200px" min-width="150px"
                         gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                        lazy-src="https://picsum.photos/id/11/350/200"
-                      >
+                        lazy-src="https://picsum.photos/id/11/350/200">
                       </v-img>
                     </v-carousel-item>
-                    <h3
-                      class="text-h5 pl-1 pb-1"
-                      style="position: absolute; bottom: 0px; color: #fff"
-                    >
+                    <h3 class="text-h5 pl-1 pb-1" style="position: absolute; bottom: 0px; color: #fff">
                       {{ item.name }}
                     </h3>
                   </v-carousel>
@@ -103,15 +68,7 @@
               <td>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      fab
-                      icon
-                      color="primary"
-                      @click="editsub(item)"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
+                    <v-btn small fab icon color="primary" @click="editsub(item)" v-bind="attrs" v-on="on">
                       <v-icon small>mdi-pencil</v-icon>
                     </v-btn>
                   </template>
@@ -119,15 +76,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      fab
-                      icon
-                      color="red"
-                      @click="deleteCategory(item)"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
+                    <v-btn small fab icon color="red" @click="deleteCategory(item)" v-bind="attrs" v-on="on">
                       <v-icon small>mdi-delete</v-icon>
                     </v-btn>
                   </template>
@@ -135,15 +84,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      fab
-                      icon
-                      color="info"
-                      @click="viewcategory(item)"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
+                    <v-btn small fab icon color="info" @click="viewcategory(item)" v-bind="attrs" v-on="on">
                       <v-icon small>mdi-format-list-bulleted-square</v-icon>
                     </v-btn>
                   </template>
@@ -151,15 +92,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      icon
-                      fab
-                      color="green"
-                      @click="addslot(item)"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
+                    <v-btn small icon fab color="green" @click="addslot(item)" v-bind="attrs" v-on="on">
                       <v-icon small>mdi-plus</v-icon>
                     </v-btn>
                   </template>
@@ -167,15 +100,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      icon
-                      fab
-                      color="info"
-                      @click="viewslot(item)"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
+                    <v-btn small icon fab color="info" @click="viewslot(item)" v-bind="attrs" v-on="on">
                       <v-icon small>mdi-eye</v-icon>
                     </v-btn>
                   </template>

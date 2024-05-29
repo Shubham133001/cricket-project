@@ -20,8 +20,8 @@
               <div class="caption">{{ percentageLabel }}</div>
             </div>
             <v-btn class="success">view {{ countpage }}</v-btn> -->
-             <a @click="pageView(pagename)">
-               view
+            <a @click="pageView(pagename)">
+              view
             </a>
           </div>
         </div>
@@ -89,7 +89,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    
+
     pagename: {
       type: String,
       default: "",
@@ -143,7 +143,7 @@ export default {
     },
   },
   methods: {
-    pageView(routename){
+    pageView(routename) {
       //console.log(routename,"routename");
       this.$router.push(routename);
     },
