@@ -5,7 +5,7 @@
         <div class="text-h6 text-lg-h5 font-weight-bold">Contact Us</div>
         <div style="width: 80px; height: 2px" class="mb-5 mt-1 primary" />
         <div class="d-flex mb-2 font-weight-bold">
-          <v-icon color="primary lighten-1" class="mr-2"
+          <v-icon color="primary lighten-1" class="mr-2" 
             >mdi-map-marker-outline</v-icon
           >
           S.C.F 24-25 FF, Phase 5, Sector 59, Sahibzada Ajit Singh Nagar, Punjab
