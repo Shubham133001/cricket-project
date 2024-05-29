@@ -421,7 +421,7 @@ class CommonController extends Controller
                 ->get();
             
             $dailyTotals = DB::table('bookings')
-                ->leftJoin('invoi   ces', 'bookings.invoice_id', '=', 'invoices.id')
+                ->leftJoin('invoices', 'bookings.invoice_id', '=', 'invoices.id')
                 ->selectRaw('DATE(bookings.created_at) as date, COUNT(bookings.id) as booking_count')
                 ->whereBetween('bookings.created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
                 ->where('bookings.status','Completed')
