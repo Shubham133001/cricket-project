@@ -200,5 +200,13 @@ export default [{
   meta: {
     layout: 'landing'
   }
+},
+{
+  path: '/directions',
+  name: 'direction',
+  component: () => import('@/pages/Direction.vue'),
+  meta: {
+    layout: 'landing'
+  }
 }
 ]

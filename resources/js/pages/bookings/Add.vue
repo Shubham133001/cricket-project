@@ -17,6 +17,8 @@
             <Mapview ref="mapview"></Mapview>
             <v-btn color="primary" class="mt-2" @click="opendirection"><v-icon small>mdi-directions</v-icon>Get
               Directions</v-btn>
+            <v-btn color="primary" class="mt-2" @click="opendirectionlocal"><v-icon small>mdi-map-marker</v-icon>See
+              map</v-btn>
           </v-col>
         </v-row>
       </v-img>
@@ -39,28 +41,7 @@
                   <v-list-item v-for="(slot, index) in  slots " :key="index">
 
                     <template v-slot:default="{ active }">
-                      <v-radio-group v-model="selection[index]" inline>
-                        <v-radio label="Half" :disabled="slot.bookings.length >= slot.bookings_allowed"
-                          :value="[slot]"></v-radio>
-                        <v-radio label="Full"
-                          :disabled="slot.bookings.length >= slot.bookings_allowed || slot.bookings.length > 0"
-                          :value="[slot, slot]"></v-radio>
-                      </v-radio-group>
-                      <v-list-item-action>
-
-
-                        <!-- <v-checkbox :disabled="slot.bookings.length >= slot.bookings_allowed"
-                          @click="addbookings(slot, 'half', $event)"></v-checkbox>
-                        <v-checkbox :disabled="slot.bookings.length >= 1"
-                          @click="addbookings(slot, 'full', $event)"></v-checkbox> -->
-
-                        <!-- <v-checkbox
-                                                    :disabled="slot.bookings.length >= slot.bookings_allowed"
-                                                    v-if="slot.bookings.length == 0 && slot.bookings_allowed > 1" multiple
-                                                    :value="slot" @change="bookfullslot(slot, $event)" ></v-checkbox>   -->
-                      </v-list-item-action>
                       <v-list-item-content style="border-bottom: solid 1px #ececec">
-
                         <v-list-item-title>
                           <p class="text-h6 ma-0">
                             {{ slot.title }}
@@ -86,6 +67,7 @@
                             v-if="slot.bookings.length == 0 && slot.bookings_allowed > 1 && bookfull[slot.id] == true"></v-switch> -->
 
                         </v-list-item-title>
+
                         <!-- <v-list-item-subtitle>
                                                     {{ slot.start_time + ' - ' + slot.end_time }}<br />
                                                     <v-chip
@@ -99,6 +81,16 @@
                                                         Booking</v-btn>
                                                 </v-list-item-subtitle> -->
                       </v-list-item-content>
+                      <v-list-item-action>
+
+                        <v-radio-group v-model="selection[index]" inline>
+                          <v-radio label="Half" :disabled="slot.bookings.length >= slot.bookings_allowed"
+                            :value="[slot]"></v-radio>
+                          <v-radio label="Full"
+                            :disabled="slot.bookings.length >= slot.bookings_allowed || slot.bookings.length > 0"
+                            :value="[slot, slot]"></v-radio>
+                        </v-radio-group>
+                      </v-list-item-action>
                     </template>
                   </v-list-item>
                 </v-list-item-group>
@@ -271,7 +263,7 @@
                     </v-avatar>
                     <h3 style="float: left; clear: right; text-transform: capitalize;" class="mt-0 ml-1 text-h4">
                       {{ booking.team.name }}<br /><v-chip color="orange" dark style="font-family: 'Pacifico'">{{
-                        booking.team.designation }}</v-chip>
+          booking.team.designation }}</v-chip>
                     </h3>
                   </v-list-item-title>
                 </v-list-item-content>
@@ -323,6 +315,15 @@
             </v-navigation-drawer> -->
     </v-container>
     <confirm ref="confirm"></confirm>
+    <v-dialog v-model="mapdirection" max-width="80%">
+      <v-card>
+        <v-card-title class="text-h5">Direction <v-spacer></v-spacer><v-icon dense small fab
+            @click="mapdirection = false">mdi-close</v-icon></v-card-title>
+        <v-card-text>
+          <Mapdirection ref="Mapdirection"></Mapdirection>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -334,10 +335,12 @@ import confirm from "@/components/common/Confirm.vue";
 import { EventBus } from "../../event-bus.js";
 import Mapview from "@/components/common/Mapview.vue";
 import { mapState, mapActions } from "vuex";
+import Mapdirection from "@/components/common/Mapdirection.vue";
 export default {
   components: {
     confirm,
-    Mapview
+    Mapview,
+    Mapdirection
   },
   data() {
     return {
@@ -358,6 +361,7 @@ export default {
       showbooking: false,
       newbookings: [],
       bookfull: [],
+      mapdirection: false,
       booking: {
         name: '',
         phone: '',
@@ -423,7 +427,24 @@ export default {
       return moment(date).format("DD MMM YYYY (dddd)");
     },
     opendirection() {
-      window.open('https://www.google.com/maps/dir/?api=1&destination=' + this.selecteditem.location, '_blank');
+      // parse string to url
+      let addr = encodeURIComponent(this.selecteditem.name + ' ' + this.selecteditem.location);
+      let latlng = JSON.parse(this.selecteditem.location_data).lat + ',' + JSON.parse(this.selecteditem.location_data).lng;
+      let newaddr = 'https://www.google.com/maps/dir//' + addr + '/@' + latlng + ',14z/'
+      window.open(newaddr, '_blank');
+    },
+    opendirectionlocal() {
+      // parse string to url
+      // let addr = encodeURIComponent(this.selecteditem.location);
+      let latlng = JSON.parse(this.selecteditem.location_data).lat + ',' + JSON.parse(this.selecteditem.location_data).lng;
+      // let newaddr = 'https://www.google.com/maps/dir//' + addr + '/@' + latlng + ',14z/'
+      this.$router.push({
+        name: 'direction',
+        query: {
+          lat: JSON.parse(this.selecteditem.location_data).lat,
+          lng: JSON.parse(this.selecteditem.location_data).lng
+        }
+      });
     },
     ...mapActions("app", ["getStoreData", "setUserdetails", "getUserLogin"]),
     async deletebooking(item) {
@@ -466,9 +487,10 @@ export default {
           if (response.data.success) {
             let category = response.data.category;
             this.selecteditem = category;
-            let location = category.location;
+            let location = category.location_data;
 
             this.$refs.mapview.getlocation(location);
+            this.$refs.Mapdirection.getlocation(location);
             // this.availabledays = category.slots[0].days;
             this.getSlots();
           } else {
@@ -776,5 +798,10 @@ table tr {
 
 .v-navigation-drawer__content {
   padding: 0px !important;
+}
+
+.v-label {
+  font-size: 16px;
+  margin-left: 10px;
 }
 </style>

@@ -7,6 +7,12 @@
     </div>
 
 </template>
+<style>
+.mapboxgl-ctrl-attrib {
+    display: none;
+
+}
+</style>
 <script>
 
 export default {
@@ -19,7 +25,7 @@ export default {
         // this.loadmap(mapboxgl);
     },
     methods: {
-        loadmap(mapboxgl) {
+        async loadmap(location) {
 
             var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 
@@ -34,9 +40,9 @@ export default {
 
             const map = new mapboxgl.Map({
                 container: 'mymapbox', // Container ID
-                style: 'mapbox://styles/mapbox/streets-v12', // Map style to use
-                center: this.location, // Starting position [lng, lat]
-                zoom: 12 // Starting zoom level
+                style: 'mapbox://styles/amartchsmarters/clwri9yls013g01pn700x455p', // Map style to use
+                center: [location.lng, location.lat], // Starting position [lng, lat]
+                zoom: 16 // Starting zoom level
             });
             // var map = new mapboxgl.Map({
             //     container: 'mymapbox',
@@ -48,23 +54,10 @@ export default {
             // });
             // map.addControl(geocoder);
             map.on('load', function () {
-                map.addSource('single-point', {
-                    type: 'geojson',
-                    data: {
-                        type: 'FeatureCollection',
-                        features: []
-                    }
-                });
 
-                map.addLayer({
-                    id: 'point',
-                    source: 'single-point',
-                    type: 'circle',
-                    paint: {
-                        'circle-radius': 10,
-                        'circle-color': '#448ee4'
-                    }
-                });
+                // new mapboxgl.Marker({ color: 'black' })
+                //     .setLngLat({ lng: location.lng, lat: location.lat })
+                //     .addTo(map);
 
                 // Listen for the `result` event from the Geocoder
                 // `result` event is triggered when a user makes a selection
@@ -74,13 +67,23 @@ export default {
                 // });
             });
         },
-        async getlocation(address) {
+        async getlocation(locationdata) {
 
-            await axios.get('https://api.mapbox.com/search/geocode/v6/forward?q=' + address + '&access_token=pk.eyJ1IjoiYW1hcnRjaHNtYXJ0ZXJzIiwiYSI6ImNsdmh1YmdnZTFiMDQyanA1ZnFzN2E0ZnEifQ.H_1x8u_XcsS6PXzKPkzB3A').then(response => {
-                console.log(response, 'response');
-                this.location = response.data.features[0].geometry.coordinates;
-            });
-            this.loadmap();
+            // await axios.get('https://api.mapbox.com/search/geocode/v6/forward?q=' + address + '&access_token=pk.eyJ1IjoiYW1hcnRjaHNtYXJ0ZXJzIiwiYSI6ImNsdmh1YmdnZTFiMDQyanA1ZnFzN2E0ZnEifQ.H_1x8u_XcsS6PXzKPkzB3A').then(response => {
+            //     // create new instance
+
+            //     // set the location
+            //     this.location = {
+
+            //         lat: response.data.features[0].geometry.coordinates[1],
+            //         lng: response.data.features[0].geometry.coordinates[0]
+
+            //     };
+            locationdata = JSON.parse(locationdata);
+            console.log(locationdata);
+            this.loadmap(locationdata);
+            // });
+
         }
     }
 }
