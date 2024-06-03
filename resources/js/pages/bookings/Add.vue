@@ -5,17 +5,18 @@
         :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/114/1920/450" cover>
         <v-row>
           <v-col cols="12" md="8" class="d-flex align-end" style="justify-content: flex-end; flex-direction: column">
-            <v-card-title class="text-h4 pl-8" style="color: #fff; width: 100%">
+            <v-card-title class="text-h4 pl-4 pr-4" style="color: #fff; width: 100%">
               {{ selecteditem.name }}
             </v-card-title>
 
-            <v-card-subtitle class="pl-8" style="color: #fff; width: 100%">
+            <v-card-subtitle class="pl-4 pr-4" style="color: #fff; width: 100%">
               {{ selecteditem.description }}<br />
             </v-card-subtitle>
           </v-col>
           <v-col cols="12" md="4">
-            <Mapview ref="mapview"></Mapview>
-            <v-btn color="primary" class="mt-2" @click="opendirection"><v-icon small>mdi-directions</v-icon>Get
+            <Mapview ref="mapview" v-if="!isMobile"></Mapview>
+            <v-btn color="primary" :class="(isMobile) ? 'mt-2 ml-4' : 'mt-2'" @click="opendirection"><v-icon
+                small>mdi-directions</v-icon>Get
               Directions</v-btn>
             <v-btn color="primary" class="mt-2" @click="opendirectionlocal"><v-icon small>mdi-map-marker</v-icon>See
               map</v-btn>
@@ -344,6 +345,7 @@ export default {
   },
   data() {
     return {
+      isMobile: false,
       isUserlogin: (localStorage.getItem('userdetails')) ? true : false,
       openlogindialog: false,
       haveaccount: true,
@@ -415,6 +417,7 @@ export default {
     this.getgateways();
   },
   created() {
+    this.isMobile = this.$vuetify.breakpoint.mobile;
     EventBus.$on("isUserLogin", (status) => {
       this.isUserlogin = status;
       this.userdetails = localStorage.getItem("userdetails");

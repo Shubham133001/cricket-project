@@ -1,39 +1,40 @@
 <template>
   <div>
     <v-sheet>
-      <v-row>
-        <v-container class="py-6 pt-lg-1 text-left" style="position: relative; z-index: 1">
-          <v-row>
-            <v-col cols="12" md="6" class="pt-lg-15">
-              <h1 class="text-h4 text-sm-h3 text-md-h3 text-lg-h2">Digitize your sports venue
-                with<br /><span class="primary--text ">Smarters Booking Management</span></h1>
-              <!-- <h2 class="text-h6 text-sm-h5 mt-4 w-full w-md-8-12 w-xl-half mx-auto white--text">Lorem ipsum dolor sit,
+
+      <v-container class="py-lg-6 py-sm-2 pt-lg-1 text-left" style="position: relative; z-index: 1">
+        <v-row>
+          <v-col cols="12" md="6" class="pt-lg-15 pt-2">
+            <h1 class="text-h4 text-sm-h3 text-md-h3 text-lg-h2">Digitize your sports venue
+              with<br /><span class="primary--text ">Smarters Booking Management</span></h1>
+            <!-- <h2 class="text-h6 text-sm-h5 mt-4 w-full w-md-8-12 w-xl-half mx-auto white--text">Lorem ipsum dolor sit,
               amet
               consectetur
               adipisicing elit. Commodi ex facilis ad atque natus tenetur debitis qui quisquam iure amet.</h2> -->
-              <div class="mt-8">
-                <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" color="primary">Start free trial</v-btn>
-                <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto">Learn more</v-btn>
-              </div>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-img src="/images/cricket.png" class="mx-auto" max-width="100%" max-height="100%" />
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-row>
-    </v-sheet>
+            <div class="mt-8">
+              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" color="primary">Start free trial</v-btn>
+              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto">Learn more</v-btn>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-img src="/images/cricket.png" class="mx-auto" max-width="100%" max-height="100%" />
+          </v-col>
+        </v-row>
+      </v-container>
 
+
+    </v-sheet>
     <Partners />
 
     <Stats />
-    <v-row style="background: #fff;" class="pt-4">
-      <v-col cols="12" class="text-center">
-        <h2 class="text-h4 text-sm-h4 text-md-h3 text-lg-h3">Categories</h2>
-      </v-col>
+    <v-col cols="12" style="background: #fff;" class="pt-4">
+
+      <h2 class="text-h4 text-sm-h4 text-md-h3 text-lg-h3 text-center">Categories</h2>
+
+
       <Categories />
 
-    </v-row>
+    </v-col>
     <!-- <v-container>
       <v-divider></v-divider>
     </v-container> -->
@@ -44,6 +45,7 @@
     <!-- <Doctors /> -->
 
     <CallToAction />
+
   </div>
 </template>
 

@@ -1,7 +1,6 @@
 <template>
     <div>
-        <div id="mymapbox"
-            style="max-width: 350px;width: 100%; height: 200px; margin-right: 60px; border: solid 2px #fff;">
+        <div id="mymapbox" style="max-width: 350px;width: 100%; height: 200px; margin-right: 60px; ">
         </div>
 
     </div>
@@ -11,6 +10,10 @@
 .mapboxgl-ctrl-attrib {
     display: none;
 
+}
+
+canvas {
+    border: solid 2px #fff;
 }
 </style>
 <script>

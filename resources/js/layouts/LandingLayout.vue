@@ -82,6 +82,8 @@
             </v-avatar>
             Login</v-btn>
         </div>
+        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer" class="d-md-none
+          d-block"></v-app-bar-nav-icon>
       </v-container>
     </v-app-bar>
     <v-navigation-drawer v-model="openlogindialog" app temporary right style="max-width: 450px" width="80%">
@@ -125,6 +127,95 @@
         </v-col>
       </v-row>
       <v-img src="/images/loginfooterimg.png" class="mt-4"></v-img>
+    </v-navigation-drawer>
+    <v-navigation-drawer v-model="drawer" app temporary left style="max-width: 450px" width="80%">
+      <v-col cols="12">
+        <router-link to="/" class="d-flex align-center text-decoration-none mr-2">
+          <img :src="storeDetails.logo" height="36" />
+          <h1 v-if="storeDetails.logo == null">{{ storeDetails.name }}</h1>
+        </router-link>
+      </v-col>
+      <v-col cols="12" class="text-center" v-if="isUserlogin == true">
+        <v-badge color="success" dot bordered offset-x="10" offset-y="10">
+          <v-avatar size="100">
+            <v-img src="/images/avatars/avatar1.svg"></v-img>
+          </v-avatar>
+        </v-badge>
+        <h3 class="text-h5 text-lg-h4 font-weight-bold">{{ (userdetails != null) ? userdetails.name : '' }} <v-btn icon
+            small to="/me"><v-icon small>mdi-pencil</v-icon></v-btn></h3>
+      </v-col>
+      <v-col cols="12" class="mt-0 pt-0">
+        <v-list>
+          <v-list-group prepend-icon="mdi-account" v-if="isUserlogin == true">
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Account</v-list-item-title>
+              </v-list-item-content>
+            </template>
+            <v-list-item to="/me">
+              <v-list-item-content>
+                <v-list-item-title>Profile</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/mybookings">
+              <v-list-item-content>
+                <v-list-item-title>My Bookings</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/myinvoice">
+              <v-list-item-content>
+                <v-list-item-title>My Invoice</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="logout">
+              <v-list-item-content>
+                <v-list-item-title>Logout</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-group>
+        </v-list>
+        <v-list-item to="/">
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Home</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item to="/about">
+          <v-list-item-icon>
+            <v-icon>mdi-information-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>About</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item to="/categories">
+          <v-list-item-icon>
+            <v-icon>mdi-view-list</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Categories</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item to="/contactus">
+          <v-list-item-icon>
+            <v-icon>mdi-phone</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Contact us</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item @click="drawer = false; openlogindialog = true" v-if="isUserlogin == false">
+          <v-list-item-icon>
+            <v-icon>mdi-account-circle</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Login</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-col>
     </v-navigation-drawer>
     <v-main>
       <router-view :key="$route.fullPath"></router-view>
@@ -187,6 +278,7 @@ export default {
   },
   data() {
     return {
+      drawer: false,
       isUserlogin: localStorage.getItem("userdetails") ? true : false,
       haveaccount: true,
       openlogindialog: false,
@@ -283,14 +375,15 @@ export default {
         name: "userteam",
       });
     },
-    login() {
+    async login() {
       this.loading = true;
-      axios.post("/api/user/signin", this.booking).then((response) => {
+      await axios.post("/api/user/signin", this.booking).then((response) => {
         if (response.data.success) {
           localStorage.setItem(
             "userdetails",
             JSON.stringify(response.data.user)
           );
+          this.userdetails = response.data.user;
           localStorage.setItem("token", response.data.token);
           this.isUserlogin = true;
           EventBus.$emit("isUserLogin", true);
