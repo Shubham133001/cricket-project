@@ -183,7 +183,9 @@ export default {
       // console.log('getlocationdata');
       // this.showmap = true;
       var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
-
+      if (this.category.location_data == null) {
+        this.category.location_data = '{"lng": 77.5946, "lat": 12.9716}';
+      }
       mapboxgl.accessToken = 'pk.eyJ1IjoiYW1hcnRjaHNtYXJ0ZXJzIiwiYSI6ImNsdmh1YmdnZTFiMDQyanA1ZnFzN2E0ZnEifQ.H_1x8u_XcsS6PXzKPkzB3A';
       const map = new mapboxgl.Map({
         container: 'map', // container id
@@ -208,7 +210,7 @@ export default {
       const searchBox = new MapboxSearchBox();
       searchBox.accessToken = 'pk.eyJ1IjoiYW1hcnRjaHNtYXJ0ZXJzIiwiYSI6ImNsdmh1YmdnZTFiMDQyanA1ZnFzN2E0ZnEifQ.H_1x8u_XcsS6PXzKPkzB3A';
       searchBox.options = {
-        types: 'address,poi',
+        // types: 'address,poi',
         // proximity: [-73.99209, 40.68933],
         language: 'en',
         country: 'IN',

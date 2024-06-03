@@ -490,7 +490,7 @@ export default {
             let location = category.location_data;
 
             this.$refs.mapview.getlocation(location);
-            this.$refs.Mapdirection.getlocation(location);
+            this.$refs.Mapdirection.loadmap();
             // this.availabledays = category.slots[0].days;
             this.getSlots();
           } else {

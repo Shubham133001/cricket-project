@@ -65,10 +65,11 @@ export default {
 
     },
     mounted() {
-        this.getlocation([30.70489843716473, 76.71770933013812]);
+        // this.getlocation([30.70489843716473, 76.71770933013812]);
+        this.loadmap();
     },
     methods: {
-        async loadmap(geometydata) {
+        loadmap() {
 
             var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 
@@ -95,28 +96,35 @@ export default {
             map.addControl(geolocation);
             marker.setLngLat([this.$route.query.lng, this.$route.query.lat])
                 .addTo(map);
-            geolocation.on('geolocate', function (e) {
+            let mythis = this;
+            geolocation.on('geolocate', async function (e) {
                 const coords = e.coords;
                 map.center = [coords.longitude, coords.latitude];
-                this.getlocation([coords.longitude, coords.latitude]);
-                map.addSource('route', {
-                    type: 'geojson',
-                    data: {
-                        type: 'Feature',
-                        properties: {},
-                        geometry: geometydata
-                    }
-                });
+                let geometydata = await mythis.findlocation([coords.longitude, coords.latitude]);
 
-                map.addLayer({
-                    id: 'route',
-                    source: 'route',
-                    type: 'line',
-                    paint: {
-                        'line-width': 6,
-                        'line-color': '#007cbf'
-                    }
-                });
+                console.log(geometydata, 'resp');
+                if (geometydata != null) {
+                    map.addSource('route', {
+                        type: 'geojson',
+                        data: {
+                            type: 'Feature',
+                            properties: {},
+                            geometry: geometydata
+                        }
+                    });
+
+                    map.addLayer({
+                        id: 'route',
+                        source: 'route',
+                        type: 'line',
+                        paint: {
+                            'line-width': 6,
+                            'line-color': '#007cbf'
+                        }
+                    });
+                }
+
+
 
             });
             map.on('load', function () {
@@ -125,12 +133,13 @@ export default {
 
 
         },
-        async getlocation(locationdata1) {
+        async findlocation(locationdata1) {
             let locationdata = {
                 lat: this.$route.query.lat,
                 lng: this.$route.query.lng
             };
-            await axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/' + locationdata1[1] + ',' + locationdata1[0] + ';' + this.$route.query.lng + ',' + this.$route.query.lat + '?geometries=geojson&access_token=pk.eyJ1IjoiYW1hcnRjaHNtYXJ0ZXJzIiwiYSI6ImNsdmh1YmdnZTFiMDQyanA1ZnFzN2E0ZnEifQ.H_1x8u_XcsS6PXzKPkzB3A').then(response => {
+
+            let data = await axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/' + locationdata1[0] + ',' + locationdata1[1] + ';' + this.$route.query.lng + ',' + this.$route.query.lat + '?geometries=geojson&access_token=pk.eyJ1IjoiYW1hcnRjaHNtYXJ0ZXJzIiwiYSI6ImNsdmh1YmdnZTFiMDQyanA1ZnFzN2E0ZnEifQ.H_1x8u_XcsS6PXzKPkzB3A').then(response => {
                 // create new instance
 
                 // set the location
@@ -141,8 +150,11 @@ export default {
 
                 // };
                 console.log(response.data.routes);
-                this.loadmap(response.data.routes[0].geometry);
+                return response.data.routes[0].geometry;
+                // return 'test'
+                // this.loadmap(response.data.routes[0].geometry);
             });
+            return data;
 
         }
     }
