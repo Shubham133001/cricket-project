@@ -1,10 +1,11 @@
 <template>
     <div style="width: 100%">
-        <v-container>
+        <v-container id="category">
             <v-col cols="12" v-if="showloading" class="text-center">
                 <v-progress-circular indeterminate :size="50" color="primary"></v-progress-circular>
             </v-col>
-            <v-col cols="12" md="12" :class="(showheading) ? 'showheading' : 'hideheading'" v-if="!showloading">
+            <v-col cols="12" md="12" :class="(showheading) ? 'showheading' : 'hideheading'" v-if="!showloading"
+                class="pa-0">
                 <v-img height="70px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.8)"
                     :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/886/350/200" cover
                     style="border-radius: 10px;">
@@ -51,7 +52,7 @@
                     </v-card>
                 </v-col>
             </v-row>
-            <v-col cols="12" md="12" :class="(showheading) ? 'pt-0 showcategories' : 'hidecategories'"
+            <v-col cols="12" md="12" :class="(showheading) ? 'pa-0 showcategories' : 'hidecategories'"
                 v-if="!showloading">
                 <v-row>
                     <v-col cols="12" md="4" v-for="subcategory in this.selecteditem.children" :key="subcategory.id"
@@ -197,6 +198,14 @@ export default {
             let childrens = [];
             if (this.selecteditem.children != undefined) {
                 childrens = this.selecteditem.children;
+                // get y position of the element
+                let categorypos = document.getElementById('category');
+                let yPosition = categorypos.offsetTop;
+                console.log(categorypos, 'yPosition');
+                window.scrollTo({
+                    top: yPosition,
+                    behavior: 'smooth'
+                });
             }
 
             if (childrens.length == 0) {
