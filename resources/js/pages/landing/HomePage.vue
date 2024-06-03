@@ -12,8 +12,8 @@
               consectetur
               adipisicing elit. Commodi ex facilis ad atque natus tenetur debitis qui quisquam iure amet.</h2> -->
             <div class="mt-8">
-              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" color="primary">Start free trial</v-btn>
-              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto">Learn more</v-btn>
+              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" color="primary" to="/categories">Book Slot</v-btn>
+              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" @click="opencontactus">Contact us</v-btn>
             </div>
           </v-col>
           <v-col cols="12" md="6">
@@ -80,7 +80,10 @@ export default {
     clearDoctor() {
       localStorage.removeItem('doctor');
     },
-
+    opencontactus() {
+      // open in new window
+      window.open('https://bestcricketacademy.com/contact-us/', '_blank');
+    }
   }
 }
 </script>

@@ -430,6 +430,7 @@ class CommonController extends Controller
                 ];
             }
 
+
             // $revanue = DB::table('invoices')
             //     ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(amount) as total_amount'))
             //     ->whereBetween('created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
@@ -450,7 +451,7 @@ class CommonController extends Controller
                 ->selectRaw('DATE(bookings.created_at) as date, COUNT(bookings.id) as booking_count')
                 ->whereBetween('bookings.created_at', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
                 ->where('bookings.status', 'Completed')
-                ->orWhere('bookings.status', 'Approved')
+                // ->orWhere('bookings.status', 'Approved')
                 ->where('invoices.status', 1)
                 ->groupBy(DB::raw('DATE(bookings.created_at)'))
                 ->orderBy('date')
@@ -467,15 +468,15 @@ class CommonController extends Controller
             $dailyTotals = collect($allDates)->map(function ($data, $date) {
                 return (object) [
                     'date' => $date,
-                    'booking_count' => $data['booking_count'],
-                    'total_amount' => $data['total_amount'],
+                    'booking_count' => (isset($data['booking_count']) ? $data['booking_count'] : 0),
+                    'total_amount' => (isset($data['total_amount']) ? $data['total_amount'] : 0),
                 ];
             })->values();
 
             $revanue = collect($allDates)->map(function ($data, $date) {
                 return (object) [
                     'date' => $date,
-                    'total_amount' => $data['total_amount'],
+                    'total_amount' => (isset($data['total_amount']) ? $data['total_amount'] : 0),
                 ];
             })->values();
 
@@ -488,7 +489,7 @@ class CommonController extends Controller
                 'data' => $data
             ]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => $e->getMessage() . ' on line ' . $e->getLine() . ' in file ' . $e->getFile()], 500);
         }
     }
 

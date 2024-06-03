@@ -4,7 +4,7 @@
       <v-container class="py-0 px-0 px-sm-2 fill-height">
         <router-link to="/" class="d-flex align-center text-decoration-none mr-2">
           <img :src="storeDetails.logo" height="36" />
-          <h1 v-if="storeDetails.logo == null">{{ storeDetails.name }}</h1>
+          <h1 v-if="storeDetails.logo == null" class="text-sm-h6 text-xs-h6 text-lg-h3">{{ storeDetails.name }}</h1>
         </router-link>
 
         <v-spacer></v-spacer>

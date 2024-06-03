@@ -1,8 +1,11 @@
 <template>
     <div style="width: 100%">
         <v-container>
-            <h1 class="text-lg-h2 text-sm-h3">Categories</h1>
-            <v-col cols="12" md="12" :class="(showheading) ? 'showheading' : 'hideheading'">
+            <h1 class="text-lg-h4 text-sm-h4">Categories</h1>
+            <v-col cols="12" v-if="showloading" class="text-center">
+                <v-progress-circular indeterminate :size="50" color="primary"></v-progress-circular>
+            </v-col>
+            <v-col cols="12" md="12" :class="(showheading) ? 'showheading' : 'hideheading'" v-if="!showloading">
                 <v-img height="80px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                     :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/886/350/200" cover
                     style="border-radius: 10px;">
@@ -15,7 +18,7 @@
                 </v-img>
             </v-col>
 
-            <v-row :class="(showheading) ? 'hidecategories' : 'showcategories'">
+            <v-row :class="(showheading) ? 'hidecategories' : 'showcategories'" v-if="!showloading">
                 <v-col cols=" 12" sm="6" md="4" v-for="item in categories" :key="item.id"
                     :class="(showheading) ? 'hidecategories' : 'showcategories'">
                     <v-card class="mx-auto">
@@ -55,7 +58,8 @@
                     </v-card>
                 </v-col>
             </v-row>
-            <v-col cols="12" md="12" :class="(showheading) ? 'pt-0 showcategories' : 'hidecategories'">
+            <v-col cols="12" md="12" :class="(showheading) ? 'pt-0 showcategories' : 'hidecategories'"
+                v-if="!showloading">
                 <v-row>
                     <v-col cols="12" md="4" v-for="subcategory in this.selecteditem.children" :key="subcategory.id"
                         :class="(showheading) ? 'showcategories1' : 'hidecategories1'">
@@ -104,6 +108,7 @@ import {
 export default {
     data() {
         return {
+            showloading: true,
             slots: [],
             days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
             time: [],
@@ -158,7 +163,7 @@ export default {
                 : description;
         },
         async getcategories() {
-
+            this.showloading = true;
             await axios.get('/api/categories')
                 .then(response => {
                     let categories = response.data.categories;
@@ -178,20 +183,27 @@ export default {
                         }
                     });
                     this.categories = newcatgories;
+                    this.showloading = false;
                 })
                 .catch(error => {
+                    this.showloading = false;
                     console.log(error);
                 });
         },
         bookslot(item) {
-            this.selecteditem = item;
-            this.showheading = true;
-
             let childrens = [];
-            if (this.selecteditem.children != undefined) {
-                childrens = this.selecteditem.children;
-            }
+            if (item.children != undefined && item.children.length > 0) {
 
+
+                this.selecteditem = item;
+                this.showheading = true;
+
+
+
+                if (this.selecteditem.children != undefined) {
+                    childrens = this.selecteditem.children;
+                }
+            }
             if (childrens.length == 0) {
                 this.$router.push({
                     name: 'bookings-slots',
@@ -200,6 +212,7 @@ export default {
                     }
                 });
             }
+
 
 
         }

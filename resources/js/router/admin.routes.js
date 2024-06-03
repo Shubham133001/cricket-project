@@ -1,10 +1,14 @@
-export default [ {
+export default [{
   path: '/admin/login',
   name: 'admin-login',
   component: () => import(/* webpackChunkName: "admin-login" */ '@/pages/admin/auth/SigninPage'),
   meta: {
     layout: 'auth'
   }
+}, {
+  path: '/admin',
+  name: 'admin',
+  component: () => import(/* webpackChunkName: "admin-dashboard" */ '@/pages/admin/auth/SigninPage')
 }, {
   path: '/admin/dashboard',
   name: 'admin-dashboard',

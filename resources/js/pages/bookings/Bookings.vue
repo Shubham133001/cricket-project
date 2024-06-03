@@ -1,21 +1,23 @@
 <template>
     <div style="width: 100%">
         <v-container>
-
-            <v-col cols="12" md="12" :class="(showheading) ? 'showheading' : 'hideheading'">
-                <v-img height="80px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+            <v-col cols="12" v-if="showloading" class="text-center">
+                <v-progress-circular indeterminate :size="50" color="primary"></v-progress-circular>
+            </v-col>
+            <v-col cols="12" md="12" :class="(showheading) ? 'showheading' : 'hideheading'" v-if="!showloading">
+                <v-img height="70px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.8)"
                     :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/886/350/200" cover
                     style="border-radius: 10px;">
 
-                    <v-card-title class="text-h4" style="color: #fff; position: relative; z-index: 1">
-                        <v-btn icon fab color="white" @click="selecteditem = []; showheading = false"><v-icon
+                    <v-card-title class="text-lg-h3 text-sm-h3" style="color: #fff; position: relative; z-index: 1">
+                        <v-btn icon small fab color="white" @click="selecteditem = []; showheading = false"><v-icon
                                 large>mdi-chevron-left</v-icon></v-btn>{{
                 selecteditem.name }}
                     </v-card-title>
                 </v-img>
             </v-col>
 
-            <v-row :class="(showheading) ? 'hidecategories' : 'showcategories'">
+            <v-row :class="(showheading) ? 'hidecategories' : 'showcategories'" v-if="!showloading">
                 <v-col cols=" 12" sm="6" md="4" v-for="item in categories" :key="item.id"
                     :class="(showheading) ? 'hidecategories' : 'showcategories'">
                     <v-card class="mx-auto">
@@ -49,7 +51,8 @@
                     </v-card>
                 </v-col>
             </v-row>
-            <v-col cols="12" md="12" :class="(showheading) ? 'pt-0 showcategories' : 'hidecategories'">
+            <v-col cols="12" md="12" :class="(showheading) ? 'pt-0 showcategories' : 'hidecategories'"
+                v-if="!showloading">
                 <v-row>
                     <v-col cols="12" md="4" v-for="subcategory in this.selecteditem.children" :key="subcategory.id"
                         style="transform: scale(0);
@@ -107,6 +110,7 @@ export default {
     data() {
         return {
             slots: [],
+            showloading: true,
             days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
             time: [],
             bookings: [],
@@ -160,7 +164,7 @@ export default {
                 : description;
         },
         async getcategories() {
-
+            this.showloading = true;
             await axios.get('/api/categories?limit=3')
                 .then(response => {
                     let categories = response.data.categories;
@@ -179,8 +183,10 @@ export default {
                         }
                     });
                     this.categories = newcatgories;
+                    this.showloading = false;
                 })
                 .catch(error => {
+                    this.showloading = false;
                     console.log(error);
                 });
         },

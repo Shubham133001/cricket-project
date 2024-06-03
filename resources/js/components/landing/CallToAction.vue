@@ -7,10 +7,21 @@
           <div class="text-h3 primary--text">Our team is here to help.</div>
         </div>
         <div class="mt-4 mt-lg-0">
-          <v-btn x-large class="my-1 mx-sm-2 w-full w-sm-auto" color="primary">Contact Sales</v-btn>
-          <v-btn x-large class="my-1 w-full w-sm-auto">Learn more</v-btn>
+          <v-btn x-large class="my-1 mx-sm-2 w-full w-sm-auto" color="primary" @click="opencontactus">Contact
+            Sales</v-btn>
+          <!-- <v-btn x-large class="my-1 w-full w-sm-auto">Learn more</v-btn> -->
         </div>
       </div>
     </v-container>
   </v-sheet>
 </template>
+<script>
+export default {
+  methods: {
+    opencontactus() {
+      // open in new window
+      window.open('https://bestcricketacademy.com/contact-us/', '_blank');
+    }
+  }
+}
+</script>
