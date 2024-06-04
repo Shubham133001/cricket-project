@@ -17,7 +17,7 @@
             <v-btn text>About</v-btn>
           </router-link>
           <router-link to="/categories" class="text-decoration-none">
-            <v-btn text>Categories</v-btn>
+            <v-btn text>Book Now</v-btn>
           </router-link>
           <router-link to="/contactus" class="text-decoration-none">
             <v-btn text>Contact</v-btn>
