@@ -436,9 +436,9 @@ export default {
     },
     opendirection() {
       // parse string to url
-      let addr = encodeURIComponent(this.selecteditem.name + ' ' + this.selecteditem.location);
-      let latlng = JSON.parse(this.selecteditem.location_data).lat + ',' + JSON.parse(this.selecteditem.location_data).lng;
-      let newaddr = 'https://www.google.com/maps/dir//' + addr + ',14z/'
+      // let addr = encodeURIComponent(this.selecteditem.name + ' ' + this.selecteditem.location);
+      // let latlng = JSON.parse(this.selecteditem.location_data).lat + ',' + JSON.parse(this.selecteditem.location_data).lng;
+      let newaddr = 'https://www.google.com/maps/dir//' + this.selecteditem.location + ',14z/'
       window.open(newaddr, '_blank');
     },
     opendirectionlocal() {
