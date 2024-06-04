@@ -24,9 +24,9 @@
                                 required></v-file-input>
                         </v-col>
                         <v-col cols="12" md="12">
-                            <!-- <v-text-field v-model="category.location" outlined label="Location"></v-text-field> -->
-                            <div id="searchbox"></div>
-                            <div class="map" id="map" style="height: 450px"></div>
+                            <v-text-field v-model="category.location" outlined label="Location"></v-text-field>
+                            <!-- <div id="searchbox"></div>
+                            <div class="map" id="map" style="height: 450px"></div> -->
                         </v-col>
                         <v-col cols="12" md="12">
 
@@ -130,50 +130,50 @@ export default {
     },
     mounted() {
         this.getcategories();
-        const mapboxglcss = document.createElement("link");
-        mapboxglcss.setAttribute("rel", "stylesheet");
-        mapboxglcss.setAttribute(
-            "href",
-            "https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css"
-        );
-        document.head.appendChild(mapboxglcss);
-        // const gljs = document.createElement("script");
-        // gljs.setAttribute(
-        //     "src",
-        //     "https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"
+        // const mapboxglcss = document.createElement("link");
+        // mapboxglcss.setAttribute("rel", "stylesheet");
+        // mapboxglcss.setAttribute(
+        //     "href",
+        //     "https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css"
         // );
-        // gljs.async = true;
-        // document.head.appendChild(gljs);
-        // load js from url and use it
-        const plugin = document.createElement("script");
-        plugin.setAttribute(
-            "src",
-            "//api.mapbox.com/search-js/v1.0.0-beta.21/web.js"
-        );
-        plugin.async = true;
-        document.head.appendChild(plugin);
+        // document.head.appendChild(mapboxglcss);
+        // // const gljs = document.createElement("script");
+        // // gljs.setAttribute(
+        // //     "src",
+        // //     "https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"
+        // // );
+        // // gljs.async = true;
+        // // document.head.appendChild(gljs);
+        // // load js from url and use it
+        // const plugin = document.createElement("script");
+        // plugin.setAttribute(
+        //     "src",
+        //     "//api.mapbox.com/search-js/v1.0.0-beta.21/web.js"
+        // );
+        // plugin.async = true;
+        // document.head.appendChild(plugin);
 
-        // add geocoder
-        const geocoder = document.createElement("script");
-        geocoder.setAttribute(
-            "src",
-            "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"
-        );
-        geocoder.async = true;
-        document.head.appendChild(geocoder);
+        // // add geocoder
+        // const geocoder = document.createElement("script");
+        // geocoder.setAttribute(
+        //     "src",
+        //     "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"
+        // );
+        // geocoder.async = true;
+        // document.head.appendChild(geocoder);
 
-        // add geocoder css
-        const geocodercss = document.createElement("link");
-        geocodercss.setAttribute("rel", "stylesheet");
-        geocodercss.setAttribute(
-            "href",
-            "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
-        );
-        document.head.appendChild(geocodercss);
+        // // add geocoder css
+        // const geocodercss = document.createElement("link");
+        // geocodercss.setAttribute("rel", "stylesheet");
+        // geocodercss.setAttribute(
+        //     "href",
+        //     "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
+        // );
+        // document.head.appendChild(geocodercss);
 
 
 
-        this.getlocationdata();
+        // this.getlocationdata();
 
 
 

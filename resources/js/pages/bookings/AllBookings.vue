@@ -191,19 +191,22 @@ export default {
                 });
         },
         bookslot(item) {
+            this.selecteditem = item;
+            this.showheading = true;
+
             let childrens = [];
-            if (item.children != undefined && item.children.length > 0) {
-
-
-                this.selecteditem = item;
-                this.showheading = true;
-
-
-
-                if (this.selecteditem.children != undefined) {
-                    childrens = this.selecteditem.children;
-                }
+            if (this.selecteditem.children != undefined) {
+                childrens = this.selecteditem.children;
+                // get y position of the element
+                let categorypos = document.getElementById('category');
+                let yPosition = categorypos.offsetTop;
+                console.log(categorypos, 'yPosition');
+                window.scrollTo({
+                    top: yPosition,
+                    behavior: 'smooth'
+                });
             }
+
             if (childrens.length == 0) {
                 this.$router.push({
                     name: 'bookings-slots',

@@ -5,21 +5,26 @@
         :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/114/1920/450" cover>
         <v-row>
           <v-col cols="12" md="8" class="d-flex align-end" style="justify-content: flex-end; flex-direction: column">
-            <v-card-title class="text-h4 pl-4 pr-4" style="color: #fff; width: 100%">
+            <v-card-title class="text-h4 pl-6 pr-4" style="color: #fff; width: 100%">
               {{ selecteditem.name }}
             </v-card-title>
 
-            <v-card-subtitle class="pl-4 pr-4" style="color: #fff; width: 100%">
+            <v-card-subtitle class="pl-6 pr-4" style="color: #fff; width: 100%">
               {{ selecteditem.description }}<br />
             </v-card-subtitle>
+            <v-col cols="12" md="12" class="py-0" style="flex:none">
+              <v-btn color="primary" :class="(isMobile) ? 'ml-4 pull-left' : 'ml-2 mt-2 pull-left'"
+                @click="opendirection"><v-icon small>mdi-directions</v-icon>Get
+                Directions</v-btn>
+            </v-col>
           </v-col>
           <v-col cols="12" md="4">
-            <Mapview ref="mapview" v-if="!isMobile"></Mapview>
-            <v-btn color="primary" :class="(isMobile) ? 'mt-2 ml-4' : 'mt-2'" @click="opendirection"><v-icon
+            <!-- <Mapview ref="mapview" v-if="!isMobile"></Mapview> -->
+            <!-- <v-btn color="primary" :class="(isMobile) ? 'mt-2 ml-4' : 'mt-2'" @click="opendirection"><v-icon
                 small>mdi-directions</v-icon>Get
-              Directions</v-btn>
-            <v-btn color="primary" class="mt-2" @click="opendirectionlocal"><v-icon small>mdi-map-marker</v-icon>See
-              map</v-btn>
+              Directions</v-btn> -->
+            <!-- <v-btn color="primary" class="mt-2" @click="opendirectionlocal"><v-icon small>mdi-map-marker</v-icon>See
+              map</v-btn> -->
           </v-col>
         </v-row>
       </v-img>
@@ -433,7 +438,7 @@ export default {
       // parse string to url
       let addr = encodeURIComponent(this.selecteditem.name + ' ' + this.selecteditem.location);
       let latlng = JSON.parse(this.selecteditem.location_data).lat + ',' + JSON.parse(this.selecteditem.location_data).lng;
-      let newaddr = 'https://www.google.com/maps/dir//' + addr + '/@' + latlng + ',14z/'
+      let newaddr = 'https://www.google.com/maps/dir//' + addr + ',14z/'
       window.open(newaddr, '_blank');
     },
     opendirectionlocal() {

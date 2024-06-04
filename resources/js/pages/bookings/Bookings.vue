@@ -10,7 +10,7 @@
                     :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/886/350/200" cover
                     style="border-radius: 10px;">
 
-                    <v-card-title class="text-lg-h3 text-sm-h3" style="color: #fff; position: relative; z-index: 1">
+                    <v-card-title class="text-lg-h4 text-sm-h3" style="color: #fff; position: relative; z-index: 1">
                         <v-btn icon small fab color="white" @click="selecteditem = []; showheading = false"><v-icon
                                 large>mdi-chevron-left</v-icon></v-btn>{{
                 selecteditem.name }}
