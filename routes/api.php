@@ -94,6 +94,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('saveconfig', [PaymentgatewaysController::class, 'saveconfig'])->name('admin.saveconfig');
         Route::post('signout', [AdminAuthController::class, 'signout'])->name('admin.signout');
         Route::post('settings/update', [CommonController::class, 'storeupdate'])->name('admin.storeupdate');
+        Route::post('themesetting', [CommonController::class, 'themesetting'])->name('admin.themesetting');
+        Route::get('getpageoption', [CommonController::class, 'getPageOption'])->name('admin.getpageoption');
         Route::group(['prefix' => 'category'], function () {
             Route::post('add', [CategoriesController::class, 'add'])->name('admin.category.add');
             Route::get('list', [CategoriesController::class, 'getcategories'])->name('admin.category.getcategories');

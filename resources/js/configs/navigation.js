@@ -53,12 +53,12 @@ export default {
 
     ]
   },
-
   {
     text: 'Settings',
     key: 'Settings',
     items: [
       { icon: 'mdi-cogs', text: 'General Settings', link: '/admin/settings' },
+      { icon: 'mdi-cogs', text: 'Theme Settings', link: '/admin/themesettings' },
 
     ]
   },

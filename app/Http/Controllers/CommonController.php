@@ -77,6 +77,93 @@ class CommonController extends Controller
         }
     }
 
+
+    public function themesetting(Request $request){
+        $onlineusers = '';
+        $action = request()->get('action');
+        try {
+            if ($action == 'savesettings') {
+                $settings = $request->all();
+                // echo "<pre>";
+                // print_r($settings); die;
+                foreach ($settings as $key => $setting) {
+                    $themeoption = \DB::table('page_options')->where('setting', $key)->first();
+                    if ($themeoption) {
+                        if ($key == 'bannerimage' || $key == 'bannerbackground' || $key == 'whyusimage') {
+                            if ($setting != null) {
+                                $filename = $setting->getClientOriginalName();
+                                $setting = $setting->storeAs('uploads', $filename, 'public');
+                                \DB::table('page_options')->where('setting', $key)->update(['value' => '/storage/' . $setting]);
+                            }
+                        } else if ($key == 'partners') {
+
+                            if ($setting != null) {
+                                $images = [];
+                                foreach ($setting as $image) {
+                                    $filename = $image->getClientOriginalName();
+
+                                    $image = $image->storeAs('uploads', $filename, 'public');
+                                    array_push($images, '/storage/' . $image);
+                                }
+
+                                $setting = json_encode($images);
+                                
+                                \DB::table('page_options')->where('setting', $key)->update(['value' => $setting]);
+                            }
+                        } else {
+                            \DB::table('page_options')->where('setting', $key)->update(['value' => $setting]);
+                        }
+                    } else {
+                        if ($key == 'bannerimage' || $key == 'bannerbackground' || $key == 'whyusimage') {
+                            if ($setting != null) {
+                                $filename = $setting->getClientOriginalName();
+                                $setting = $setting->storeAs('uploads', $filename, 'public');
+                                \DB::table('page_options')->insert(['setting' => $key, 'value' => '/storage/' . $setting]);
+                            }
+                        } else {
+                            \DB::table('page_options')->insert(['setting' => $key, 'value' => $setting]);
+                        }
+                    }
+                }
+                return response()->json([
+                    'success' => true,
+                    'message' => "Page option updated"
+                ]);
+            }
+            // return response()->json([
+            //     'success' => true,
+            //     'message' => 'Hello World',
+            //     'params' => $params
+            // ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $th->getMessage(),
+            ]);
+        }
+    }
+
+    public function getPageOption(Request $request)
+    {
+        //$action = $request->action;
+       // if ($action == "getthemeoptions") {
+            $themeoptions = \DB::table('page_options')->get();
+            $themedata = [];
+            foreach ($themeoptions as $themeoption) {
+                $themedata[$themeoption->setting] = $themeoption->value;
+            }
+            return response()->json([
+                'success' => true,
+                'options' => $themedata
+            ]);
+      //  }
+        return response()->json([
+            'success' => true,
+            'message' => $params
+        ]);
+        // return 'Hello World';
+    }
+
     public function addbooking(Request $request)
     {
         try {

@@ -44,11 +44,18 @@ export default [{
   path: '/admin/adminuser/editgroup/:id',
   name: 'admin-edit-admin-group',
   component: () => import('@/pages/admin/adminuser/EditAdminGroup.vue'),
-}, {
+}, 
+{
   path: '/admin/settings',
   name: 'admin-settings',
   component: () => import('@/pages/admin/Settings/Settings.vue')
-}, {
+},
+{
+  path: '/admin/themesettings',
+  name: 'admin-theme-settings',
+  component: () => import('@/pages/admin/Settings/ThemeSettings.vue')
+}, 
+{
   path: '/admin/smtpsettings',
   name: 'admin-settings-smtp',
   component: () => import('@/pages/admin/Settings/Smtp.vue')
