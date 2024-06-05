@@ -181,7 +181,7 @@ export default {
                 image: "",
                 background: "",
                 title: "How can we help you today?",
-                subtitle: "We bring the best services to you! Discover the Ultimate Solution for Your Service Needs",
+               // subtitle: "We bring the best services to you! Discover the Ultimate Solution for Your Service Needs",
                 btntext: "Get Started",
                 btntext1: "Get Started",
                 btnlink: "/categories",
@@ -312,7 +312,7 @@ export default {
             formData.append('bannerimage', this.bannerimage);
             formData.append('bannerbackground', this.bannerbackground);
             formData.append('bannertitle', this.banner.title);
-            formData.append('bannersubtitle', this.banner.subtitle);
+           // formData.append('bannersubtitle', this.banner.subtitle);
             formData.append('bannerbtntext', this.banner.btntext);
             formData.append('bannerbtntext1', this.banner.btntext1);
             formData.append('bannerbtnlink', this.banner.btnlink);
@@ -381,7 +381,7 @@ export default {
                    // self.banner.image = response.data.options.bannerimage;
                     self.banner.background = response.data.options.bannerbackground;
                     self.banner.title = response.data.options.bannertitle;
-                    self.banner.subtitle = response.data.options.bannersubtitle;
+                   // self.banner.subtitle = response.data.options.bannersubtitle;
                     self.banner.btntext = response.data.options.bannerbtntext;
                     self.banner.btntext1 = response.data.options.bannerbtntext1;
                     self.banner.btnlink = response.data.options.bannerbtnlink;
@@ -396,15 +396,13 @@ export default {
                     self.banner.btntextcolor1 = response.data.options.bannerbtntextcolor1;
                     self.newbackground = response.data.options.bannerbackground;
                     self.newimage = response.data.options.bannerimage;
-                    // self.partnerimages = JSON.parse(response.data.options.partners);
-                    //self.showpartners = response.data.options.showpartners;
                     self.showabout = response.data.options.showabout;
                     self.aboutexcerpts = response.data.options.aboutexcerpts;
                     self.newwhyusimage = response.data.options.whyusimage;
-                    // self.whyusimage = response.data.options.whyusimage;
+                
                     self.whyusfeatures = JSON.parse(response.data.options.whyusfeatures);
                     self.showwhyus = response.data.options.showwhyus;
-                    // self.featureheading = response.data.options.featureheading;
+                
                     self.features = JSON.parse(response.data.options.features);
                     self.faqtitle = response.data.options.faqtitle;
                     self.faqs = JSON.parse(response.data.options.faqs);

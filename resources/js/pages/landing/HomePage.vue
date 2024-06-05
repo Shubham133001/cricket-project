@@ -9,7 +9,7 @@
               <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" :style="btntextcolor" :color="btncolor"
                 :to=btnlink>{{ btntext }}</v-btn>
               <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" :style="btntextcolor1" :color="btncolor1"
-                @click="opencontactus">{{ btntext1 }}</v-btn>
+                @click="opencontactus(btnlink1)">{{ btntext1 }}</v-btn>
             </div>
           </v-col>
           <v-col cols="12" md="6">
@@ -89,9 +89,8 @@ export default {
     clearDoctor() {
       localStorage.removeItem('doctor');
     },
-    opencontactus() {
-      // open in new window
-      window.open('https://bestcricketacademy.com/contact-us/', '_blank');
+    opencontactus(btnlink) {
+      window.open(btnlink, '_blank');
     }
   },
   mounted() {
