@@ -1,6 +1,18 @@
 [
     {
+        "name": "mdi-lifebuoy"
+    },
+    {
+        "name": "mdi-email-open-multiple-outline"
+    },
+    {
+        "name": "mdi-clock-outline"
+    },
+    {
         "name": "mdi-access-point"
+    },
+    {
+        "name": "mdi-account-check-outline"
     },
     {
         "name": "mdi-access-point-network"

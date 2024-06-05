@@ -300,15 +300,15 @@ export default {
       },
       designations: [
         {
-          text: "Beginner (1 - 50 Machtes)",
+          text: "Beginner",
           value: "Beginner",
         },
         {
-          text: "Intermediate (50 - 200 Matches)",
+          text: "Intermediate",
           value: "Intermediate",
         },
         {
-          text: "Expert (200+ Matches)",
+          text: "Expert",
           value: "Expert",
         },
       ],

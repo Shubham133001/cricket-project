@@ -19,26 +19,25 @@
 </template>
 
 <script>
-export default {
+export default { 
   data() {
     return {
-      features: [{
-        icon: 'mdi-account-check-outline',
-        title: 'Account Verification',
-        description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit quam aliquam. Autem assumenda'
-      }, {
-        icon: 'mdi-lifebuoy',
-        title: 'Dedicated Support',
-        description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit quam aliquam. Autem assumenda'
-      }, {
-        icon: 'mdi-email-open-multiple-outline',
-        title: 'Email Integration',
-        description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit quam aliquam. Autem assumenda'
-      }, {
-        icon: 'mdi-clock-outline',
-        title: 'Save Time',
-        description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit quam aliquam. Autem assumenda'
-      }]
+      features: ""
+    }
+  },
+  mounted() {
+    this.getthemeoptions();
+  },
+  methods: {
+    getthemeoptions() {
+      var self = this;
+      axios.get('/api/getpageoption')
+        .then(function (response) {
+          self.features = JSON.parse(response.data.options.features);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
   }
 }

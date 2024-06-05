@@ -5,17 +5,19 @@
             <v-col cols="12" v-if="showloading" class="text-center">
                 <v-progress-circular indeterminate :size="50" color="primary"></v-progress-circular>
             </v-col>
-            <v-col cols="12" md="12" :class="(showheading) ? 'showheading' : 'hideheading'" v-if="!showloading">
-                <v-img height="80px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+            <v-col cols="12" md="12" style="background-color: var(--v-primary-base); border-radius: 8px;"
+                :class="(showheading) ? 'showheading' : 'hideheading'" v-if="!showloading">
+                <!-- <v-img height="80px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                     :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/886/350/200" cover
                     style="border-radius: 10px;">
 
-                    <v-card-title class="text-h4" style="color: #fff; position: relative; z-index: 1">
-                        <v-btn icon fab color="white" @click="selecteditem = []; showheading = false"><v-icon
-                                large>mdi-chevron-left</v-icon></v-btn>{{
-                selecteditem.name }}
-                    </v-card-title>
-                </v-img>
+                    
+                </v-img> -->
+                <v-card-title class="text-h4" style="color: #fff; position: relative; z-index: 1">
+                    <v-btn icon fab color="white" @click="selecteditem = []; showheading = false"><v-icon
+                            large>mdi-chevron-left</v-icon></v-btn>{{
+                                selecteditem.name }}
+                </v-card-title>
             </v-col>
 
             <v-row :class="(showheading) ? 'hidecategories' : 'showcategories'" v-if="!showloading">

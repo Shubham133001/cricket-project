@@ -95,22 +95,7 @@ class CommonController extends Controller
                                 $setting = $setting->storeAs('uploads', $filename, 'public');
                                 \DB::table('page_options')->where('setting', $key)->update(['value' => '/storage/' . $setting]);
                             }
-                        } else if ($key == 'partners') {
-
-                            if ($setting != null) {
-                                $images = [];
-                                foreach ($setting as $image) {
-                                    $filename = $image->getClientOriginalName();
-
-                                    $image = $image->storeAs('uploads', $filename, 'public');
-                                    array_push($images, '/storage/' . $image);
-                                }
-
-                                $setting = json_encode($images);
-                                
-                                \DB::table('page_options')->where('setting', $key)->update(['value' => $setting]);
-                            }
-                        } else {
+                        }  else {
                             \DB::table('page_options')->where('setting', $key)->update(['value' => $setting]);
                         }
                     } else {
