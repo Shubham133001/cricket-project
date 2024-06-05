@@ -49,7 +49,7 @@
 
                             </v-expansion-panel-content>
                         </v-expansion-panel>
-                        <v-expansion-panel>
+                        <!-- <v-expansion-panel>
                             <v-expansion-panel-header>Hero Subtitle</v-expansion-panel-header>
                             <v-expansion-panel-content>
                                 <vue-editor v-model="banner.subtitle" outlined label="Banner Title" persistent-hint
@@ -67,7 +67,7 @@
                                     </v-col>
                                 </v-row>
                             </v-expansion-panel-content>
-                        </v-expansion-panel>
+                        </v-expansion-panel> -->
                         <v-expansion-panel>
                             <v-expansion-panel-header>Hero Button</v-expansion-panel-header>
                             <v-expansion-panel-content>
@@ -204,7 +204,7 @@ export default {
             newimage: '',
             partners: [],
             partnerimages: [],
-            aboutexcerpts: '<h1 class="text-h4 text-sm-h3 text-md-h2">Best Cricket Academy?</h1>',
+            aboutexcerpts: '<h1 class="text-h4 text-sm-h3 text-md-h2">Best Cricket Academy</h1>',
             showabout: 'false',
             whyusimage: '',
             newwhyusimage: '/images/cricket.png',
