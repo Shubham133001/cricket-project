@@ -6,9 +6,9 @@
           <v-col cols="12" md="6" class="pt-lg-15 pt-2">
             <div v-html="heroText"></div>
             <div class="mt-8">
-              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" :style="btntextcolor" :color="btncolor"
+              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" color="primary"
                 :to=btnlink>{{ btntext }}</v-btn>
-              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" :style="btntextcolor1" :color="btncolor1"
+              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" 
                 @click="opencontactus(btnlink1)">{{ btntext1 }}</v-btn>
             </div>
           </v-col>
@@ -51,8 +51,8 @@ export default {
   },
   data() {
     return {
-      heroText: '',
-      bannerImage: '',
+      heroText: 'Digitize your sports venue with Smarters Booking Management',
+      bannerImage: '/images/cricket.png',
       btntext: '',
       btntext1: '',
       btnlink: '',
