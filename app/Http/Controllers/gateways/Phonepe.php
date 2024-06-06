@@ -5,6 +5,7 @@ namespace App\Http\Controllers\gateways;
 use Illuminate\Http\Request;
 use Dipesh79\LaravelPhonePe\LaravelPhonePe;
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
 
 class Phonepe extends Controller
 {
@@ -118,56 +119,54 @@ class Phonepe extends Controller
         $callbackUrl,
         $invoiceid
     ) {
-        $baseUrl = $mode == 'live' ? 'https://api.phonepe.com/apis/hermes' : 'https://api-preprod.phonepe.com/apis/pg-sandbox';
-        $data = array(
-            'merchantId' => $merchantId,
-            'merchantTransactionId' => $merchantTransactionId,
-            'merchantUserId' => $merchantuserId,
-            'amount' => $amount * 100,
-            'redirectUrl' => $redirectUrl,
-            'redirectMode' => 'POST',
-            'callbackUrl' => $callbackUrl,
+
+        $event_payload = [
+            "merchantId" => $merchantId,
+            "merchantTransactionId" => $merchantTransactionId,
+            "merchantUserId" => $merchantuserId,
+            "amount" => $amount * 100,
+            "redirectUrl" => $redirectUrl,
+            "redirectMode" => "POST",
+            "callbackUrl" => $callbackUrl,
             'mobileNumber' => $phone,
-            'paymentInstrument' =>
-            array(
-                'type' => 'PAY_PAGE',
-            ),
-            'param1' => $invoiceid
+            "paymentInstrument" => [
+                "type" => "PAY_PAGE",
+            ],
+            "param1" => $invoiceid
+        ];
+        //echo "<pre>";
+       // print_r($amount); die;
+        $encoded_payload = base64_encode(json_encode($event_payload));
+        $saltKey = $merchantSalt;
+        $saltIndex = $merchantKey;
+        $encode = $event_payload;
+        $string = $encoded_payload . "/pg/v1/pay" . $saltKey;
+        $sha256 = hash("sha256", $string);
+        $finalXHeader = $sha256 . "###" . $saltIndex;
+        $header = [
+            "Content-Type" => "application/json",
+            "X-VERIFY" => $finalXHeader,
+        ];
+
+        $headers = ["Content-Type: application/json", "X-VERIFY:" . $finalXHeader];
+        if ($mode == 'live') {
+            $phone_pay_url = "https://api.phonepe.com/apis/hermes/pg/v1/pay";
+        } else {
+            $phone_pay_url = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay";
+        }
+
+        $ch = curl_init($phone_pay_url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_POSTFIELDS,
+            json_encode(["request" => $encoded_payload])
         );
-
-        $encode = base64_encode(json_encode($data));
-
-        $string = $encode . '/pg/v1/pay' . $merchantKey;
-        $sha256 = hash('sha256', $string);
-        $finalXHeader = $sha256 . '###' . $merchantSalt;
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $baseUrl . '/pg/v1/pay',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => false,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => json_encode(['request' => $encode]),
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json',
-                'X-VERIFY: ' . $finalXHeader
-            ),
-        ));
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-
-        $rData = json_decode($response);
-        print_r($rData);
-        die();
-
-        return $rData->data->instrumentResponse->redirectInfo->url;
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        $decodeJson = json_decode($response);
+        return $decodeJson->data->instrumentResponse->redirectInfo->url;
     }
 
     public function getTransactionStatus(array $request)
