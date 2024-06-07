@@ -4,12 +4,14 @@
     <v-container class="py-6">
       <v-row>
         <v-col cols="12" md="6">
-          <h2 class="display-2 font-weight-bold">About Us</h2>
-          <p class="text--primary">We are a team of talented professionals who are passionate about
-          </p>
+          <h2 class="display-2 font-weight-bold">{{ abouteTitle }}</h2>
+             <br/>
+            <div v-html="description(aboutexcerpts)"></div>
         </v-col>
         <v-col cols="12" md="6">
-          <v-img src="https://cdn.vuetifyjs.com/images/cards/desert.jpg" aspect-ratio="2.75"></v-img>
+          <v-img v-if="whyusimage" :src="whyusimage" class="mx-auto" height="300" max-width="500"
+                                    style="margin: auto;"></v-img>
+          <v-img v-else src="https://cdn.vuetifyjs.com/images/cards/desert.jpg" aspect-ratio="2.75"></v-img>
         </v-col>
 
       </v-row>
@@ -23,63 +25,38 @@
   </div>
 </template>
 <script>
-import config from '@/configs'
 import Stats from '@/components/landing/Stats.vue'
-import {
-  mapState,
-  mapActions
-} from "vuex";
+
 export default {
   components: {
     Stats
   },
   data() {
     return {
-      isAdmin: false,
-      storeDetails: {
-        name: "",
-        address: "",
-        contact: "",
-        email: "",
-        logo: "",
-      },
+      abouteTitle: "",
+      aboutexcerpts: "<p >We are a team of talented professionals who are passionate about</p>",
+      whyusimage: ""
     }
   },
   methods: {
-    ...mapActions("app", ["getStoreData"]),
-    getStoreData() {
-      this.isAdmin = (localStorage.getItem('adminData')) ? true : false;
-      axios.get("/api/store").then((response) => {
-        this.storeDetails = response.data.storeDetails;
-        // set store details to vuex
-        // this.$store.commit("app/setStoreDetails", response.data.storeDetails);
-      });
-    },
-    openPage(page) {
-      if (page == 'bookappointment') {
-        this.getalldoctors();
-      }
-      this.$router.push({
-        name: page
-      });
-    },
-    openAdmin() {
-      this.$router.push({
-        name: 'admin-dashboard'
-      });
-    },
-    getalldoctors() {
-      axios.get("/api/getalldoctors").then((response) => {
-        if (response.data.success) {
-          if (response.data.doctors.length > 0) {
-            localStorage.setItem('doctor', JSON.stringify(response.data.doctors[0]));
-          }
-        }
-      });
-    },
+    description(data) {
+        return this.$striphtml(data);
+      },
+    getthemeoptions() {
+      var self = this;
+      axios.get('/api/getpageoption')
+        .then(function (response) {
+           self.abouteTitle = response.data.options.abouteTitle;
+           self.aboutexcerpts = response.data.options.aboutexcerpts;
+           self.whyusimage = response.data.options.whyusimage;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
   },
   mounted() {
-    this.getStoreData();
+    this.getthemeoptions();
   },
 }
 </script>

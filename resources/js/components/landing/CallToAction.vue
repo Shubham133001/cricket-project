@@ -3,11 +3,10 @@
     <v-container class="py-8">
       <div class="d-flex flex-column flex-lg-row justify-space-between align-center">
         <div class="text-center text-lg-left">
-          <div v-html="aboutexcerpts"></div>
+          <div v-html="description(calltotitle)"></div>
         </div>
         <div class="mt-4 mt-lg-0">
-          <v-btn x-large class="my-1 mx-sm-2 w-full w-sm-auto" color="primary" @click="opencontactus">Contact
-            Sales</v-btn>
+          <v-btn x-large class="my-1 mx-sm-2 w-full w-sm-auto" color="primary" @click="opencontactus">{{calltobutton}}</v-btn>
         </div>
       </div>
     </v-container>
@@ -17,13 +16,18 @@
 export default {
   data() {
     return {
-      aboutexcerpts: ""
+      calltotitle: "",
+      calltobutton: "Contact Sales",
+      calltobtnlink1: ""
     }
   },
   mounted() {
     this.getthemeoptions();
   },
   methods: {
+    description(data) {
+        return this.$striphtml(data);
+      },
     opencontactus() {
       // open in new window
       window.open('https://bestcricketacademy.com/contact-us/', '_blank');
@@ -32,7 +36,9 @@ export default {
       var self = this;
       axios.get('/api/getpageoption')
         .then(function (response) {
-           self.aboutexcerpts = response.data.options.aboutexcerpts;
+           self.calltotitle = response.data.options.calltotitle;
+           self.calltobutton = response.data.options.calltobutton;
+           self.calltobtnlink1 = response.data.options.calltobtnlink1;
         })
         .catch(function (error) {
           console.log(error);

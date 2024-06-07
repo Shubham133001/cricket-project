@@ -25,19 +25,6 @@
                             <v-expansion-panel-content>
                                 <vue-editor v-model="banner.title" outlined label="Banner Title" persistent-hint
                                     clearable rows="4" cols="40"></vue-editor>
-                                <!-- <v-row>
-                                    <v-col cols="12" md="4">
-                                        <p>Banner Title Color</p>
-                                        <v-color-picker v-model="banner.titlecolor"
-                                            label="Banner Title Color"></v-color-picker>
-                                    </v-col>
-                                    <v-col cols="12" md="4">
-                                        <p>Banner Title Font Size</p>
-                                        <v-text-field v-model="banner.titlesize"
-                                            label="Banner Title Font Size"></v-text-field>
-                                    </v-col>
-                                </v-row> -->
-
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                         
@@ -46,38 +33,40 @@
                             <v-expansion-panel-content>
                                 <v-text-field v-model="banner.btntext" label="Banner Button Text"></v-text-field>
                                 <v-text-field v-model="banner.btnlink" label="Banner Button Link"></v-text-field>
-                                <!-- <p>Banner Button Background Color</p>
-                                <v-color-picker v-model="banner.btncolor" label="Banner Button Color"></v-color-picker>
-                                <p>Banner Button Text Color</p>
-                                <v-color-picker v-model="banner.btntextcolor"
-                                    label="Banner Button Text Color"></v-color-picker> -->
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                         <v-expansion-panel>
                             <v-expansion-panel-header>Banner Button1</v-expansion-panel-header>
                             <v-expansion-panel-content>
-                                <v-text-field v-model="banner.btntext1" label="Banner Button Text"></v-text-field>
+                                <v-text-field v-model="banner.btntext1"  label="Banner Button Text"></v-text-field>
                                 <v-text-field v-model="banner.btnlink1" label="Banner Button Link"></v-text-field>
-                                <!-- <p>Banner Button Background Color</p>
-                                <v-color-picker v-model="banner.btncolor1" label="Banner Button Color"></v-color-picker>
-                                <p>Banner Button Text Color</p>
-                                <v-color-picker v-model="banner.btntextcolor1" label="Banner Button Text Color"></v-color-picker> -->
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>Call To action</v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <vue-editor v-model="calltotitle" outlined label="Title" persistent-hint
+                                    clearable rows="4" cols="40"></vue-editor>
+                                <v-text-field v-model="calltobutton"  label="Button Text"></v-text-field>
+                                <v-text-field v-model="calltobtnlink1" label="Button Link"></v-text-field>
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                         <v-expansion-panel>
                             <v-expansion-panel-header>About Excerpts</v-expansion-panel-header>
                             <v-expansion-panel-content>
-                                <vue-editor v-model="aboutexcerpts" outlined label="About Excerpts" persistent-hint
+                                <v-text-field v-model="abouteTitle" label="Title"></v-text-field>
+                                <vue-editor v-model="aboutexcerpts" outlined label="Description" persistent-hint
                                     clearable rows="4" cols="40"></vue-editor>
-                                <v-checkbox v-model="showabout" label="Show (Tick to show)" prepend-icon="mdi-eye"
-                                    value="true"></v-checkbox>
+                                    <v-file-input v-model="whyusimage" accept="image/*" label="Select Image"
+                                    prepend-icon="mdi-camera" @change="aboutusimagechange"></v-file-input>   
+                                    <v-img :src="newwhyusimage" class="mx-auto" height="300" max-width="500"
+                                    style="margin: auto;"></v-img>
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                         
                         <v-expansion-panel>
                             <v-expansion-panel-header>Features</v-expansion-panel-header>
                             <v-expansion-panel-content>
-                                <!-- <v-text-field v-model="featureheading" label="Feature Heading"></v-text-field> -->
                                 <v-row>
                                     <v-col cols="12" md="12" v-for="feature, index in features" :key="index">
                                         <v-autocomplete v-model="feature.icon" :items="icons" item-text="name"
@@ -125,26 +114,22 @@ export default {
                 btnlink1: "/contact-us",
                 backgroundshow: 'true',
                 imageshow: 'true',
-               // titlecolor: "#000000",
-               // subtitlecolor: "#000000",
-               // btncolor: "var(--v-primary-base)",
-               // btncolor1: "var(--v-secondary-lighten4)",
-               // btntextcolor: "#ffffff",
-              //  btntextcolor1: "#ffffff",
-              //  titlesize: "96px",
-              //  subtitlesize: "24px",
             },
             // valid: true,
             bannerimage: [],
             bannerbackground: [],
             newbackground: '',
             newimage: '',
+            calltotitle: '',
+            calltobutton: '',
+            calltobtnlink1: '',
+            abouteTitle: '',
            // partners: [],
            // partnerimages: [],
             aboutexcerpts: '<h1 class="text-h4 text-sm-h3 text-md-h2">Best Cricket Academy</h1>',
             showabout: 'false',
-           // whyusimage: '',
-           // newwhyusimage: '/images/cricket.png',
+            whyusimage: '',
+            newwhyusimage: '/images/cricket.png',
            
           //  showwhyus: 'false',
             features: [{
@@ -225,30 +210,28 @@ export default {
             this.newimage = URL.createObjectURL(files);
         },
 
-        onwhyusimagechange(e) {
+
+
+        aboutusimagechange(e) {
             const files = e;
             this.whyusimage = files;
             this.newwhyusimage = URL.createObjectURL(files);
         },
         save() {
-            //alert('sfsfsff');
             const self = this;
             const formData = new FormData();
             formData.append('bannerimage', this.bannerimage);
-            formData.append('bannerbackground', this.bannerbackground);
+            formData.append('calltotitle', this.calltotitle);
             formData.append('bannertitle', this.banner.title);
             formData.append('bannerbtntext', this.banner.btntext);
             formData.append('bannerbtntext1', this.banner.btntext1);
             formData.append('bannerbtnlink', this.banner.btnlink);
             formData.append('bannerbtnlink1', this.banner.btnlink1);
             formData.append('bannerimageshow', (this.banner.imageshow != 'undefined') ? this.banner.imageshow : 'false');
-            formData.append('bannertitlecolor', this.banner.titlecolor);
-            formData.append('bannersubtitlecolor', this.banner.subtitlecolor);
-            formData.append('bannerbtncolor', this.banner.btncolor);
-            formData.append('bannerbtncolor1', this.banner.btncolor1);
-            formData.append('bannerbtntextcolor', this.banner.btntextcolor);
-            formData.append('bannerbtntextcolor1', this.banner.btntextcolor1);
-            formData.append('showabout', this.showabout);
+            formData.append('calltobutton', this.calltobutton);
+            formData.append('calltobtnlink1', this.calltobtnlink1);
+            formData.append('abouteTitle', this.abouteTitle);
+            formData.append('whyusimage', this.whyusimage);
             formData.append('aboutexcerpts', this.aboutexcerpts);
             formData.append('features', JSON.stringify(this.features));
             formData.append('titlesize', this.banner.titlesize);
@@ -314,9 +297,12 @@ export default {
                   //  self.newbackground = response.data.options.bannerbackground;
                     self.newimage = response.data.options.bannerimage;
                     self.showabout = response.data.options.showabout;
+                    self.calltotitle = response.data.options.calltotitle;
+                    self.calltobtnlink1 = response.data.options.calltobtnlink1;
+                    self.calltobutton = response.data.options.calltobutton;
+                    self.abouteTitle = response.data.options.abouteTitle;
                     self.aboutexcerpts = response.data.options.aboutexcerpts;
-                  //  self.newwhyusimage = response.data.options.whyusimage;
-                
+                    self.newwhyusimage = response.data.options.whyusimage;
                    // self.whyusfeatures = JSON.parse(response.data.options.whyusfeatures);
                     self.showwhyus = response.data.options.showwhyus;
                 
