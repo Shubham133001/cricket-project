@@ -48,6 +48,21 @@ const getStoreData = ({ commit }) => {
   })
 }
 
+
+const getPageData = ({ commit }) => {
+  return new Promise((resolve, reject) => {
+    axios.get('/api/getpageoption')
+      .then(response => {
+        commit('setPageDetails', response.data.options)
+        localStorage.setItem('pagedata', JSON.stringify(response.data.options))
+        resolve(response)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 const getSmtpData = ({ commit }) => {
   return new Promise((resolve, reject) => {
     axios.get('/api/smtp')
@@ -91,5 +106,6 @@ export default {
   getStoreData,
   getSmtpData,
   getSmsData,
-  getUserLogin
+  getUserLogin,
+  getPageData
 }

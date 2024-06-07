@@ -267,7 +267,7 @@ export default {
                     self.newimage = response.data.options.bannerimage;
                     self.showabout = response.data.options.showabout;
                     self.calltotitle = response.data.options.calltotitle;
-                    self.calltobtnlink1 = response.data.options.calltobtnlink1;
+                   // self.calltobtnlink1 = response.data.options.calltobtnlink1;
                     self.calltobutton = response.data.options.calltobutton;
                     self.abouteTitle = response.data.options.abouteTitle;
                     self.aboutexcerpts = response.data.options.aboutexcerpts;

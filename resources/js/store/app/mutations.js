@@ -61,6 +61,9 @@ export default {
   setStoreDetails: (state, storeDetails) => {
     state.storeDetails = storeDetails
   },
+  setPageDetails: (state, pageDetails) => {
+    state.pageDetails = pageDetails
+  },
   setSmtpDetails: (state, smtpDetails) => {
     state.smtpDetails = smtpDetails
   },
