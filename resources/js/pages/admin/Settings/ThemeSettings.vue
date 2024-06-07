@@ -48,7 +48,7 @@
                                 <vue-editor v-model="calltotitle" outlined label="Title" persistent-hint
                                     clearable rows="4" cols="40"></vue-editor>
                                 <v-text-field v-model="calltobutton"  label="Button Text"></v-text-field>
-                                <v-text-field v-model="calltobtnlink1" label="Button Link"></v-text-field>
+                                <!-- <v-text-field v-model="calltobtnlink1" label="Button Link"></v-text-field> -->
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                         <v-expansion-panel>
