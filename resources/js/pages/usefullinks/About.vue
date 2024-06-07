@@ -2,7 +2,7 @@
   <div>
 
     <v-container class="py-6">
-      <v-row>
+      <v-row> 
         <v-col cols="12" md="6">
           <h2 class="display-2 font-weight-bold">{{ pageDetails.abouteTitle }}</h2>
              <br/>
