@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <v-container class="py-6">
       <v-row> 
         <v-col cols="12" md="6">

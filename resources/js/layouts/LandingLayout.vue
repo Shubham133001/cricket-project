@@ -227,9 +227,7 @@
               <div class="">
                 <img :src="storeDetails.logo" height="36" />
                 <h1 v-if="storeDetails.logo == null">{{ storeDetails.name }}</h1>
-                <p>Lorem Ipsum Dummy Text. Lorem Ipsum Dummy Text.Lorem Ipsum Dummy Text.Lorem Ipsum Dummy Text.Lorem
-                  Ipsum
-                  Dummy Text.</p>
+                <div v-html="description(pageDetails.aboutexcerpts)"></div>
               </div>
             </v-col>
             <v-col cols="12" md="4">
@@ -369,7 +367,11 @@ export default {
     });
   },
   methods: {
-    ...mapActions("app", ["getStoreData", "setUserdetails", "getUserLogin"]),
+    ...mapActions("app", ["getStoreData", "setUserdetails", "getUserLogin",'pageDetails']),
+    
+    description(data) {
+        return this.$striphtml(data);
+      },
     myteam() {
       this.$router.push({
         name: "userteam",
@@ -520,6 +522,10 @@ export default {
   mounted() {
     this.getStoreData();
     this.getUserLogin();
+    this.getPageData();
+  },
+  computed: {
+    ...mapState('app', ['pageDetails'])
   },
 };
 </script>
