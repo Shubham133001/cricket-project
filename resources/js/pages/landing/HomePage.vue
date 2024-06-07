@@ -8,10 +8,9 @@
             <!-- <h1 class="text-h4 text-sm-h3 text-md-h3 text-lg-h2">Digitize your sports venue
                 with<br /><span class="primary--text ">Smarters Booking Management</span></h1> -->
             <div class="mt-8">
-              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" color="primary"
-                :to=btnlink>{{ btntext }}</v-btn>
-              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" 
-                @click="opencontactus(btnlink1)">{{ btntext1 }}</v-btn>
+              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" color="primary" :to=btnlink>{{ btntext }}</v-btn>
+              <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" @click="opencontactus(btnlink1)">{{ btntext1
+                }}</v-btn>
             </div>
           </v-col>
           <v-col cols="12" md="6">
@@ -69,9 +68,9 @@ export default {
     this.clearDoctor();
   },
   methods: {
-      description(data) {
-        return this.$striphtml(data);
-      },
+    description(data) {
+      return this.$striphtml(data);
+    },
     getthemeoptions() {
       var self = this;
       axios.get('/api/getpageoption')

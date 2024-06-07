@@ -218,9 +218,7 @@ export default {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
-            })
-                .then(function (response) {
-                    console.log(response, "pagePtion")
+            }).then(function (response) {
                     self.$toasted.show(response.data.message, {
                         theme: "bubble",
                         position: "top-right",
@@ -266,7 +264,6 @@ export default {
                     self.banner.btncolor1 = response.data.options.bannerbtncolor1;
                     self.banner.btntextcolor = response.data.options.bannerbtntextcolor;
                     self.banner.btntextcolor1 = response.data.options.bannerbtntextcolor1;
-                    //  self.newbackground = response.data.options.bannerbackground;
                     self.newimage = response.data.options.bannerimage;
                     self.showabout = response.data.options.showabout;
                     self.calltotitle = response.data.options.calltotitle;
@@ -275,14 +272,9 @@ export default {
                     self.abouteTitle = response.data.options.abouteTitle;
                     self.aboutexcerpts = response.data.options.aboutexcerpts;
                     self.newwhyusimage = response.data.options.whyusimage;
-                    // self.whyusfeatures = JSON.parse(response.data.options.whyusfeatures);
                     self.showwhyus = response.data.options.showwhyus;
-
                     self.features = JSON.parse(response.data.options.features);
-                    // self.faqtitle = response.data.options.faqtitle;
-                    // self.faqs = JSON.parse(response.data.options.faqs);
                     self.banner.titlesize = response.data.options.titlesize;
-                    // self.banner.subtitlesize = response.data.options.subtitlesize;
                 })
                 .catch(function (error) {
                     console.log(error);
