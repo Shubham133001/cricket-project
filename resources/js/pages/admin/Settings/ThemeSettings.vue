@@ -5,7 +5,7 @@
                 <h3 class="headline mb-0">Theme Options</h3>
             </v-card-title>
             <v-card-text>
-                <!-- <h2>Landing Page Settings</h2> -->
+                <h2>Landing Page Settings</h2>
                 <v-form ref="form">
                     <v-expansion-panels accordion class="mt-4">
 
