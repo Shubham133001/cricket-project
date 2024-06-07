@@ -18,7 +18,7 @@ export default {
     return {
       calltotitle: "",
       calltobutton: "Contact Sales",
-      calltobtnlink1: ""
+      //calltobtnlink1: ""
     }
   },
   mounted() {
@@ -38,7 +38,7 @@ export default {
         .then(function (response) {
            self.calltotitle = response.data.options.calltotitle;
            self.calltobutton = response.data.options.calltobutton;
-           self.calltobtnlink1 = response.data.options.calltobtnlink1;
+          // self.calltobtnlink1 = response.data.options.calltobtnlink1;
         })
         .catch(function (error) {
           console.log(error);
