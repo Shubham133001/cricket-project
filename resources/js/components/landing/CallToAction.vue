@@ -6,7 +6,8 @@
           <div v-html="description(calltotitle)"></div>
         </div>
         <div class="mt-4 mt-lg-0">
-          <v-btn x-large class="my-1 mx-sm-2 w-full w-sm-auto" color="primary" @click="opencontactus">{{calltobutton}}</v-btn>
+          <v-btn x-large class="my-1 mx-sm-2 w-full w-sm-auto" color="primary"
+            @click="opencontactus">{{ calltobutton }}</v-btn>
         </div>
       </div>
     </v-container>
@@ -18,7 +19,6 @@ export default {
     return {
       calltotitle: "",
       calltobutton: "Contact Sales",
-      //calltobtnlink1: ""
     }
   },
   mounted() {
@@ -26,8 +26,8 @@ export default {
   },
   methods: {
     description(data) {
-        return this.$striphtml(data);
-      },
+      return this.$striphtml(data);
+    },
     opencontactus() {
       // open in new window
       window.open('https://bestcricketacademy.com/contact-us/', '_blank');
@@ -36,9 +36,8 @@ export default {
       var self = this;
       axios.get('/api/getpageoption')
         .then(function (response) {
-           self.calltotitle = response.data.options.calltotitle;
-           self.calltobutton = response.data.options.calltobutton;
-          // self.calltobtnlink1 = response.data.options.calltobtnlink1;
+          self.calltotitle = response.data.options.calltotitle;
+          self.calltobutton = response.data.options.calltobutton;
         })
         .catch(function (error) {
           console.log(error);

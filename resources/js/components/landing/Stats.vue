@@ -5,8 +5,6 @@
         <div class="text-center">
           <div class="text-h2 text-number font-weight-light stattitle">{{ item.value }}</div>
           <v-responsive max-width="300" class="mx-auto">
-            <!-- <div class="font-weight-regular my-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita
-              fugit.</div> -->
             <div class="text-h6 text-lg-h5">{{ item.title }}</div>
           </v-responsive>
         </div>

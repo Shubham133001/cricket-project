@@ -5,10 +5,10 @@
                 <h3 class="headline mb-0">Theme Options</h3>
             </v-card-title>
             <v-card-text>
-                <h2>Landing Page Settings</h2>
+                <!-- <h2>Landing Page Settings</h2> -->
                 <v-form ref="form">
                     <v-expansion-panels accordion class="mt-4">
-                        
+
                         <v-expansion-panel>
                             <v-expansion-panel-header>Banner Image</v-expansion-panel-header>
                             <v-expansion-panel-content>
@@ -27,7 +27,7 @@
                                     clearable rows="4" cols="40"></vue-editor>
                             </v-expansion-panel-content>
                         </v-expansion-panel>
-                        
+
                         <v-expansion-panel>
                             <v-expansion-panel-header>Banner Button</v-expansion-panel-header>
                             <v-expansion-panel-content>
@@ -38,16 +38,16 @@
                         <v-expansion-panel>
                             <v-expansion-panel-header>Banner Button1</v-expansion-panel-header>
                             <v-expansion-panel-content>
-                                <v-text-field v-model="banner.btntext1"  label="Banner Button Text"></v-text-field>
+                                <v-text-field v-model="banner.btntext1" label="Banner Button Text"></v-text-field>
                                 <v-text-field v-model="banner.btnlink1" label="Banner Button Link"></v-text-field>
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                         <v-expansion-panel>
                             <v-expansion-panel-header>Call To action</v-expansion-panel-header>
                             <v-expansion-panel-content>
-                                <vue-editor v-model="calltotitle" outlined label="Title" persistent-hint
-                                    clearable rows="4" cols="40"></vue-editor>
-                                <v-text-field v-model="calltobutton"  label="Button Text"></v-text-field>
+                                <vue-editor v-model="calltotitle" outlined label="Title" persistent-hint clearable
+                                    rows="4" cols="40"></vue-editor>
+                                <v-text-field v-model="calltobutton" label="Button Text"></v-text-field>
                                 <!-- <v-text-field v-model="calltobtnlink1" label="Button Link"></v-text-field> -->
                             </v-expansion-panel-content>
                         </v-expansion-panel>
@@ -57,13 +57,13 @@
                                 <v-text-field v-model="abouteTitle" label="Title"></v-text-field>
                                 <vue-editor v-model="aboutexcerpts" outlined label="Description" persistent-hint
                                     clearable rows="4" cols="40"></vue-editor>
-                                    <v-file-input v-model="whyusimage" accept="image/*" label="Select Image"
-                                    prepend-icon="mdi-camera" @change="aboutusimagechange"></v-file-input>   
-                                    <v-img :src="newwhyusimage" class="mx-auto" height="300" max-width="500"
+                                <v-file-input v-model="whyusimage" accept="image/*" label="Select Image"
+                                    prepend-icon="mdi-camera" @change="aboutusimagechange"></v-file-input>
+                                <v-img :src="newwhyusimage" class="mx-auto" height="300" max-width="500"
                                     style="margin: auto;"></v-img>
                             </v-expansion-panel-content>
                         </v-expansion-panel>
-                        
+
                         <v-expansion-panel>
                             <v-expansion-panel-header>Features</v-expansion-panel-header>
                             <v-expansion-panel-content>
@@ -82,7 +82,7 @@
                                     Feature</v-btn>
                             </v-expansion-panel-content>
                         </v-expansion-panel>
-                       
+
                     </v-expansion-panels>
                     <v-btn color="primary" class="mt-2 mb-2 float-right" @click="save">Save</v-btn>
                 </v-form>
@@ -107,7 +107,7 @@ export default {
                 image: "",
                 background: "",
                 title: "Digitize your sports venue with Smarters Booking Management",
-               // subtitle: "We bring the best services to you! Discover the Ultimate Solution for Your Service Needs",
+                // subtitle: "We bring the best services to you! Discover the Ultimate Solution for Your Service Needs",
                 btntext: "Book Slot",
                 btntext1: "Contact Us",
                 btnlink: "/categories",
@@ -124,14 +124,14 @@ export default {
             calltobutton: '',
             calltobtnlink1: '',
             abouteTitle: '',
-           // partners: [],
-           // partnerimages: [],
+            // partners: [],
+            // partnerimages: [],
             aboutexcerpts: '<h1 class="text-h4 text-sm-h3 text-md-h2">Best Cricket Academy</h1>',
             showabout: 'false',
             whyusimage: '',
             newwhyusimage: '/images/cricket.png',
-           
-          //  showwhyus: 'false',
+
+            //  showwhyus: 'false',
             features: [{
                 icon: 'mdi-account-check-outline',
                 title: 'Account Verification',
@@ -149,29 +149,9 @@ export default {
                 title: 'Save Time',
                 description: 'We are offering convenient and efficient services that reduce the time and effort required for completing tasks. This can be a valuable benefit for users that want to streamline their processes and increase productivity.'
             }],
-           // faqtitle: 'Frequently Asked Questions',
-            // faqs: [{
-            //     title: 'What is a VPN?',
-            //     description: 'A VPN, or Virtual Private Network, is a private network that encrypts and transmits data while it travels from one place to another on the internet. Using a VPN to connect to the internet allows you to surf websites privately and securely as well as gain access to restricted websites and overcome censorship blocks. VPNs aren\'t just for desktops or laptops -- you can set up a VPN on your iPhone, iPad or Android phone, too.'
-            // }, {
-            //     title: 'Why do I need a VPN?',
-            //     description: 'A VPN provides an extra layer of security for your internet connection. Without a VPN, your internet service provider (ISP) can see your browsing history. With an encrypted VPN connection, your data is protected and your browsing history is hidden. Learn More'
-            // }, {
-            //     title: 'What does a VPN hide?',
-            //     description: 'A VPN hides your IP address by encrypting your data and routing it through remote servers, keeping your activity, your identity and your location private even if you don’t have any level of technical experience.'
-            // }, {
-            //     title: 'Is a VPN safe?',
-            //     description: 'VPNs are safe to use and are recommended as a means of protecting your privacy online. However, as with any other technology, it is important to use a reputable service provider. A VPN is only as safe as the company that is offering it.'
-            // }, {
-            //     title: 'Can I use a VPN to watch Netflix?',
-            //     description: 'Yes, you can use a VPN to watch Netflix. However, not all VPNs will work with Netflix. Some VPNs will not work with Netflix because they have been blocked by Netflix. Other VPNs will work with Netflix, but they may not be able to unblock all of the content that you want to watch.'
-            // }],
-
-
         }
     },
     methods: {
-        //
         addfeature() {
             this.whyusfeatures.push({
                 title: '',
@@ -209,9 +189,6 @@ export default {
             this.bannerimage = files;
             this.newimage = URL.createObjectURL(files);
         },
-
-
-
         aboutusimagechange(e) {
             const files = e;
             this.whyusimage = files;
@@ -271,17 +248,12 @@ export default {
                         }
                     });
                 });
-
-
         },
         getthemeoptions() {
             var self = this;
             axios.get('/api/getpageoption')
                 .then(function (response) {
-                   // self.banner.image = response.data.options.bannerimage;
-                   // self.banner.background = response.data.options.bannerbackground;
                     self.banner.title = response.data.options.bannertitle;
-                   // self.banner.subtitle = response.data.options.bannersubtitle;
                     self.banner.btntext = response.data.options.bannerbtntext;
                     self.banner.btntext1 = response.data.options.bannerbtntext1;
                     self.banner.btnlink = response.data.options.bannerbtnlink;
@@ -294,7 +266,7 @@ export default {
                     self.banner.btncolor1 = response.data.options.bannerbtncolor1;
                     self.banner.btntextcolor = response.data.options.bannerbtntextcolor;
                     self.banner.btntextcolor1 = response.data.options.bannerbtntextcolor1;
-                  //  self.newbackground = response.data.options.bannerbackground;
+                    //  self.newbackground = response.data.options.bannerbackground;
                     self.newimage = response.data.options.bannerimage;
                     self.showabout = response.data.options.showabout;
                     self.calltotitle = response.data.options.calltotitle;
@@ -303,14 +275,14 @@ export default {
                     self.abouteTitle = response.data.options.abouteTitle;
                     self.aboutexcerpts = response.data.options.aboutexcerpts;
                     self.newwhyusimage = response.data.options.whyusimage;
-                   // self.whyusfeatures = JSON.parse(response.data.options.whyusfeatures);
+                    // self.whyusfeatures = JSON.parse(response.data.options.whyusfeatures);
                     self.showwhyus = response.data.options.showwhyus;
-                
+
                     self.features = JSON.parse(response.data.options.features);
-                   // self.faqtitle = response.data.options.faqtitle;
-                  //  self.faqs = JSON.parse(response.data.options.faqs);
+                    // self.faqtitle = response.data.options.faqtitle;
+                    // self.faqs = JSON.parse(response.data.options.faqs);
                     self.banner.titlesize = response.data.options.titlesize;
-                   // self.banner.subtitlesize = response.data.options.subtitlesize;
+                    // self.banner.subtitlesize = response.data.options.subtitlesize;
                 })
                 .catch(function (error) {
                     console.log(error);

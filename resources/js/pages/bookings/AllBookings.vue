@@ -1,12 +1,12 @@
 <template>
     <div style="width: 100%">
         <v-container>
-            <h1 class="text-lg-h4 text-sm-h4">Categories</h1>
+            <h1 class="text-lg-h4 text-sm-h4 ">Categories</h1>
             <v-col cols="12" v-if="showloading" class="text-center">
                 <v-progress-circular indeterminate :size="50" color="primary"></v-progress-circular>
             </v-col>
             <v-col cols="12" md="12" style="background-color: var(--v-primary-base); border-radius: 8px;"
-                :class="(showheading) ? 'showheading' : 'hideheading'" v-if="!showloading" class="pa-0">
+                :class="(showheading) ? 'showheading' : 'hideheading'" v-if="!showloading" class="pa-0 mt-2">
                 
                 <v-card-title class="text-lg-h5 text-sm-h4"  style="color: #fff; position: relative; z-index: 1">
                         <v-btn icon small fab color="white"   @click="selecteditem = []; showheading = false"><v-icon

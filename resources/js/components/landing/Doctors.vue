@@ -1,6 +1,4 @@
 <template>
-  <!-- add doctors cards here -->
-
   <v-sheet color="transparent">
     <v-container class="py-4 py-lg-10">
       <div class="text-center">
