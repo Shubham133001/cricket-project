@@ -81,8 +81,8 @@ class CommonController extends Controller
 
     public function themesetting(Request $request)
     {
-        $onlineusers = '';
-        $action = request()->get('action');
+      //  $onlineusers = '';
+      //  $action = request()->get('action');
         try {
             //if ($action == 'savesettings') {
                 $exists = Storage::disk('local')->has('page_setting.json');
@@ -146,10 +146,6 @@ class CommonController extends Controller
             $themedata = [];
             foreach ($themeoptions as $themeoption) {
                 $themedata[$themeoption->setting] = $themeoption->value;
-            }
-
-            if (($key = array_search('savesettings', $themedata)) !== false) {
-                unset($themedata[$key]);
             }
             Storage::put('page_setting.json', json_encode($themedata));
         }
