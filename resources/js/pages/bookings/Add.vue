@@ -1,32 +1,32 @@
 <template>
   <div style="width: 100%">
-    <v-row>
+    <v-row class="ma-0 ml-0 mr-0">
       <v-img height="300px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
         :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/114/1920/450" cover>
-        <v-row>
-          <v-col cols="12" md="8" class="d-flex align-end" style="justify-content: flex-end; flex-direction: column">
-            <v-card-title class="text-h4 pl-6 pr-4" style="color: #fff; width: 100%">
-              {{ selecteditem.name }}
-            </v-card-title>
+        <!-- <v-row> -->
+        <v-col cols="12" md="8" style="">
+          <v-card-title class="text-h4 " style="color: #fff; width: 100%">
+            {{ selecteditem.name }}
+          </v-card-title>
 
-            <v-card-subtitle class="pl-6 pr-4" style="color: #fff; width: 100%">
-              {{ selecteditem.description }}<br />
-            </v-card-subtitle>
-            <v-col cols="12" md="12" class="py-0" style="flex:none">
-              <v-btn color="primary" :class="(isMobile) ? 'ml-4 pull-left' : 'ml-2 mt-2 pull-left'"
-                @click="opendirection"><v-icon small>mdi-directions</v-icon>Get
-                Directions</v-btn>
-            </v-col>
+          <v-card-subtitle class="" style="color: #fff; width: 100%">
+            {{ selecteditem.description }}<br />
+          </v-card-subtitle>
+          <v-col cols="12" md="12" class="py-0" style="flex:none">
+            <v-btn color="primary" :class="(isMobile) ? ' pull-left' : 'pull-left'" @click="opendirection"><v-icon
+                small>mdi-directions</v-icon>Get
+              Directions</v-btn>
           </v-col>
-          <v-col cols="12" md="4">
-            <!-- <Mapview ref="mapview" v-if="!isMobile"></Mapview> -->
-            <!-- <v-btn color="primary" :class="(isMobile) ? 'mt-2 ml-4' : 'mt-2'" @click="opendirection"><v-icon
+        </v-col>
+        <!-- <v-col cols="12" md="4"> -->
+        <!-- <Mapview ref="mapview" v-if="!isMobile"></Mapview> -->
+        <!-- <v-btn color="primary" :class="(isMobile) ? 'mt-2 ml-4' : 'mt-2'" @click="opendirection"><v-icon
                 small>mdi-directions</v-icon>Get
               Directions</v-btn> -->
-            <!-- <v-btn color="primary" class="mt-2" @click="opendirectionlocal"><v-icon small>mdi-map-marker</v-icon>See
+        <!-- <v-btn color="primary" class="mt-2" @click="opendirectionlocal"><v-icon small>mdi-map-marker</v-icon>See
               map</v-btn> -->
-          </v-col>
-        </v-row>
+        <!-- </v-col> -->
+        <!-- </v-row> -->
       </v-img>
     </v-row>
     <v-container>
@@ -51,41 +51,34 @@
                         <v-list-item-title>
                           <p class="text-h6 ma-0">
                             {{ slot.title }}
-                            <span class="mr-3 ml-2" style="font-size: 14px; font-weight: 400px">({{
+                            <span class="mr-3 ml-2" v-if="!isMobile" style="font-size: 14px; font-weight: 400px">({{
           slot.start_time + " - " + slot.end_time
-        }})</span><v-chip :color="slot.bookings.length == 0
-            ? 'green'
-            : slot.bookings.length >=
-              slot.bookings_allowed
-              ? 'red'
-              : 'orange'
+        }})</span><v-chip v-if="!isMobile" :color="slot.bookings.length == 0
+          ? 'green'
+          : slot.bookings.length >=
+            slot.bookings_allowed
+            ? 'red'
+            : 'orange'
           " small dark>Slot(s) {{ slot.bookings.length }}
                               /
                               {{ slot.bookings_allowed }}</v-chip>
                             <v-btn small color="primary"
-                              v-if="slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed"
+                              v-if="(slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed) && !isMobile"
                               style="text-decoration: underline;" text @click="showbookings(slot)">Booked By</v-btn>
                           </p>
                           <v-spacer></v-spacer>
-                          <!-- <v-switch v-model="slot.bookfull" color="primary" label="Book Full Slot"
-                            @change="bookfullslot(slot, $event)"
-                            :disabled="slot.bookings.length >= slot.bookings_allowed"
-                            v-if="slot.bookings.length == 0 && slot.bookings_allowed > 1 && bookfull[slot.id] == true"></v-switch> -->
-
                         </v-list-item-title>
-
-                        <!-- <v-list-item-subtitle>
-                                                    {{ slot.start_time + ' - ' + slot.end_time }}<br />
-                                                    <v-chip
-                                                        :color="(slot.bookings.length == 0) ? 'green' : (slot.bookings.length >= slot.bookings_allowed) ? 'red' : 'orange'"
-                                                        small dark>Slot(s) {{ slot.bookings.length }}
-                                                        /
-                                                        {{ slot.bookings_allowed }}</v-chip>
-                                                    <v-btn x-small color="primary"
-                                                        v-if="slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed"
-                                                        @click="showbookings(slot)">Show
-                                                        Booking</v-btn>
-                                                </v-list-item-subtitle> -->
+                        <v-list-item-subtitle v-if="isMobile">
+                          {{ slot.start_time + ' - ' + slot.end_time }}<br />
+                          <v-chip
+                            :color="(slot.bookings.length == 0) ? 'green' : (slot.bookings.length >= slot.bookings_allowed) ? 'red' : 'orange'"
+                            small dark class="mt-1">Slot(s) {{ slot.bookings.length }}
+                            /
+                            {{ slot.bookings_allowed }}</v-chip><br v-if="isMobile" />
+                          <v-btn small color="primary"
+                            v-if="(slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed) && isMobile"
+                            style="text-decoration: underline;" text @click="showbookings(slot)">Booked By</v-btn>
+                        </v-list-item-subtitle>
                       </v-list-item-content>
                       <v-list-item-action>
 
@@ -132,7 +125,7 @@
                     <v-simple-table>
                       <thead>
                         <tr>
-                          <th>Slot</th>
+                          <th>Description</th>
                           <th>Advance Price</th>
                           <th>Price</th>
                         </tr>
@@ -141,20 +134,26 @@
                       <tbody>
                         <tr v-for="slot in fullselection" :key="slot.id">
                           <td v-if="slot != undefined">
+
                             {{ slot.title }}<br />
-                            {{ slot.start_time + " - " + slot.end_time }}
+                            {{ slot.start_time + " - " + slot.end_time }}<br />
+                            <v-btn text small color="red" @click="deletebooking(slot)" v-if="isMobile" style="">
+                              Remove
+                            </v-btn>
                           </td>
                           <td v-if="slot != undefined">
                             ₹{{ slot.advanceprice }} INR
                           </td>
                           <td v-if="slot != undefined">
                             ₹{{ slot.price }} INR
+
                           </td>
-                          <td>
+                          <td v-if="!isMobile">
                             <v-btn icon x-small fab color="red" @click="deletebooking(slot)">
                               <v-icon x-small>mdi-delete</v-icon>
                             </v-btn>
                           </td>
+
 
                         </tr>
                       </tbody>
@@ -497,8 +496,8 @@ export default {
             this.selecteditem = category;
             let location = category.location_data;
 
-            this.$refs.mapview.getlocation(location);
-            this.$refs.Mapdirection.loadmap();
+            // this.$refs.mapview.getlocation(location);
+            // this.$refs.Mapdirection.loadmap();
             // this.availabledays = category.slots[0].days;
             this.getSlots();
           } else {
@@ -811,5 +810,13 @@ table tr {
 .v-label {
   font-size: 16px;
   margin-left: 10px;
+}
+
+@media screen and (max-width: 600px) {
+
+  table td,
+  table th {
+    padding: 0px 5px !important;
+  }
 }
 </style>
