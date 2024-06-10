@@ -14,8 +14,8 @@
                             <v-expansion-panel-content>
                                 <v-file-input v-model="banner.image" accept="image/*" label="Select Image"
                                     prepend-icon="mdi-camera" @change="onBannerimgchnage"></v-file-input>
-                                <v-checkbox v-model="banner.imageshow" label="Show (Tick to show)"
-                                    prepend-icon="mdi-eye" value="true"></v-checkbox>
+                                <!-- <v-checkbox v-model="banner.imageshow" label="Show (Tick to show)"
+                                    prepend-icon="mdi-eye" value="true"></v-checkbox> -->
                                 <v-img :src="newimage" class="mx-auto" height="300" max-width="500"
                                     style="margin: auto;"></v-img>
                             </v-expansion-panel-content>
@@ -113,7 +113,7 @@ export default {
                 btnlink: "/categories",
                 btnlink1: "/contact-us",
                 backgroundshow: 'true',
-                imageshow: 'true',
+               // imageshow: 'true',
             },
             // valid: true,
             bannerimage: [],
@@ -170,15 +170,6 @@ export default {
                 description: ''
             });
         },
-        addfaq() {
-            this.faqs.push({
-                title: '',
-                description: ''
-            });
-        },
-        removefaq(index) {
-            this.faqs.splice(index, 1);
-        },
         onBannerbgChange(e) {
             const files = e;
             this.bannerbackground = files;
@@ -204,16 +195,14 @@ export default {
             formData.append('bannerbtntext1', this.banner.btntext1);
             formData.append('bannerbtnlink', this.banner.btnlink);
             formData.append('bannerbtnlink1', this.banner.btnlink1);
-            formData.append('bannerimageshow', (this.banner.imageshow != 'undefined') ? this.banner.imageshow : 'false');
+           // formData.append('bannerimageshow', (this.banner.imageshow != 'undefined') ? this.banner.imageshow : 'false');
             formData.append('calltobutton', this.calltobutton);
             formData.append('calltobtnlink1', this.calltobtnlink1);
             formData.append('abouteTitle', this.abouteTitle);
             formData.append('whyusimage', this.whyusimage);
             formData.append('aboutexcerpts', this.aboutexcerpts);
             formData.append('features', JSON.stringify(this.features));
-            formData.append('titlesize', this.banner.titlesize);
-            formData.append('action', 'savesettings');
-
+            //formData.append('action', 'savesettings');
             axios.post('/api/admin/themesetting', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -257,25 +246,14 @@ export default {
                     self.banner.btntext1 = response.data.options.bannerbtntext1;
                     self.banner.btnlink = response.data.options.bannerbtnlink;
                     self.banner.btnlink1 = response.data.options.bannerbtnlink1;
-                   // self.banner.backgroundshow = response.data.options.bannerbackgroundshow;
-                    self.banner.imageshow = response.data.options.bannerimageshow;
-                   // self.banner.titlecolor = response.data.options.bannertitlecolor;
-                   // self.banner.subtitlecolor = response.data.options.bannersubtitlecolor;
-                   // self.banner.btncolor = response.data.options.bannerbtncolor;
-                   // self.banner.btncolor1 = response.data.options.bannerbtncolor1;
-                   // self.banner.btntextcolor = response.data.options.bannerbtntextcolor;
-                   // self.banner.btntextcolor1 = response.data.options.bannerbtntextcolor1;
+                   // self.banner.imageshow = response.data.options.bannerimageshow;
                     self.newimage = response.data.options.bannerimage;
-                    //self.showabout = response.data.options.showabout;
                     self.calltotitle = response.data.options.calltotitle;
-                   // self.calltobtnlink1 = response.data.options.calltobtnlink1;
                     self.calltobutton = response.data.options.calltobutton;
                     self.abouteTitle = response.data.options.abouteTitle;
                     self.aboutexcerpts = response.data.options.aboutexcerpts;
                     self.newwhyusimage = response.data.options.whyusimage;
-                   // self.showwhyus = response.data.options.showwhyus;
                     self.features = JSON.parse(response.data.options.features);
-                   // self.banner.titlesize = response.data.options.titlesize;
                 })
                 .catch(function (error) {
                     console.log(error);

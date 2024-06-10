@@ -1,16 +1,15 @@
 <template>
   <div>
     <v-container class="py-6">
-      <v-row> 
+      <v-row>
         <v-col cols="12" md="6">
           <h2 class="display-2 font-weight-bold">{{ abouteTitle }}</h2>
-             <br/>
-            <div v-html="description(aboutexcerpts)"></div>
+          <br />
+          <div v-html="description(aboutexcerpts)"></div>
         </v-col>
         <v-col cols="12" md="6">
           <v-img v-if="whyusimage" :src="whyusimage" class="mx-auto" height="300" max-width="500"
-                                    style="margin: auto;"></v-img>
-          <v-img v-else src="https://cdn.vuetifyjs.com/images/cards/desert.jpg" aspect-ratio="2.75"></v-img>
+            style="margin: auto;"></v-img>
         </v-col>
 
       </v-row>
@@ -34,7 +33,7 @@ export default {
     return {
       abouteTitle: '',
       aboutexcerpts: '',
-      whyusimage: '',
+      whyusimage: 'https://cdn.vuetifyjs.com/images/cards/desert.jpg',
     }
   },
   mounted() {
@@ -54,8 +53,8 @@ export default {
         });
     },
     description(data) {
-        return this.$striphtml(data);
-      },
+      return this.$striphtml(data);
+    },
   }
 }
 </script>
