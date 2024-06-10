@@ -58,10 +58,6 @@ export default {
         calltotitle: '',
         calltobutton: '',
       },
-
-      abouteTitle: '',
-      aboutexcerpts: '',
-      whyusimage: '',
       features: [],
     }
   },
@@ -88,9 +84,6 @@ export default {
           self.bannerimage = response.data.options.bannerimage;
           self.callaction.calltotitle = response.data.options.calltotitle;
           self.callaction.calltobutton = response.data.options.calltobutton;
-          self.abouteTitle = response.data.options.abouteTitle;
-          self.aboutexcerpts = response.data.options.aboutexcerpts;
-          self.whyusimage = response.data.options.whyusimage;
           self.features = JSON.parse(response.data.options.features);
         })
         .catch(function (error) {
