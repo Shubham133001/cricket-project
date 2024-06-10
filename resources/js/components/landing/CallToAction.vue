@@ -3,11 +3,11 @@
     <v-container class="py-8">
       <div class="d-flex flex-column flex-lg-row justify-space-between align-center">
         <div class="text-center text-lg-left">
-          <div v-html="description(pageDetails.calltotitle)"></div>
+          <div v-html="description(callaction.calltotitle)"></div>
         </div>
         <div class="mt-4 mt-lg-0">
           <v-btn x-large class="my-1 mx-sm-2 w-full w-sm-auto" color="primary"
-            @click="opencontactus">{{ pageDetails.calltobutton }}</v-btn>
+            @click="opencontactus">{{ callaction.calltobutton }}</v-btn>
         </div>
       </div>
     </v-container>
@@ -16,8 +16,11 @@
 <script>
 import { mapState} from 'vuex'
 export default {
-  computed: {
-    ...mapState('app', ['pageDetails'])
+  props: {
+    callaction: {
+      type: Object,
+      required: true
+    }
   },
   methods: {
     description(data) {

@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\ContactUs;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class CommonController extends Controller
 {
@@ -78,14 +79,17 @@ class CommonController extends Controller
     }
 
 
-    public function themesetting(Request $request){
+    public function themesetting(Request $request)
+    {
         $onlineusers = '';
         $action = request()->get('action');
         try {
             if ($action == 'savesettings') {
+                $exists = Storage::disk('local')->has('page_setting.json');
+                if ($exists) {
+                    $data = Storage::delete('page_setting.json');
+                }
                 $settings = $request->all();
-                // echo "<pre>";
-                // print_r($settings); die;
                 foreach ($settings as $key => $setting) {
                     $themeoption = \DB::table('page_options')->where('setting', $key)->first();
                     if ($themeoption) {
@@ -95,7 +99,7 @@ class CommonController extends Controller
                                 $setting = $setting->storeAs('uploads', $filename, 'public');
                                 \DB::table('page_options')->where('setting', $key)->update(['value' => '/storage/' . $setting]);
                             }
-                        }  else {
+                        } else {
                             \DB::table('page_options')->where('setting', $key)->update(['value' => $setting]);
                         }
                     } else {
@@ -110,16 +114,20 @@ class CommonController extends Controller
                         }
                     }
                 }
+                $themeoptions = \DB::table('page_options')->get();
+                $themedata = [];
+                foreach ($themeoptions as $themeoption) {
+                    $themedata[$themeoption->setting] = $themeoption->value;
+                }
+
+                Storage::put('page_setting.json', json_encode($themedata));
+                Storage::get('page_setting.json');
+
                 return response()->json([
                     'success' => true,
                     'message' => "Page option updated"
                 ]);
             }
-            // return response()->json([
-            //     'success' => true,
-            //     'message' => 'Hello World',
-            //     'params' => $params
-            // ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
@@ -130,23 +138,22 @@ class CommonController extends Controller
 
     public function getPageOption(Request $request)
     {
-        //$action = $request->action;
-       // if ($action == "getthemeoptions") {
+        $exists = Storage::disk('local')->has('page_setting.json');
+        if ($exists) {
+            $data = Storage::get('page_setting.json');
+        } else {
             $themeoptions = \DB::table('page_options')->get();
             $themedata = [];
             foreach ($themeoptions as $themeoption) {
                 $themedata[$themeoption->setting] = $themeoption->value;
             }
-            return response()->json([
-                'success' => true,
-                'options' => $themedata
-            ]);
-      //  }
+            Storage::put('page_setting.json', json_encode($themedata));
+        }
+        $data = Storage::get('page_setting.json');
         return response()->json([
             'success' => true,
-            'message' => $params
+            'options' => json_decode($data)
         ]);
-        // return 'Hello World';
     }
 
     public function addbooking(Request $request)

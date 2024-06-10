@@ -251,30 +251,31 @@ export default {
             var self = this;
             axios.get('/api/getpageoption')
                 .then(function (response) {
+                    console.log(response,"page data");
                     self.banner.title = response.data.options.bannertitle;
                     self.banner.btntext = response.data.options.bannerbtntext;
                     self.banner.btntext1 = response.data.options.bannerbtntext1;
                     self.banner.btnlink = response.data.options.bannerbtnlink;
                     self.banner.btnlink1 = response.data.options.bannerbtnlink1;
-                    self.banner.backgroundshow = response.data.options.bannerbackgroundshow;
+                   // self.banner.backgroundshow = response.data.options.bannerbackgroundshow;
                     self.banner.imageshow = response.data.options.bannerimageshow;
-                    self.banner.titlecolor = response.data.options.bannertitlecolor;
-                    self.banner.subtitlecolor = response.data.options.bannersubtitlecolor;
-                    self.banner.btncolor = response.data.options.bannerbtncolor;
-                    self.banner.btncolor1 = response.data.options.bannerbtncolor1;
-                    self.banner.btntextcolor = response.data.options.bannerbtntextcolor;
-                    self.banner.btntextcolor1 = response.data.options.bannerbtntextcolor1;
+                   // self.banner.titlecolor = response.data.options.bannertitlecolor;
+                   // self.banner.subtitlecolor = response.data.options.bannersubtitlecolor;
+                   // self.banner.btncolor = response.data.options.bannerbtncolor;
+                   // self.banner.btncolor1 = response.data.options.bannerbtncolor1;
+                   // self.banner.btntextcolor = response.data.options.bannerbtntextcolor;
+                   // self.banner.btntextcolor1 = response.data.options.bannerbtntextcolor1;
                     self.newimage = response.data.options.bannerimage;
-                    self.showabout = response.data.options.showabout;
+                    //self.showabout = response.data.options.showabout;
                     self.calltotitle = response.data.options.calltotitle;
                    // self.calltobtnlink1 = response.data.options.calltobtnlink1;
                     self.calltobutton = response.data.options.calltobutton;
                     self.abouteTitle = response.data.options.abouteTitle;
                     self.aboutexcerpts = response.data.options.aboutexcerpts;
                     self.newwhyusimage = response.data.options.whyusimage;
-                    self.showwhyus = response.data.options.showwhyus;
+                   // self.showwhyus = response.data.options.showwhyus;
                     self.features = JSON.parse(response.data.options.features);
-                    self.banner.titlesize = response.data.options.titlesize;
+                   // self.banner.titlesize = response.data.options.titlesize;
                 })
                 .catch(function (error) {
                     console.log(error);

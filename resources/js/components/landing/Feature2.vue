@@ -1,7 +1,7 @@
 <template>
   <v-container class="py-4">
     <v-row>
-      <v-col v-for="(item, i) in JSON.parse(pageDetails.features)" :key="i" cols="12" md="6">
+      <v-col v-for="(item, i) in features" :key="i" cols="12" md="6">
         <div class="d-flex">
           <div class="mr-2">
             <v-sheet outlined rounded class="pa-2 elevation-1">
@@ -19,10 +19,12 @@
 </template>
 
 <script>
-import { mapState} from 'vuex'
-export default { 
-  computed: {
-    ...mapState('app', ['pageDetails'])
+export default {
+  props: {
+    features: {
+      type: Array,
+      required: true
+    }
   }
 }
 </script>

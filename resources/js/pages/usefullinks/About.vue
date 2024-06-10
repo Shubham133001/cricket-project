@@ -3,12 +3,12 @@
     <v-container class="py-6">
       <v-row> 
         <v-col cols="12" md="6">
-          <h2 class="display-2 font-weight-bold">{{ pageDetails.abouteTitle }}</h2>
+          <h2 class="display-2 font-weight-bold">{{ abouteTitle }}</h2>
              <br/>
-            <div v-html="description(pageDetails.aboutexcerpts)"></div>
+            <div v-html="description(aboutexcerpts)"></div>
         </v-col>
         <v-col cols="12" md="6">
-          <v-img v-if="pageDetails.whyusimage" :src="pageDetails.whyusimage" class="mx-auto" height="300" max-width="500"
+          <v-img v-if="whyusimage" :src="whyusimage" class="mx-auto" height="300" max-width="500"
                                     style="margin: auto;"></v-img>
           <v-img v-else src="https://cdn.vuetifyjs.com/images/cards/desert.jpg" aspect-ratio="2.75"></v-img>
         </v-col>
@@ -30,14 +30,29 @@ export default {
   components: {
     Stats
   },
-  mounted() {
-    this.getPageData();
+  data() {
+    return {
+      abouteTitle: '',
+      aboutexcerpts: '',
+      whyusimage: '',
+    }
   },
-  computed: {
-    ...mapState('app', ['pageDetails'])
+  mounted() {
+    this.pagedata();
   },
   methods: {
-    ...mapActions("app", ["getPageData"]),
+    pagedata() {
+      var self = this;
+      axios.get('/api/getpageoption')
+        .then(function (response) {
+          self.abouteTitle = response.data.options.abouteTitle;
+          self.aboutexcerpts = response.data.options.aboutexcerpts;
+          self.whyusimage = response.data.options.whyusimage;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     description(data) {
         return this.$striphtml(data);
       },

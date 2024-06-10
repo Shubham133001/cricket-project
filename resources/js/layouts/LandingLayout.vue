@@ -227,7 +227,7 @@
               <div class="">
                 <img :src="storeDetails.logo" height="36" />
                 <h1 v-if="storeDetails.logo == null">{{ storeDetails.name }}</h1>
-                <div v-html="description(pageDetails.aboutexcerpts)"></div>
+                <div v-html="description(aboutexcerpts)"></div>
               </div>
             </v-col>
             <v-col cols="12" md="4">
@@ -258,7 +258,7 @@
           </v-row>
           <v-divider class="my-3"></v-divider>
           <div class="text-center caption">
-            © Indielayer 2024. All Rights Reserved
+            © Indielayer {{ currentYear }}. All Rights Reserved
           </div>
         </v-container>
       </v-footer>
@@ -277,8 +277,10 @@ export default {
   data() {
     return {
       drawer: false,
+      currentYear: new Date().getFullYear(),
       isUserlogin: localStorage.getItem("userdetails") ? true : false,
       haveaccount: true,
+      aboutexcerpts: '',
       openlogindialog: false,
       userdetails: localStorage.getItem("userdetails")
         ? JSON.parse(localStorage.getItem("userdetails"))
@@ -367,7 +369,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions("app", ["getStoreData", "setUserdetails", "getUserLogin",'pageDetails']),
+    ...mapActions("app", ["getStoreData", "setUserdetails", "getUserLogin"]),
     
     description(data) {
         return this.$striphtml(data);
@@ -522,10 +524,7 @@ export default {
   mounted() {
     this.getStoreData();
     this.getUserLogin();
-    this.getPageData();
-  },
-  computed: {
-    ...mapState('app', ['pageDetails'])
-  },
+    //this.getPageData();
+  }
 };
 </script>

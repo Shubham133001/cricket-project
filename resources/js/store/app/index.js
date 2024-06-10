@@ -32,20 +32,7 @@ const state = {
     email: '',
     logo: '',
   },
-  pageDetails: {
-    bannertitle: '<h1 class="text-h4 text-sm-h3 text-md-h3 text-lg-h2">Digitize your sports venue with<br /><span class="primary--text ">Smarters Booking Management</span></h1>',
-    bannerimage: '/images/cricket.png',
-    bannerbtntext: '',
-    bannerbtntext1: '',
-    bannerbtnlink: '',
-    bannerbtnlink1: '',
-    calltotitle: '',
-    calltobutton: 'Contact Sales',
-    abouteTitle: '',
-    aboutexcerpts: '<p >We are a team of talented professionals who are passionate about</p>',
-    whyusimage: '',
-    features: '',
-  },
+  
   smtpDetails: {
     host: '',
     port: '',
