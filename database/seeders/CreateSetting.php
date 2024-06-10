@@ -17,10 +17,10 @@ class CreateSetting extends Seeder
     {
 
      $data =    [
-            ['setting' => 'bannertitle', 'value' => '<h1 class="text-h4 text-sm-h3 text-md-h3 text-lg-h2">&lt;h1 class="text-h4 text-sm-h3 text-md-h3 text-lg-h2"&gt;Digitize your sports venue with &lt;br /&gt;&lt;span class="primary--text "&gt;Smarters Booking Management&lt;/span&gt;&lt;/h1&gt;</h1>'],
+            ['setting' => 'bannertitle', 'value' => '<p>&lt;h1 class="text-h4 text-sm-h3 text-md-h3 text-lg-h2"&gt;Digitize your sports venue with &lt;br /&gt;&lt;span class="primary--text "&gt;Smarters Booking Management&lt;/span&gt;&lt;/h1&gt;</p>'],
             ['setting' => 'bannerbtntext', 'value' => 'Book Slot'],
             ['setting' => 'bannerbtnlink', 'value' => '/categories'],
-            ['setting' => 'aboutexcerpts', 'value' => '<h1 class="text-h1 text-sm-h2">About us</h1>'],
+            ['setting' => 'aboutexcerpts', 'value' => '<p>&lt;h1 class="text-h1 text-sm-h2"&gt;About us&lt;/h1&gt;</p>'],
             ['setting' => 'features', 'value' => '[{"icon":"mdi-account-check-outline","title":"Account Verification","description":"Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit quam aliquam. Autem assumenda"},{"icon":"mdi-lifebuoy","title":"Dedicated Support","description":"Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit quam aliquam. Autem assumenda"},{"icon":"mdi-email-open-multiple-outline","title":"Email Integration","description":"Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit quam aliquam. Autem assumenda"},{"icon":"mdi-clock-outline","title":"Save Time","description":"Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit quam aliquam. Autem assumenda"}]'],
             ['setting' => 'abouteTitle', 'value' => 'About Us'],
             ['setting' => 'bannerimage', 'value' => '/storage/uploads/cricket.png'],
