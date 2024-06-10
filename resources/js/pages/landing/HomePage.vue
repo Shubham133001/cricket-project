@@ -75,6 +75,7 @@ export default {
       var self = this;
       axios.get('/api/getpageoption')
         .then(function (response) {
+          console.log(response,'addadda');
           self.bannertitle = response.data.options.bannertitle;
           self.bannerbtntext = response.data.options.bannerbtntext;
           self.bannerbtntext1 = response.data.options.bannerbtntext1;
