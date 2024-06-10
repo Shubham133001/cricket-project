@@ -57,6 +57,7 @@ export default {
       callaction: {
         calltotitle: '',
         calltobutton: '',
+        calltobtnlink: '',
       },
       features: [],
     }
@@ -85,6 +86,7 @@ export default {
           self.bannerimage = response.data.options.bannerimage;
           self.callaction.calltotitle = response.data.options.calltotitle;
           self.callaction.calltobutton = response.data.options.calltobutton;
+          self.callaction.calltobtnlink = response.data.options.calltobtnlink;
           self.features = JSON.parse(response.data.options.features);
         })
         .catch(function (error) {

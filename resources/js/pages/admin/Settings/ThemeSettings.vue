@@ -48,7 +48,7 @@
                                 <vue-editor v-model="calltotitle" outlined label="Title" persistent-hint clearable
                                     rows="4" cols="40"></vue-editor>
                                 <v-text-field v-model="calltobutton" label="Button Text"></v-text-field>
-                                <!-- <v-text-field v-model="calltobtnlink1" label="Button Link"></v-text-field> -->
+                                <v-text-field v-model="calltobtnlink" label="Button Link"></v-text-field>
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                         <v-expansion-panel>
@@ -117,7 +117,7 @@ export default {
             newimage: '',
             calltotitle: '<p>&lt;div&gt;&lt;div class="text-h3"&gt;Ready to talk?&lt;/div&gt; &lt;div class="text-h3 primary--text"&gt;Our team is here to help.&lt;/div&gt;&lt;/div&gt;</p>',
             calltobutton: '',
-            calltobtnlink1: '',
+            calltobtnlink: '',
             abouteTitle: '',
             // partners: [],
             // partnerimages: [],
@@ -192,7 +192,7 @@ export default {
             formData.append('bannerbtnlink1', this.banner.btnlink1);
            // formData.append('bannerimageshow', (this.banner.imageshow != 'undefined') ? this.banner.imageshow : 'false');
             formData.append('calltobutton', this.calltobutton);
-            formData.append('calltobtnlink1', this.calltobtnlink1);
+            formData.append('calltobtnlink', this.calltobtnlink);
             formData.append('abouteTitle', this.abouteTitle);
             formData.append('whyusimage', this.whyusimage);
             formData.append('aboutexcerpts', this.aboutexcerpts);
@@ -245,6 +245,7 @@ export default {
                     self.newimage = response.data.options.bannerimage;
                     self.calltotitle = response.data.options.calltotitle;
                     self.calltobutton = response.data.options.calltobutton;
+                    self.calltobtnlink = response.data.options.calltobtnlink;
                     self.abouteTitle = response.data.options.abouteTitle;
                     self.aboutexcerpts = response.data.options.aboutexcerpts;
                     self.newwhyusimage = response.data.options.whyusimage;
