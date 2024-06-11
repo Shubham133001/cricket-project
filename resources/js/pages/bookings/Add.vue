@@ -1,23 +1,32 @@
 <template>
-  <div style="width: 100%">
+  <div v-if="fullpageloader" style=" width: 100%; height: 60vh; position:relative; top: 0px; left: 0px; z-index:99999">
+    <h4 class="text-center"
+      style="color: #000; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%)">
+      <v-icon class="mdi-spin mr-2" color="primary">mdi-loading</v-icon> Loading Please wait...
+    </h4>
+  </div>
+
+  <div style="width: 100%" v-else>
     <v-row class="ma-0 ml-0 mr-0">
       <v-img height="300px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
         :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/114/1920/450" cover>
         <!-- <v-row> -->
-        <v-col cols="12" md="8" style="">
-          <v-card-title class="text-h4 " style="color: #fff; width: 100%">
-            {{ selecteditem.name }}
-          </v-card-title>
+        <v-container>
+          <v-col cols="12" md="8" style="">
+            <v-card-title class="text-h4 " style="color: #fff; width: 100%">
+              {{ selecteditem.name }}
+            </v-card-title>
 
-          <v-card-subtitle class="" style="color: #fff; width: 100%">
-            {{ selecteditem.description }}<br />
-          </v-card-subtitle>
-          <v-col cols="12" md="12" class="py-0" style="flex:none">
-            <v-btn color="primary" :class="(isMobile) ? ' pull-left' : 'pull-left'" @click="opendirection"><v-icon
-                small>mdi-directions</v-icon>Get
-              Directions</v-btn>
+            <v-card-subtitle class="" style="color: #fff; width: 100%">
+              {{ selecteditem.description }}<br />
+            </v-card-subtitle>
+            <v-col cols="12" md="12" class="py-0" style="flex:none">
+              <v-btn color="primary" :class="(isMobile) ? ' pull-left' : 'pull-left'" @click="opendirection"><v-icon
+                  small>mdi-directions</v-icon>Get
+                Directions</v-btn>
+            </v-col>
           </v-col>
-        </v-col>
+        </v-container>
         <!-- <v-col cols="12" md="4"> -->
         <!-- <Mapview ref="mapview" v-if="!isMobile"></Mapview> -->
         <!-- <v-btn color="primary" :class="(isMobile) ? 'mt-2 ml-4' : 'mt-2'" @click="opendirection"><v-icon
@@ -52,14 +61,14 @@
                           <p class="text-h6 ma-0">
                             {{ slot.title }}
                             <span class="mr-3 ml-2" v-if="!isMobile" style="font-size: 14px; font-weight: 400px">({{
-          slot.start_time + " - " + slot.end_time
-        }})</span><v-chip v-if="!isMobile" :color="slot.bookings.length == 0
-          ? 'green'
-          : slot.bookings.length >=
-            slot.bookings_allowed
-            ? 'red'
-            : 'orange'
-          " small dark>Slot(s) {{ slot.bookings.length }}
+    slot.start_time + " - " + slot.end_time
+  }})</span><v-chip v-if="!isMobile" :color="slot.bookings.length == 0
+    ? 'green'
+    : slot.bookings.length >=
+      slot.bookings_allowed
+      ? 'red'
+      : 'orange'
+    " small dark>Slot(s) {{ slot.bookings.length }}
                               /
                               {{ slot.bookings_allowed }}</v-chip>
                             <v-btn small color="primary"
@@ -217,8 +226,8 @@
                   <td colspan="2">
                     <h3 style="float: left">Balance</h3>
                     <span style="float: right">₹{{
-          totalprice - (advanceprice + credits)
-        }} INR</span>
+    totalprice - (advanceprice + credits)
+  }} INR</span>
                   </td>
                 </tr>
                 <tr>
@@ -268,7 +277,7 @@
                     </v-avatar>
                     <h3 style="float: left; clear: right; text-transform: capitalize;" class="mt-0 ml-1 text-h4">
                       {{ booking.team.name }}<br /><v-chip color="orange" dark style="font-family: 'Pacifico'">{{
-          booking.team.designation }}</v-chip>
+                        booking.team.designation }}</v-chip>
                     </h3>
                   </v-list-item-title>
                 </v-list-item-content>
@@ -349,6 +358,7 @@ export default {
   },
   data() {
     return {
+      fullpageloader: true,
       isMobile: false,
       isUserlogin: (localStorage.getItem('userdetails')) ? true : false,
       openlogindialog: false,
@@ -419,6 +429,8 @@ export default {
     // this.selection
     // this.getSlots();
     this.getgateways();
+    this.fullpageloader = false;
+
   },
   created() {
     this.isMobile = this.$vuetify.breakpoint.mobile;

@@ -1,18 +1,21 @@
 <template>
     <div style="width: 100%">
-        <v-container>
-            <h1 class="text-lg-h4 text-sm-h4 ">Categories</h1>
+        <v-container id="category">
+            <h1 class="text-lg-h4 text-sm-h4 mb-2">Categories</h1>
             <v-col cols="12" v-if="showloading" class="text-center">
                 <v-progress-circular indeterminate :size="50" color="primary"></v-progress-circular>
             </v-col>
             <v-col cols="12" md="12" style="background-color: var(--v-primary-base); border-radius: 8px;"
-                :class="(showheading) ? 'showheading' : 'hideheading'" v-if="!showloading" class="pa-0 mt-2">
-                
-                <v-card-title class="text-lg-h5 text-sm-h4"  style="color: #fff; position: relative; z-index: 1">
-                        <v-btn icon small fab color="white"   @click="selecteditem = []; showheading = false"><v-icon
-                                large>mdi-chevron-left</v-icon></v-btn>{{
+                :class="(showheading) ? 'showheading' : 'hideheading'" v-if="!showloading" class="pa-0">
+                <!-- <v-img height="70px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.8)"
+                    :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/886/350/200" cover
+                    style="border-radius: 10px;">
+                </v-img>-->
+                <v-card-title class="text-lg-h5 text-sm-h4" style="color: #fff; position: relative; z-index: 1">
+                    <v-btn icon small fab color="white" @click="selecteditem = []; showheading = false"><v-icon
+                            large>mdi-chevron-left</v-icon></v-btn>{{
                 selecteditem.name }}
-                    </v-card-title>
+                </v-card-title>
             </v-col>
 
             <v-row :class="(showheading) ? 'hidecategories' : 'showcategories'" v-if="!showloading">
@@ -29,37 +32,32 @@
                                     {{ item.name }}
                                 </v-card-title>
 
-                                <v-card-subtitle style="color: #fff; position: relative; z-index: 1">
+                                <v-card-subtitle style="color: #fff;">
                                     {{ truncatedDescription(item.description) }}<br />
-                                    <v-chip small color="primary" class="mt-1">{{ item.slotslength }} Slots
+                                    <v-chip small color="primary">{{ item.slotslength }} Slots
                                     </v-chip>
                                 </v-card-subtitle>
 
 
 
+
                                 <v-card-actions class="mb-2 pl-2 mt-0">
                                     <v-btn color="white" @click="bookslot(item)" class="px-3"
-                                        :disabled="(item == selecteditem)">Reserve
+                                        :disabled="(item == selecteditem)">Book
                                         Now</v-btn>
-
-                                    <!-- <v-chip-group v-model="item.selection" v-if="item.slots.length > 0">
-                                    <v-chip v-for="(slot, index) in item.slots" :key="slot.id"
-                                        :color="(item.selection == index) ? 'green' : 'primary'" dark>{{ slot.time
-                                        }}</v-chip>
-                                </v-chip-group> -->
 
                                 </v-card-actions>
                             </v-img>
                         </v-hover>
-
                     </v-card>
                 </v-col>
             </v-row>
-            <v-col cols="12" md="12" :class="(showheading) ? 'pt-0 showcategories' : 'hidecategories'"
+            <v-col cols="12" md="12" :class="(showheading) ? 'pa-0 showcategories' : 'hidecategories'"
                 v-if="!showloading">
                 <v-row>
                     <v-col cols="12" md="4" v-for="subcategory in this.selecteditem.children" :key="subcategory.id"
-                        :class="(showheading) ? 'showcategories1' : 'hidecategories1'">
+                        style="transform: scale(0);
+    opacity: 0;" :class="(showheading) ? 'showcategories1' : 'hidecategories1'">
                         <v-card>
                             <v-hover v-slot:default="{ hover }">
                                 <v-img height="300px" class="align-end showslidebg"
@@ -77,6 +75,9 @@
                                             Slots
                                         </v-chip>
                                     </v-card-subtitle>
+
+
+
                                     <v-card-actions class="mb-2 pl-2 mt-0">
                                         <v-btn color="white" @click="bookslot(subcategory)" class="px-3"
                                             :disabled="(subcategory == selecteditem)">Book
@@ -86,6 +87,7 @@
                                 </v-img>
                             </v-hover>
                         </v-card>
+
                     </v-col>
 
                 </v-row>
@@ -105,8 +107,8 @@ import {
 export default {
     data() {
         return {
-            showloading: true,
             slots: [],
+            showloading: true,
             days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
             time: [],
             bookings: [],
@@ -164,7 +166,6 @@ export default {
             await axios.get('/api/categories')
                 .then(response => {
                     let categories = response.data.categories;
-
                     let newcatgories = [];
                     categories.forEach(category => {
                         category.is_child = false;
@@ -212,7 +213,6 @@ export default {
                     }
                 });
             }
-
 
 
         }
@@ -334,20 +334,20 @@ export default {
 }
 
 .hidecategories1 {
-    transition: all 0.5s;
+    transition: all 0.5s 2s;
     transform: scale(0);
     opacity: 0;
     height: 0;
     overflow: hidden;
-    transition-delay: 2s;
+
 }
 
 .showcategories1 {
-    transition: all 0.5s;
-    transform: scale(1);
-    opacity: 1;
+    transition: all 0.5s 2s;
+    transform: scale(1) !important;
+    opacity: 1 !important;
     height: auto;
     overflow: hidden;
-    transition-delay: 2s;
+
 }
 </style>
