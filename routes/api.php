@@ -44,6 +44,7 @@ Route::get('viewpdf/{id}', [InvoicesController::class, 'viewpdf'])->name('viewpd
 Route::get('stats', [CommonController::class, 'stats'])->name('stats');
 Route::post('contactus', [CommonController::class, 'contactus'])->name('contactus');
 Route::get('getpageoption', [CommonController::class, 'getPageOption'])->name('getpageoption');
+Route::get('popularcategories', [CategoriesController::class, 'getcategorieswithslots'])->name('getcategorieswithslots');
 // add admin group with middleware
 Route::group(['prefix' => 'admin'], function () {
     Route::post('signin', [AdminAuthController::class, 'signin'])->name('admin.signin');
@@ -95,7 +96,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('signout', [AdminAuthController::class, 'signout'])->name('admin.signout');
         Route::post('settings/update', [CommonController::class, 'storeupdate'])->name('admin.storeupdate');
         Route::post('themesetting', [CommonController::class, 'themesetting'])->name('admin.themesetting');
-        
+
         Route::group(['prefix' => 'category'], function () {
             Route::post('add', [CategoriesController::class, 'add'])->name('admin.category.add');
             Route::get('list', [CategoriesController::class, 'getcategories'])->name('admin.category.getcategories');

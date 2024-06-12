@@ -119,6 +119,18 @@ class CategoriesController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+    public function popularcategories()
+    {
+        try {
+            $data = \App\Models\Booking::select('category_id', DB::raw('count(category_id) as total'))->groupBy('category_id')->orderBy('total', 'desc')->limit(5)->get();
+            return response()->json([
+                'success' => true,
+                'categories' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
 
     public function getcategorieswithslots(Request $request)
     {
