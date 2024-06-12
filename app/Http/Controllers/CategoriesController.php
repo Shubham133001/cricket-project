@@ -123,9 +123,15 @@ class CategoriesController extends Controller
     {
         try {
             $data = \App\Models\Booking::select('category_id', DB::raw('count(category_id) as total'))->groupBy('category_id')->orderBy('total', 'desc')->limit(5)->get();
+            $list = [];
+            foreach ($data as $key => $value) {
+                $category = \App\Models\Category::find($value->category_id);
+                $category->total = $value->total;
+                $list[] = $category;
+            }
             return response()->json([
                 'success' => true,
-                'categories' => $data
+                'categories' => $list
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
