@@ -44,7 +44,7 @@ Route::get('viewpdf/{id}', [InvoicesController::class, 'viewpdf'])->name('viewpd
 Route::get('stats', [CommonController::class, 'stats'])->name('stats');
 Route::post('contactus', [CommonController::class, 'contactus'])->name('contactus');
 Route::get('getpageoption', [CommonController::class, 'getPageOption'])->name('getpageoption');
-Route::get('popularcategories', [CategoriesController::class, 'getcategorieswithslots'])->name('getcategorieswithslots');
+Route::get('popularcategories', [CategoriesController::class, 'popularcategories'])->name('popularcategories');
 // add admin group with middleware
 Route::group(['prefix' => 'admin'], function () {
     Route::post('signin', [AdminAuthController::class, 'signin'])->name('admin.signin');
