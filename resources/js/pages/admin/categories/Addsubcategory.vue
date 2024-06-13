@@ -32,8 +32,7 @@
                         <v-col cols="12" md="12">
                             <v-spacer></v-spacer>
                             <v-btn color="error" @click="$router.push('/admin/categories')">Cancel</v-btn>
-                            <v-btn color="primary" @click="save" :loading="loading"
-                                :diabled="fetchinglocation">Save</v-btn>
+                            <v-btn color="primary" @click="save" :loading="loading">Save</v-btn>
                         </v-col>
                     </v-row>
                 </v-form>

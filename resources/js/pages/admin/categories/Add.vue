@@ -38,7 +38,7 @@
                             <v-spacer></v-spacer>
                             <v-btn color="error" @click="$router.push('/admin/categories')">Cancel</v-btn>
                             <v-btn color="primary" @click="save" :loading="loading"
-                                :disabled="(locationdata == '') ? true : false">Save</v-btn>
+                                :disabled="(location == '') ? true : false">Save</v-btn>
                         </v-col>
                     </v-row>
                 </v-form>
