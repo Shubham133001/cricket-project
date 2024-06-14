@@ -25,7 +25,7 @@ class CreateSetting extends Seeder
             ['setting' => 'abouteTitle', 'value' => 'About Us'],
             ['setting' => 'bannerimage', 'value' => '/images/cricket.png'],
             ['setting' => 'whyusimage', 'value' => '/images/cricket.png'],
-            ['setting' => 'bannerbtntext1', 'value' => 'Contect US'],
+            ['setting' => 'bannerbtntext1', 'value' => 'Contact US'],
             ['setting' => 'bannerbtnlink1', 'value' => 'https://bestcricketacademy.com/contact-us/'],
             ['setting' => 'calltotitle', 'value' => '<p>&lt;div&gt;&lt;div class="text-h3"&gt;Ready to talk?&lt;/div&gt; &lt;div class="text-h3 primary--text"&gt;Our team is here to help.&lt;/div&gt;&lt;/div&gt;</p>'],
             ['setting' => 'calltobutton', 'value' => 'Contact  Us'],

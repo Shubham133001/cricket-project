@@ -113,7 +113,7 @@ export default {
           value: "days",
         },
         {
-          text: "Advance Price",
+          text: "Advance Price (%)",
           value: "advanceprice",
         },
         {

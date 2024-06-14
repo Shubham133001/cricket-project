@@ -126,7 +126,7 @@ export default {
         //   sortable: false,
         // },
         {
-          text: "Advance Price",
+          text: "Advance Price(%)",
           value: "advanceprice",
         },
         {

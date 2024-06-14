@@ -245,6 +245,8 @@ class SlotsController extends Controller
                 if (in_array($requestedday, $value->days)) {
                     array_push($newdata, $value);
                 }
+                $adv_prive =  $value->price * ($value->advanceprice / 100);
+                $value->advanceprice = round($adv_prive,0);
             }
             return response()->json([
                 'success' => true,
