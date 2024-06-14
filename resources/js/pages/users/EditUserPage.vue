@@ -141,7 +141,7 @@
                     v-model="user.team.designation"
                     :items="designations"
                     outlined
-                    label="Designation"
+                    label="Skill Lavel"
                   ></v-select>
                   <v-text-field
                     v-model="user.team.experience"

@@ -30,7 +30,7 @@
                                     <h3 class="text-h4">{{ team.name }}</h3>
                                     <v-chip color="orange" v-if="team.designation != ''" dark small
                                         style="font-family:'Pacifico';">{{
-                team.designation }}</v-chip><br />
+                                        team.designation }}</v-chip><br />
                                     <!-- <v-btn color="primary" v-if="team.id != 0" class="mt-1">View As User</v-btn> -->
                                 </v-col>
                                 <input type="file" ref="uploader" style="display:none" @change="onfilechange" />
@@ -44,7 +44,7 @@
                         </v-col>
                         <v-col cols="12" md="6">
                             <v-select v-model="team.designation" :items="designations" outlined
-                                label="Designation"></v-select>
+                                label="Skill Lavel"></v-select>
                         </v-col>
                         <v-col cols="12" md="6">
                             <v-text-field v-model="team.experience" outlined placeholder="For Eg. 1 Year"

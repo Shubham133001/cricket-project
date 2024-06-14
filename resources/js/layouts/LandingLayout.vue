@@ -115,7 +115,7 @@
           <v-text-field label="Name" v-model="booking.name" outlined required></v-text-field>
           <v-text-field label="Phone" v-model="booking.phone" type="number" outlined></v-text-field>
           <v-text-field label="Team name" v-model="booking.team.name" outlined required></v-text-field>
-          <v-select label="Team Skill" v-model="booking.team.designation" outlined :items="designations"
+          <v-select label="Skill Level" v-model="booking.team.designation" outlined :items="designations"
             required></v-select>
           <v-text-field label="Email" v-model="booking.email" outlined required></v-text-field>
           <v-text-field label="Password" type="password" outlined v-model="booking.password" required></v-text-field>

@@ -27,4 +27,5 @@ class Slot extends Model
     {
         return date('h:i A', strtotime($value));
     }
+    
 }
