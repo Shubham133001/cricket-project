@@ -12,7 +12,7 @@
         <v-row>
           <v-col cols="12" md="4">
             <v-select v-model="slotstype" :items="['Single Day', 'Multiple Days', 'Date Range']" label="Slots For"
-              @change="timeperiod = ''"></v-select>
+              @change="timeperiod = ''; getalloweddates"></v-select>
 
             <v-text-field v-model="totalslots" label="Total Slots"></v-text-field>
             <v-select v-model="availabledays" v-if="slotstype == 'Date Range'" :items="days" multiple
@@ -201,25 +201,15 @@ export default {
     async checkslots() {
       this.allgood = false;
       let slots = this.slots;
-      // console.log(this.slots);
       let stoploop = false;
-      // if (this.slotstype == 'Multiple Days' && this.timeperiod == '') {
-      //     this.timeperiod.forEach(date => {
-      //         if (this.bookeddates.includes(date)) {
-      //             this.$toasted.show('Slot already exists for "' + date + '"', {
-      //                 type: 'error',
-      //                 duration: 2000
-      //             });
-      //             this.allgood = false;
-      //             return false;
-      //         }
-      //     });
-      // }
+
       const availableTimeSlots = this.bookedslots;
       var alltimes = [];
+      console.log(slots)
       slots.forEach((slot) => {
         let startdate = "";
         let enddate = "";
+        let myvar = 0;
         if (this.slotstype == "Single Day") {
           startdate = this.timeperiod;
           enddate = this.timeperiod;
@@ -233,7 +223,63 @@ export default {
             this.allgood = false;
             return false;
           }
-        } else if (this.slotstype == "Multiple Days") {
+          // this.timeperiod.forEach((date) => {
+          startdate = this.timeperiod;
+          enddate = this.timeperiod;
+          this.bookedslots.forEach((bookedslot) => {
+            let bookeddates = this.getdaysbetween(
+              bookedslot.start_date,
+              bookedslot.end_date
+            );
+
+            let bookedtimes = this.gethoursbetween(
+              bookedslot.start_time,
+              bookedslot.end_time
+            );
+
+            if (bookeddates.includes(this.timeperiod)) {
+              // bookedtimes.forEach((time) => {
+              if (stoploop) {
+                this.allgood = false;
+                return false;
+              }
+              let starttime = moment(slot.time_start, "hh:mm A").format(
+                "h"
+              );
+              let endtime = moment(slot.time_end, "hh:mm A").format(
+                "h"
+              );
+              console.log(bookedtimes, starttime, endtime);
+              if (
+                bookedtimes.includes(parseInt(starttime)) ||
+                bookedtimes.includes(parseInt(endtime))
+              ) {
+                console.log(bookeddates.includes(this.timeperiod), 'Booked Dates', bookeddates, this.timeperiod, bookedtimes, slot.start_time, slot.end_time);
+                this.allgood = false;
+                this.$toasted.show(
+                  'Slot already exists for "' +
+                  this.timeperiod +
+                  '" (' +
+                  bookedslot.start_time +
+                  " - " +
+                  bookedslot.end_time +
+                  ") ",
+                  {
+                    type: "error",
+                    duration: 5000,
+                  }
+                );
+                stoploop = true;
+                this.allgood = false;
+                return false;
+              }
+              // });
+            }
+          });
+          // });
+        }
+        else if (this.slotstype == "Multiple Days") {
+
           this.timeperiod.forEach((date) => {
             startdate = date;
             enddate = date;
@@ -242,40 +288,49 @@ export default {
                 bookedslot.start_date,
                 bookedslot.end_date
               );
+
               let bookedtimes = this.gethoursbetween(
                 bookedslot.start_time,
                 bookedslot.end_time
               );
-              if (bookeddates.includes(date)) {
-                bookedtimes.forEach((time) => {
-                  if (stoploop) {
-                    this.allgood = false;
-                    return false;
-                  }
 
-                  if (
-                    bookedtimes.includes(slot.start_time) ||
-                    bookedtimes.includes(slot.end_time)
-                  ) {
-                    this.allgood = false;
-                    this.$toasted.show(
-                      'Slot already exists for "' +
-                      date +
-                      '" (' +
-                      bookedslot.start_time +
-                      " - " +
-                      bookedslot.end_time +
-                      ") ",
-                      {
-                        type: "error",
-                        duration: 5000,
-                      }
-                    );
-                    stoploop = true;
-                    this.allgood = false;
-                    return false;
-                  }
-                });
+              if (bookeddates.includes(date)) {
+                // bookedtimes.forEach((time) => {
+                if (stoploop) {
+                  this.allgood = false;
+                  return false;
+                }
+                let starttime = moment(slot.time_start, "hh:mm A").format(
+                  "h"
+                );
+                let endtime = moment(slot.time_end, "hh:mm A").format(
+                  "h"
+                );
+                console.log(bookedtimes, starttime, endtime);
+                if (
+                  bookedtimes.includes(parseInt(starttime)) ||
+                  bookedtimes.includes(parseInt(endtime))
+                ) {
+                  console.log(bookeddates.includes(date), 'Booked Dates', bookeddates, date, bookedtimes, slot.start_time, slot.end_time);
+                  this.allgood = false;
+                  this.$toasted.show(
+                    'Slot already exists for "' +
+                    date +
+                    '" (' +
+                    bookedslot.start_time +
+                    " - " +
+                    bookedslot.end_time +
+                    ") ",
+                    {
+                      type: "error",
+                      duration: 5000,
+                    }
+                  );
+                  stoploop = true;
+                  this.allgood = false;
+                  return false;
+                }
+                // });
               }
             });
           });
@@ -312,8 +367,6 @@ export default {
             return false;
           }
         }
-        // cehck in existing slots if any slot exists
-
         let currentselectedates = this.getdaysbetween(startdate, enddate);
 
         if (slot.time_start != "" && slot.time_end != "") {
@@ -332,42 +385,12 @@ export default {
           }
         }
 
-        /* if(slot.advanceprice == ""){
-          this.$toasted.show("Advance price required", {
-            type: "error",
-            duration: 2000,
-          });
-          this.allgood = false;
-          return false;
-        }else {
-          this.allgood = true;
-        }
 
-        if(slot.price == ""){
-          this.$toasted.show("Price  required", {
-            type: "error",
-            duration: 2000,
-          });
-          this.allgood = false;
-          return false;
-        }else {
-          this.allgood = true;
-        } */
-
-        /* if (slot.advanceprice > slot.price) {
-          this.$toasted.show("Advance price should be less than price", {
-            type: "error",
-            duration: 2000,
-          });
-          this.allgood = false;
-          return false;
-        } else {
-          this.allgood = true;
-        } */
         let currentselectedtimes = this.gethoursbetween(
           moment(slot.time_start, "hh:mm A").format("HH:mm"),
           moment(slot.time_end, "hh:mm A").format("H:mm")
         );
+
         let stoploop1 = false;
         currentselectedtimes.forEach((times) => {
           if (stoploop1) {
@@ -402,8 +425,64 @@ export default {
             bookedslot.start_time,
             bookedslot.end_time
           );
+          let bookedslotdays = bookedslot.days;
+          bookedslotdays = bookedslotdays.map(function (day) {
+            if (day == '7') {
+              return 0;
+            } else {
+              return parseInt(day);
+            }
+          })
+
           currentselectedates.forEach((date) => {
+            if (stoploop) {
+
+              this.allgood = false;
+              return false;
+            }
             if (bookeddates.includes(date)) {
+              if (this.slotstype == 'Date Range') {
+
+                // check if available days are in bookedslotdays
+                if (bookedslotdays.length > 0) {
+
+
+                  bookedslotdays.forEach((day) => {
+                    if (stoploop) {
+                      return false;
+                    }
+                    else {
+                      if (this.availabledays.includes(day)) {
+
+                        this.$toasted.show(
+                          'Slot already exists for "' +
+                          date +
+                          '" (' +
+                          bookedslot.start_time +
+                          " - " +
+                          bookedslot.end_time +
+                          ") ",
+                          {
+                            type: "error",
+                            duration: 2000,
+                          }
+                        );
+                        stoploop = true;
+                        this.allgood = false;
+                        return false;
+                      } else {
+
+                        this.allgood = true;
+                      }
+                    }
+                  });
+                }
+                else {
+
+                  this.allgood = true;
+                }
+                return false;
+              }
               currentselectedtimes.forEach((time) => {
                 if (stoploop) {
                   this.allgood = false;
@@ -560,14 +639,17 @@ export default {
       if (moment(val).isBefore(moment().format("YYYY-MM-DD"))) {
         return false;
       }
+      if (this.slotstype == 'Date Range') {
+        let day = new Date(val).getDay();
+        // // check if day is in available days
 
-      // let day = new Date(val).getDay();
-      // // check if day is in available days
-
-      // // else {
-      // if (this.availabledays.includes(day)) {
-      return true;
-      // }
+        // // else {
+        if (this.availabledays.includes(day)) {
+          return true;
+        }
+      } else {
+        return true;
+      }
 
       // }
     },
@@ -632,7 +714,8 @@ export default {
             days: this.availabledays,
             id: this.$route.params.id,
             bookings_allowed: this.bookings_allowed,
-            ismultiple: this.slotstype == "Multiple Days" ? true : false,
+            slotType: this.slotstype,
+            ismultiple: (this.slotstype == "Multiple Days") ? true : false,
           })
           .then((response) => {
             this.$toasted.show("Slots added successfully", {

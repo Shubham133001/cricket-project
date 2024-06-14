@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Nette\Utils\Arrays;
+use Carbon\Carbon;
 
 class SlotsController extends Controller
 {
@@ -33,54 +34,102 @@ class SlotsController extends Controller
 
                         $insertdata['start_date'] = $date;
                         $insertdata['end_date'] = $date;
-
-                        // if (strtotime($insertdata['start_date']) >= strtotime($insertdata['end_date'])) {
-                        //     // swap start and end time
-                        //     $temp = $insertdata['start_date'];
-                        //     $insertdata['start_date'] = $insertdata['end_date'];
-                        //     $insertdata['end_date'] = $temp;
-                        // }
-
-                        // $insertdata['start_date'] = $slot['startdate'];
-                        // $insertdata['end_date'] = $slot['enddate'];
                         $insertdata['category_id'] = $postdata['id'];
                         $insertdata['status'] = 'Active';
                         $data = \App\Models\Slot::create($insertdata);
                     }
                 }
             } else {
-                foreach ($slots as $slot) {
-                    // check if start time is less than end time
+                if ($request->slotType == 'Date Range') {
+                    // get dates between start and end date
+                    $startDate = Carbon::parse($request->date[0]);
+                    $endDate = Carbon::parse($request->date[1]);
+                    $days = $request->days;
+                    foreach ($days as $key => $day) {
+                        if ($day == 0) {
+                            $days[$key] = 7;
+                        }
+                    }
+                    // Array to hold the filtered dates
+                    $filteredDates = [];
 
-                    $insertdata = [];
-                    $insertdata['title'] = $slot['title'];
-                    $insertdata['price'] = $slot['price'];
-                    $insertdata['advanceprice'] = $slot['advanceprice'];
-                    $insertdata['start_time'] = date('H:i:s', strtotime($slot['time_start']));
-                    $insertdata['end_time'] = date('H:i:s', strtotime($slot['time_end']));
-                    $insertdata['bookings_allowed'] = $slot['bookings_allowed'];
-                    if (isset($slot['days'])) {
-                        $insertdata['days'] = (gettype($slot['days']) == 'array') ? implode(',', $slot['days']) : $slot['days'];
-                    } else {
-                        $insertdata['days'] = implode(',', $request->days);
-                    }
-                    if (gettype($request->date) == 'array') {
-                        $insertdata['start_date'] = $request->date[0];
-                        $insertdata['end_date'] = $request->date[1];
-                    } else {
-                        $insertdata['start_date'] = $request->date;
-                        $insertdata['end_date'] = $request->date;
-                    }
-                    if (strtotime($insertdata['start_date']) >= strtotime($insertdata['end_date'])) {
-                        // swap start and end time
-                        $temp = $insertdata['start_date'];
-                        $insertdata['start_date'] = $insertdata['end_date'];
-                        $insertdata['end_date'] = $temp;
-                    }
+                    // Function to filter dates for days
+                    $filterFunction = function ($date) use ($days) {
+                        return in_array($date->format('N'), $days);
+                    };
 
-                    $insertdata['category_id'] = $postdata['id'];
-                    $insertdata['status'] = 'Active';
-                    $data = \App\Models\Slot::create($insertdata);
+
+                    // Loop through each day between $startDate and $endDate
+                    for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+                        // Check if the date matches the filter function
+                        if ($filterFunction($date)) {
+
+                            foreach ($slots as $slot) {
+                                // check if start time is less than end time
+                                // $date = $date->toDateString();
+                                $day = $date->format('N');
+                                $insertdata = [];
+                                $insertdata['title'] = $slot['title'];
+                                $insertdata['price'] = $slot['price'];
+                                $insertdata['advanceprice'] = $slot['advanceprice'];
+                                $insertdata['start_time'] = date('H:i:s', strtotime($slot['time_start']));
+                                $insertdata['end_time'] = date('H:i:s', strtotime($slot['time_end']));
+                                $insertdata['bookings_allowed'] = $slot['bookings_allowed'];
+                                $insertdata['days'] = $day;
+                                if (gettype($request->date) == 'array') {
+                                    $insertdata['start_date'] = $date->toDateString();
+                                    $insertdata['end_date'] = $date->toDateString();
+                                } else {
+                                    $insertdata['start_date'] = $request->date;
+                                    $insertdata['end_date'] = $request->date;
+                                }
+                                if (strtotime($insertdata['start_date']) >= strtotime($insertdata['end_date'])) {
+                                    // swap start and end time
+                                    $temp = $insertdata['start_date'];
+                                    $insertdata['start_date'] = $insertdata['end_date'];
+                                    $insertdata['end_date'] = $temp;
+                                }
+
+                                $insertdata['category_id'] = $postdata['id'];
+                                $insertdata['status'] = 'Active';
+                                $data = \App\Models\Slot::create($insertdata);
+                            }
+                        }
+                    }
+                } else {
+                    foreach ($slots as $slot) {
+                        // check if start time is less than end time
+
+                        $insertdata = [];
+                        $insertdata['title'] = $slot['title'];
+                        $insertdata['price'] = $slot['price'];
+                        $insertdata['advanceprice'] = $slot['advanceprice'];
+                        $insertdata['start_time'] = date('H:i:s', strtotime($slot['time_start']));
+                        $insertdata['end_time'] = date('H:i:s', strtotime($slot['time_end']));
+                        $insertdata['bookings_allowed'] = $slot['bookings_allowed'];
+                        if (isset($slot['days'])) {
+                            $insertdata['days'] = (gettype($slot['days']) == 'array') ? implode(',', $slot['days']) : $slot['days'];
+                        } else {
+                            $insertdata['days'] = implode(',', $request->days);
+                        }
+                        if (gettype($request->date) == 'array') {
+                            $insertdata['start_date'] = $request->date[0];
+                            $insertdata['end_date'] = $request->date[1];
+                        } else {
+                            $insertdata['start_date'] = $request->date;
+                            $insertdata['end_date'] = $request->date;
+                        }
+                        if (strtotime($insertdata['start_date']) >= strtotime($insertdata['end_date'])) {
+                            // swap start and end time
+                            $temp = $insertdata['start_date'];
+                            $insertdata['start_date'] = $insertdata['end_date'];
+                            $insertdata['end_date'] = $temp;
+                        }
+
+                        $insertdata['category_id'] = $postdata['id'];
+                        $insertdata['status'] = 'Active';
+                        $data = \App\Models\Slot::create($insertdata);
+                    }
                 }
             }
 
@@ -186,9 +235,14 @@ class SlotsController extends Controller
                 ->with('category')
                 ->get();
             $newdata = [];
+            $requestedday = $request->day;
+            if ($requestedday == 0) {
+                $requestedday = 7;
+            }
             foreach ($data as $key => $value) {
                 $value->days = explode(',', $value->days);
-                if (in_array($request->day, $value->days)) {
+
+                if (in_array($requestedday, $value->days)) {
                     array_push($newdata, $value);
                 }
             }
