@@ -191,9 +191,10 @@ export default {
         bookslot(item) {
             this.selecteditem = item;
             this.showheading = true;
-
+            this.showloading = true;
             let childrens = [];
             if (this.selecteditem.children != undefined) {
+                this.showloading = false;
                 childrens = this.selecteditem.children;
                 // get y position of the element
                 let categorypos = document.getElementById('category');
@@ -206,6 +207,7 @@ export default {
             }
 
             if (childrens.length == 0) {
+                this.showloading = false;
                 this.$router.push({
                     name: 'bookings-slots',
                     params: {
