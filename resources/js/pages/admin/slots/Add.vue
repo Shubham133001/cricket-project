@@ -65,8 +65,8 @@
                           @change="checkslots"></v-select>
                       </v-col>
                       <v-col cols="12" md="2">
-                        <v-text-field type="number" suffix="%" v-model="slot.advanceprice" label="Advance Price" :min="1" :max="100" value="1"
-                          @blur="checkslots"></v-text-field>
+                        <v-text-field type="number" suffix="%" v-model="slot.advanceprice" label="Advance Price"
+                          :min="1" :max="100" value="1" @blur="checkslots"></v-text-field>
                       </v-col>
                       <v-col cols="12" md="2">
                         <v-text-field type="number" :min="1" v-model="slot.price" label="Price" value="0"

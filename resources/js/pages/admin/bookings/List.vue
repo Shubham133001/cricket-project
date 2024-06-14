@@ -29,10 +29,11 @@
                             }}</span>
                     </template>
                     <template v-slot:item.slot.advanceprice="{ item }">
-                        <v-img src="/images/inr_icon.png" width="20"
+                        <!-- <v-img src="/images/inr_icon.png" width="20"
                             style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
-                            style="color:#297729">{{
-                item.slot.advanceprice }}</strong>
+                            style="color:#297729">-->
+                        {{ item.slot.advanceprice }}%
+                        <!-- </strong> -->
                     </template>
                     <template v-slot:item.slot.price="{ item }">
                         <v-img src="/images/inr_icon.png" width="20"
@@ -115,7 +116,7 @@ export default {
                 sortable: false
             },
             {
-                text: 'Advance Price',
+                text: 'Advance Price(%)',
                 value: 'slot.advanceprice',
                 sortable: false
             },

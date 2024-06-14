@@ -81,53 +81,53 @@ class CommonController extends Controller
 
     public function themesetting(Request $request)
     {
-      //  $onlineusers = '';
-      //  $action = request()->get('action');
+        //  $onlineusers = '';
+        //  $action = request()->get('action');
         try {
             //if ($action == 'savesettings') {
-                $exists = Storage::disk('local')->has('page_setting.json');
-                if ($exists) {
-                    $data = Storage::delete('page_setting.json');
-                }
-                $settings = $request->all();
-                foreach ($settings as $key => $setting) {
-                    $themeoption = \DB::table('page_options')->where('setting', $key)->first();
-                    if ($themeoption) {
-                        if ($key == 'bannerimage' || $key == 'bannerbackground' || $key == 'whyusimage') {
-                            if ($setting != null) {
-                                $filename = $setting->getClientOriginalName();
-                                $setting = $setting->storeAs('uploads', $filename, 'public');
-                                \DB::table('page_options')->where('setting', $key)->update(['value' => '/storage/' . $setting]);
-                            }
-                        } else {
-                            \DB::table('page_options')->where('setting', $key)->update(['value' => $setting]);
+            $exists = Storage::disk('local')->has('page_setting.json');
+            if ($exists) {
+                $data = Storage::delete('page_setting.json');
+            }
+            $settings = $request->all();
+            foreach ($settings as $key => $setting) {
+                $themeoption = \DB::table('page_options')->where('setting', $key)->first();
+                if ($themeoption) {
+                    if ($key == 'bannerimage' || $key == 'bannerbackground' || $key == 'whyusimage') {
+                        if ($setting != null) {
+                            $filename = $setting->getClientOriginalName();
+                            $setting = $setting->storeAs('uploads', $filename, 'public');
+                            \DB::table('page_options')->where('setting', $key)->update(['value' => '/storage/' . $setting]);
                         }
                     } else {
-                        if ($key == 'bannerimage' || $key == 'bannerbackground' || $key == 'whyusimage') {
-                            if ($setting != null) {
-                                $filename = $setting->getClientOriginalName();
-                                $setting = $setting->storeAs('uploads', $filename, 'public');
-                                \DB::table('page_options')->insert(['setting' => $key, 'value' => '/storage/' . $setting]);
-                            }
-                        } else {
-                            \DB::table('page_options')->insert(['setting' => $key, 'value' => $setting]);
+                        \DB::table('page_options')->where('setting', $key)->update(['value' => $setting]);
+                    }
+                } else {
+                    if ($key == 'bannerimage' || $key == 'bannerbackground' || $key == 'whyusimage') {
+                        if ($setting != null) {
+                            $filename = $setting->getClientOriginalName();
+                            $setting = $setting->storeAs('uploads', $filename, 'public');
+                            \DB::table('page_options')->insert(['setting' => $key, 'value' => '/storage/' . $setting]);
                         }
+                    } else {
+                        \DB::table('page_options')->insert(['setting' => $key, 'value' => $setting]);
                     }
                 }
-                $themeoptions = \DB::table('page_options')->get();
-                $themedata = [];
-                foreach ($themeoptions as $themeoption) {
-                    $themedata[$themeoption->setting] = $themeoption->value;
-                }
+            }
+            $themeoptions = \DB::table('page_options')->get();
+            $themedata = [];
+            foreach ($themeoptions as $themeoption) {
+                $themedata[$themeoption->setting] = $themeoption->value;
+            }
 
-                Storage::put('page_setting.json', json_encode($themedata));
-                Storage::get('page_setting.json');
+            Storage::put('page_setting.json', json_encode($themedata));
+            Storage::get('page_setting.json');
 
-                return response()->json([
-                    'success' => true,
-                    'message' => "Page option updated"
-                ]);
-           // }
+            return response()->json([
+                'success' => true,
+                'message' => "Page option updated"
+            ]);
+            // }
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
@@ -164,6 +164,8 @@ class CommonController extends Controller
             $totalamount = 0;
             $firstpayment = 0;
             foreach ($request->slot as $key => $value) {
+                $adv_prive =  $value['price'] * ($value['advanceprice'] / 100);
+                $value['advanceprice'] = round($adv_prive, 0);
                 $totalamount += $value['price'];
                 $firstpayment += $value['advanceprice'];
             }
