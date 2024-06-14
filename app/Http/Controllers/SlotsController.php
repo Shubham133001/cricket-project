@@ -185,13 +185,16 @@ class SlotsController extends Controller
                 }])
                 ->with('category')
                 ->get();
-            $data->map(function ($item) {
-                $item->days = explode(',', $item->days);
-                return $item;
-            });
+            $newdata = [];
+            foreach ($data as $key => $value) {
+                $value->days = explode(',', $value->days);
+                if (in_array($request->day, $value->days)) {
+                    array_push($newdata, $value);
+                }
+            }
             return response()->json([
                 'success' => true,
-                'slots' => $data
+                'slots' => $newdata
             ]);
         } catch (\Exception $e) {
             return response()->json([
