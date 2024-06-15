@@ -9,10 +9,10 @@
                 with<br /><span class="primary--text ">Smarters Booking Management</span></h1> -->
             <div class="mt-8">
               <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" color="primary" :to=bannerbtnlink>{{
-                bannerbtntext }}</v-btn>
+              bannerbtntext }}</v-btn>
               <v-btn x-large class="my-1 mx-sm-1 w-full w-sm-auto" @click="opencontactus(bannerbtnlink1)">{{
-                bannerbtntext1
-                }}</v-btn>
+              bannerbtntext1
+            }}</v-btn>
             </div>
           </v-col>
           <v-col cols="12" md="6">
@@ -76,7 +76,7 @@ export default {
       var self = this;
       axios.get('/api/getpageoption')
         .then(function (response) {
-          console.log(response,'addadda');
+
           self.bannertitle = response.data.options.bannertitle;
           self.bannerbtntext = response.data.options.bannerbtntext;
           self.bannerbtntext1 = response.data.options.bannerbtntext1;

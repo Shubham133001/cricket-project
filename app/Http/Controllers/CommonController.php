@@ -164,8 +164,6 @@ class CommonController extends Controller
             $totalamount = 0;
             $firstpayment = 0;
             foreach ($request->slot as $key => $value) {
-                $adv_prive =  $value['price'] * ($value['advanceprice'] / 100);
-                $value['advanceprice'] = round($adv_prive, 0);
                 $totalamount += $value['price'];
                 $firstpayment += $value['advanceprice'];
             }

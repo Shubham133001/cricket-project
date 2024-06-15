@@ -124,6 +124,11 @@
             <v-btn text @click="haveaccount = true" small>Login</v-btn>
           </p>
           <v-btn color="primary" @click="register" block>Register</v-btn>
+          <v-btn :disabled="isSignUpDisabled" class="mb-2 red mt-2 lighten-1 white--text" block
+            @click="redirectToGoogleAuth()">
+            <v-icon small left>mdi-google</v-icon>
+            Signup with Google
+          </v-btn>
         </v-col>
       </v-row>
       <v-img src="/images/loginfooterimg.png" class="mt-4"></v-img>
@@ -276,6 +281,7 @@ export default {
   },
   data() {
     return {
+      isSignUpDisabled: false,
       drawer: false,
       currentYear: new Date().getFullYear(),
       isUserlogin: localStorage.getItem("userdetails") ? true : false,
@@ -370,14 +376,17 @@ export default {
   },
   methods: {
     ...mapActions("app", ["getStoreData", "setUserdetails", "getUserLogin"]),
-    
+
     description(data) {
-        return this.$striphtml(data);
-      },
+      return this.$striphtml(data);
+    },
     myteam() {
       this.$router.push({
         name: "userteam",
       });
+    },
+    redirectToGoogleAuth() {
+      window.location.href = `${config.apiURL}/auth/google`;
     },
     async login() {
       this.loading = true;

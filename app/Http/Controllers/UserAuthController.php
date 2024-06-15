@@ -86,7 +86,7 @@ class UserAuthController extends Controller
         }
     }
 
-    public function signout()
+    public function signout(Request $request)
     {
         try {
             if (!auth()->user()) {
