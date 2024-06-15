@@ -37,14 +37,23 @@ class UserAuthController extends Controller
     public function signup(Request $request)
     {
         try {
+            $messages = [
+                'name.required' => 'Name is required',
+                'email.required' => 'Email is required',
+                'email.email' => 'Email is not valid',
+                'email.unique' => 'Email is already taken',
+                'password.required' => 'Password is required',
+                'phone.required' => 'Phone is required',
+                'phone.unique' => 'Phone is already taken',
+                'phone.regex' => 'Phone is not valid',
+                'phone.min' => 'Phone is not valid'
+            ];
             $validator = Validator::make($request->all(), [
-                'name' => 'required|string',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|string|min:6',
-                'phone' => 'required|string|min:10|max:10',
-                'team.name' => 'required|string',
-                'team.designation' => 'required|string',
-            ]);
+                'name' => 'required',
+                'email' => 'required|email|unique:users',
+                'password' => 'required',
+                'phone' => 'required|unique:users|regex:/^([0-9\s\-\+\(\)]*)$/|min:10'
+            ], $messages);
 
             if ($validator->fails()) {
                 return response()->json([
