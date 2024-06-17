@@ -234,7 +234,7 @@ class UserAuthController extends Controller
     public function loginwithgoogle(Request $request)
     {
         if (!isset($request['google_code']) && $request['google_code'] == '') {
-            return response()->json(['success' => false, 'message' => __('apiresponse.invalidrequests')]);
+            return response()->json(['success' => false, 'message' => "Invalid request"]);
         }
         try {
 

@@ -34,9 +34,6 @@ export default {
                 })
                 .then((response) => {
                     if (response.data.success == true) {
-                        this.$toasted.show(response.data.message, {
-                            type: "success",
-                        });
                         localStorage.setItem(
                             "userdetails",
                             JSON.stringify(response.data.user)

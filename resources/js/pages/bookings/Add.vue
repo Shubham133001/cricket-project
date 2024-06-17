@@ -73,7 +73,7 @@
                               /
                               {{ slot.bookings_allowed }}</v-chip>
                             <v-btn small color="primary"
-                              v-if="(slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed) && !isMobile"
+                              v-if="( slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed ) && !isMobile"
                               style="text-decoration: underline;" text @click="showbookings(slot)">Booked By</v-btn>
                           </p>
                           <v-spacer></v-spacer>
@@ -86,16 +86,16 @@
                             /
                             {{ slot.bookings_allowed }}</v-chip><br v-if="isMobile" />
                           <v-btn small color="primary"
-                            v-if="(slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed) && isMobile"
+                            v-if="(slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed || isUserlogin== true) && isMobile"
                             style="text-decoration: underline;" text @click="showbookings(slot)">Booked By</v-btn>
                         </v-list-item-subtitle>
                       </v-list-item-content>
                       <v-list-item-action>
 
                         <v-radio-group v-model="selection[index]" inline>
-                          <v-radio label="Half" @click="checkbookings(slot.bookings.length,slot.bookings_allowed)"  :readonly="slot.bookings.length >= slot.bookings_allowed"
+                          <v-radio class="font-weight-black" label="Half" @click="checkbookings(slot.bookings.length,slot.bookings_allowed)"  :readonly="slot.bookings.length >= slot.bookings_allowed"
                             :value="[slot]"></v-radio>
-                          <v-radio label="Full" @click="checkbookings(slot.bookings.length,slot.bookings_allowed)"
+                          <v-radio class="font-weight-black" label="Full" @click="checkbookings(slot.bookings.length,slot.bookings_allowed)"
                             :readonly="slot.bookings.length >= slot.bookings_allowed || slot.bookings.length > 0"
                             :value="[slot, slot]"></v-radio>
                         </v-radio-group>
