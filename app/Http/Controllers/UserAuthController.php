@@ -154,33 +154,10 @@ class UserAuthController extends Controller
     {
 
         if ($request['email'] !== null || !empty($request['email'])) {
-            //  try {
-            // $user = User::where('email', $request['email'])->firstOrFail();
-
-            // $token = Password::getRepository()->create($user);
-
-            // $status = Password::sendResetLink($request->only('email'));
-            // $response = $this->broker()->sendResetLink(
-            //     $request->only('email')
-            // );
-
             $status = Password::broker('users')->sendResetLink(
                 $request->only('email')
             );
-
-            // echo "<pre>";
-            // print_r($status); die;
-
-            //$templatedata = EmailTemplate::where('name', 'forgetPassword')->first();
-
-            // $user->notify(new CustomResetPassword($token, $user->name, $request['email'], "email"));
-            // echo "<pre>";
-            // print_r($user); die;
             return response()->json(['success' => true, 'message' => "Forgot email sent"]);
-            // } catch (\Throwable $th) {
-
-            //     return response()->json(['success' => false, 'message' => $th->getMessage()]);
-            // }
         } else {
             return response()->json(['success' => false, 'message' => "email not provided"]);
         }

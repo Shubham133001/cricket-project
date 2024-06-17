@@ -50,7 +50,7 @@ export default {
                             type: "success",
                             duration: 5000,
                         });
-                        this.$router.push("/");
+                        this.$router.push("/user/team");
                     } else {
                         this.$toasted.show(response.data.message, {
                             type: "error",
