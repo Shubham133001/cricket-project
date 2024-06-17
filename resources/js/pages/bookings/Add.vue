@@ -8,8 +8,9 @@
 
   <div style="width: 100%" v-else>
     <v-row class="ma-0 ml-0 mr-0">
-      <v-img min-height="300px" class="align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-        :src="'/storage/images/' + selecteditem.image" lazy-src="https://picsum.photos/id/114/1920/450" cover>
+      <v-img min-height="300px" max-height="400px" class="align-end"
+        gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" :src="'/storage/images/' + selecteditem.image"
+        lazy-src="https://picsum.photos/id/114/1920/450" cover>
         <!-- <v-row> -->
         <v-container>
           <v-col cols="12" md="8" style="">
