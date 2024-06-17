@@ -281,6 +281,7 @@ export default {
         else if (this.slotstype == "Multiple Days") {
 
           this.timeperiod.forEach((date) => {
+            
             startdate = date;
             enddate = date;
             this.bookedslots.forEach((bookedslot) => {
@@ -350,6 +351,7 @@ export default {
             return false;
           }
         } else {
+          console.log(this.timeperiod,"all selected date");
           startdate = this.timeperiod[0];
           enddate = this.timeperiod[1];
           if (new Date(startdate) > new Date(enddate)) {

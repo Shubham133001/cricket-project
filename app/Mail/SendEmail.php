@@ -33,10 +33,8 @@ class SendEmail extends Mailable
      */
     public function build()
     {   
-        $storedata = Setting::where('setting', 'store_details')->first();
-        $storeDetails = json_decode($storedata->value);
-
-        $storeDetails = ['logo' => $storeDetails->logo, 'companyname' => $storeDetails->name, 'msg' => $this->title.'<br />'.$this->body];
+        $storedata = Setting::get();
+        $storeDetails = ['logo' => $storedata['logo'], 'companyname' => $storedata['name'], 'msg' => "Forgot Email".'<br />'.$this->body];
         return $this->view('emails.email', $storeDetails);
     }
 }

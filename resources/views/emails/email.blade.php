@@ -39,7 +39,7 @@
                             @endif
                         </td>
                     </tr>
-
+                     <a href="{{ url('auth/reset-password')}}">reset password</a>
                     <!-- Email Body -->
                     <tr>
                         <td class="body" width="100%" cellpadding="0" cellspacing="0">
@@ -64,7 +64,7 @@
                             <table class="footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
                                 <tr>
                                     <td class="content-cell" align="center">
-                                        © 2024 {{ $companyname }} Panel. All rights reserved.
+                                        © 2024 {{ $companyname }} All rights reserved.
                                     </td>
                                 </tr>
                             </table>

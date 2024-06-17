@@ -93,10 +93,10 @@
                       <v-list-item-action>
 
                         <v-radio-group v-model="selection[index]" inline>
-                          <v-radio label="Half" :disabled="slot.bookings.length >= slot.bookings_allowed"
+                          <v-radio label="Half" @click="checkbookings(slot.bookings.length,slot.bookings_allowed)"  :readonly="slot.bookings.length >= slot.bookings_allowed"
                             :value="[slot]"></v-radio>
-                          <v-radio label="Full"
-                            :disabled="slot.bookings.length >= slot.bookings_allowed || slot.bookings.length > 0"
+                          <v-radio label="Full" @click="checkbookings(slot.bookings.length,slot.bookings_allowed)"
+                            :readonly="slot.bookings.length >= slot.bookings_allowed || slot.bookings.length > 0"
                             :value="[slot, slot]"></v-radio>
                         </v-radio-group>
                       </v-list-item-action>
@@ -445,6 +445,20 @@ export default {
   methods: {
     fomartdate(date) {
       return moment(date).format("DD MMM YYYY (dddd)");
+    },
+    checkbookings(bookinglenth , bookings_allowed){
+       if(bookinglenth >= bookings_allowed){
+        this.$toasted.show("Slot Full", {
+                type: "danger",
+                icon: 'success_outline',
+                action: {
+                  text: 'cancel',
+                  onClick: (e, toastObject) => {
+                    toastObject.goAway(0);
+                  }
+                }
+              }).goAway(2000);
+       }
     },
     opendirection() {
       // parse string to url

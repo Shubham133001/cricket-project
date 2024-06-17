@@ -27,7 +27,7 @@ export default [{
     layout: 'auth'
   }
 }, {
-  path: '/auth/reset-password',
+  path: '/api/reset-password',
   name: 'auth-reset',
   component: () => import(/* webpackChunkName: "auth-reset" */ '@/pages/auth/ResetPage.vue'),
   meta: {
@@ -207,6 +207,16 @@ export default [{
   component: () => import('@/pages/Direction.vue'),
   meta: {
     layout: 'landing'
+  }
+},
+
+{
+  path: '/auth/googleoauth',
+  name: 'google-oauth',
+  component: () => import('@/pages/auth/GoogleOauth.vue'),
+  meta: {
+    layout: 'auth',
+    requiresAuth: false,
   }
 }
 ]

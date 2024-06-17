@@ -279,4 +279,42 @@ if (!function_exists('getAllRoutes')) {
         ];
         return $routeLists;
     }
+
+    if (!function_exists('getStoreDetails')) {
+        function getStoreDetails($name = null)
+        {
+            // $storedata = Cache::get('storedata');
+            // if ($storedata) {
+            //     if ($name != null) {
+            //         $return = new stdClass();
+            //         foreach ($storedata as $key => $store) {
+            //             if ($key == $name) {
+            //                 $return->value = $store;
+            //                 $return->name = $key;
+            //                 break;
+            //             }
+            //         }
+            //         if (isset($return->value)) {
+            //             return $return;
+            //         }
+            //     } else {
+            //         return $storedata;
+            //     }
+            // }
+    
+            // get last cron
+            if ($name !=  null) {
+                $return = \App\Models\Setting::select('setting', 'value', 'id')->where('setting', $name)->first();
+                return $return;
+            }
+            $storedata = [];
+            // $storedetail = \App\Models\Setting::select('name', 'value', 'id')->get();
+            // if ($storedetail) {
+            //     foreach ($storedetail as $key => $value) {
+            //         $storedata[$value->name] = $value->value;
+            //     }
+            // }
+            return $storedata;
+        }
+    }
 }

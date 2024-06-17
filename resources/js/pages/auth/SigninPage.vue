@@ -114,7 +114,7 @@ export default {
       providers: [{
         id: 'google',
         label: 'Google',
-        isLoading: false
+        isLoading: false 
       }, {
         id: 'facebook',
         label: 'Facebook',

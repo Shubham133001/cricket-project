@@ -107,7 +107,26 @@
             Don't have an account?
             <v-btn text @click="haveaccount = false" small>Register</v-btn>
           </p>
+          
+          <div class="mt-5 mb-2">
+            <router-link to="/auth/forgot-password">
+              Forget password
+            </router-link>
+          </div>
           <v-btn color="primary" @click="login" block>Login</v-btn>
+          <v-btn
+              v-for="provider in providers"
+              :key="provider.id"
+              :loading="provider.isLoading"
+              :disabled="isSignInDisabled"
+              class="mb-2 red mt-2 lighten-1 white--text"
+              block
+              x-large
+              @click="redirectToGoogleAuth()"
+            >
+              <v-icon small left>mdi-{{ provider.id }}</v-icon>
+              {{ provider.label }}
+            </v-btn>
         </v-col>
       </v-row>
       <v-row v-else>
@@ -320,6 +339,12 @@ export default {
       ],
 
       loading: false,
+      providers: [{
+                id: "google",
+                label: "Sign in with Google",
+                isLoading: false,
+                url: "",
+              }],
       storeDetails: {
         name: "",
         address: "",
@@ -386,7 +411,7 @@ export default {
       });
     },
     redirectToGoogleAuth() {
-      window.location.href = `${config.apiURL}/auth/google`;
+      window.location.href = this.providers[0].url;
     },
     async login() {
       this.loading = true;
@@ -422,6 +447,24 @@ export default {
     bookings() {
       this.$router.push({
         name: "mybookings",
+      });
+    },
+    getSocialLogin() {
+      axios.get("/api/getsocialloginurl").then((response) => {
+        if (response.data.success == true) {
+          if (response.data.googlelogin != "") {
+            this.providers = [
+              {
+                id: "google",
+                label: "Sign in with Google",
+                isLoading: false,
+                url: response.data.googlelogin,
+              },
+            ];
+          }
+          //this.appleclientid = response.data.appleclientid;
+          //this.redirecturl = response.data.appleredirect;
+        }
       });
     },
     invoice() {
@@ -533,6 +576,7 @@ export default {
   mounted() {
     this.getStoreData();
     this.getUserLogin();
+    this.getSocialLogin();
     //this.getPageData();
   }
 };

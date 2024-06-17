@@ -43,8 +43,16 @@ Route::get('downloadpdf/{id}', [InvoicesController::class, 'downloadPdf'])->name
 Route::get('viewpdf/{id}', [InvoicesController::class, 'viewpdf'])->name('viewpdf');
 Route::get('stats', [CommonController::class, 'stats'])->name('stats');
 Route::post('contactus', [CommonController::class, 'contactus'])->name('contactus');
+Route::post('/forgot-password', [UserAuthController::class, 'forgotpassword']);
+Route::post('/reset-password', [UserAuthController::class, 'resetpassword'])->name('password.reset');
+Route::post('/verifyresetpasswordtoken', [UserAuthController::class, 'verifyresetpasswordtoken']);
 Route::get('getpageoption', [CommonController::class, 'getPageOption'])->name('getpageoption');
 Route::get('popularcategories', [CategoriesController::class, 'popularcategories'])->name('popularcategories');
+
+
+Route::get('/getsocialloginurl', [UserAuthController::class, 'getLoginUrl']);
+Route::post('/loginwithgoogle', [UserAuthController::class, 'loginwithgoogle']);
+Route::post('/auth/google/callback', [UserAuthController::class, 'loginwithgoogle']);
 // add admin group with middleware
 Route::group(['prefix' => 'admin'], function () {
     Route::post('signin', [AdminAuthController::class, 'signin'])->name('admin.signin');

@@ -6,10 +6,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Password;
+use App\Notifications\CustomResetPassword;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Google\Client as Google_Client;
+use Google\Service\Oauth2 as Google_Oauth2Service;
+
+
 
 class UserAuthController extends Controller
 {
     use HasApiTokens;
+    use SendsPasswordResetEmails;
     //
     public function signin(Request $request)
     {
@@ -138,5 +148,182 @@ class UserAuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function forgotpassword(Request $request)
+    {
+
+        if ($request['email'] !== null || !empty($request['email'])) {
+            //  try {
+            // $user = User::where('email', $request['email'])->firstOrFail();
+
+            // $token = Password::getRepository()->create($user);
+
+            // $status = Password::sendResetLink($request->only('email'));
+            // $response = $this->broker()->sendResetLink(
+            //     $request->only('email')
+            // );
+
+            $status = Password::broker('users')->sendResetLink(
+                $request->only('email')
+            );
+
+            // echo "<pre>";
+            // print_r($status); die;
+
+            //$templatedata = EmailTemplate::where('name', 'forgetPassword')->first();
+
+            // $user->notify(new CustomResetPassword($token, $user->name, $request['email'], "email"));
+            // echo "<pre>";
+            // print_r($user); die;
+            return response()->json(['success' => true, 'message' => "Forgot email sent"]);
+            // } catch (\Throwable $th) {
+
+            //     return response()->json(['success' => false, 'message' => $th->getMessage()]);
+            // }
+        } else {
+            return response()->json(['success' => false, 'message' => "email not provided"]);
+        }
+    }
+
+    public function resetpassword(Request $request)
+    {
+        if ($request['password'] !== null) {
+            try {
+                $user = User::where('email', $request['email'])->firstOrFail();
+                $token = Password::getRepository()->exists($user, $request['token']);
+                if (!$token) {
+                    return response()->json(['success' => false, 'message' => "Invalid token"]);
+                }
+                $status = Password::reset(
+                    $request->only('email', 'password', 'token'),
+                    function ($user, $password) use ($request) {
+                        $user->forceFill([
+                            'password' => Hash::make($password)
+                        ])->save();
+                    }
+                );
+                if ($status) {
+                    return response()->json(['success' => true, 'message' => "password reset sent"]);
+                } else {
+                    return response()->json(['success' => false, 'message' => "password reset faild"]);
+                }
+            } catch (\Throwable $th) {
+                return response()->json(['success' => false, 'message' => $th->getMessage()]);
+            }
+        } else {
+            return response()->json(['success' => false, 'message' => __('apiresponse.emptyPassword')]);
+        }
+    }
+
+    public function resendverificationemail(Request $request)
+    {
+        if (isset($request['email']) && !empty($request['email'])) {
+            try {
+                $user = User::where('email', $request['email'])->firstOrFail();
+                if ($user->email_verified_at != null) {
+                    return response()->json(['success' => false, 'message' => __('apiresponse.alreadyVerified')]);
+                }
+                $user->sendEmailVerificationNotification();
+                return response()->json(['success' => true, 'message' => __('apiresponse.emailsent')]);
+            } catch (\Throwable $th) {
+                return response()->json(['success' => false, 'message' => $th->getMessage()]);
+            }
+        }
+        if ($request['id'] !== null || !empty($request['id'])) {
+            $user = User::find($request['id']);
+
+            $user->sendEmailVerificationNotification();
+            return response()->json(['success' => true, 'message' => __('apiresponse.emailsent')]);
+        } else {
+            return response()->json(['success' => false, 'message' => __('apiresponse.emailnotprovided')]);
+        }
+    }
+
+    public function verifyresetpasswordtoken(Request $request)
+    {
+        if ($request['token'] !== null || !empty($request['token'])) {
+            $usermodel = new User();
+            $user = $usermodel->getTokenVelidate($request['email'], $request['token']);
+            if ($user == 'success') {
+                return response()->json(['success' => true, 'message' => __('apiresponse.tokenVerified')]);
+            }
+        } else {
+            return response()->json(['success' => false, 'message' => __('apiresponse.tokenNotVerified')]);
+        }
+    }
+
+
+    public function loginwithgoogle(Request $request)
+    {
+        if (!isset($request['google_code']) && $request['google_code'] == '') {
+            return response()->json(['success' => false, 'message' => __('apiresponse.invalidrequests')]);
+        }
+        try {
+
+            $redirecturl = url('/auth/googleoauth');
+            $storename = getStoreDetails('name');
+            $gClient = new Google_Client();
+            $gClient->setApplicationName('Login to ' . $storename);
+            $gClient->setClientId("436364067035-8ik3b0ubtjd9lci69ivn319go0jhookm.apps.googleusercontent.com");
+            $gClient->setClientSecret("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");
+            $gClient->setRedirectUri($redirecturl);
+            $gClient->authenticate($request['google_code']);
+            $token = $gClient->getAccessToken();
+            $gClient->setAccessToken($token);
+            $google_oauthV2 = new Google_Oauth2Service($gClient);
+            $gpUserProfile = $google_oauthV2->userinfo->get();
+            $user = User::where('email', $gpUserProfile['email'])->first();
+            if ($user) {
+                Auth::guard('web')->loginUsingId($user->id);
+                $user->save();
+                return response()->json(['success' => true, 'message' => "User Login successfully", 'user' => $user, 'access_token' => $user->createToken('auth_token')->plainTextToken, 'token_type' => 'Bearer']);
+            } else {
+                $data = array();
+                $data['name'] = $gpUserProfile['given_name'];
+                $data['email'] = $gpUserProfile['email'];
+                $data['phone'] = $gpUserProfile['id'];
+                $data['password'] = Hash::make("Dummy");
+                $data['oauth_provider'] = 'google';
+                $data['oauth_uid'] = $gpUserProfile['id'];
+                return $this->commonsignup($data);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false, 'message' => $th->getMessage() . '' . $th->getLine() . '' . $th->getFile()]);
+        }
+    }
+
+    public function getLoginUrl()
+    {
+        $authUrlg = '';
+        $redirecturl = url('/auth/googleoauth');
+        $storename = getStoreDetails('companyname');
+        $gClient = new Google_Client();
+        $gClient->setApplicationName('Login to ' . $storename);
+        $gClient->setClientId("436364067035-8ik3b0ubtjd9lci69ivn319go0jhookm.apps.googleusercontent.com");
+        $gClient->setClientSecret("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");
+        $gClient->setRedirectUri($redirecturl);
+        $gClient->addScope('email');
+        $gClient->addScope('profile');
+        $authUrlg = $gClient->createAuthUrl(); // to get login url
+        return response()->json(['success' => true, 'googlelogin' => $authUrlg, 'appleclientid' =>
+        "test", 'appleredirect' => $redirecturl, 'googleclientid' => "436364067035-8ik3b0ubtjd9lci69ivn319go0jhookm.apps.googleusercontent.com"]);
+    }
+
+    private function commonsignup($data)
+    {
+        $user = new User();
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->password = $data['password'];
+        $user->oauth_provider = $data['oauth_provider'];
+        $user->oauth_uid = $data['oauth_uid'];
+        $user->email_verified_at = date('Y-m-d H:i:s');
+        $user->save();
+        Auth::guard('web')->loginUsingId($user->id);
+        //$user->last_seen = date('Y-m-d H:i:s');
+        $user->save();
+        $getuser = User::where('id', $user->id)->first();
+        return response()->json(['success' => true, 'message' => "User Login successfully", 'user' => $getuser, 'access_token' => $user->createToken('auth_token')->plainTextToken, 'token_type' => 'Bearer']);
     }
 }
