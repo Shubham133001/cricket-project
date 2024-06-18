@@ -58,6 +58,11 @@
                         <v-tab-item>
                             <v-simple-table>
                                 <tr>
+                                    <th>Driver</th>
+                                    <td>
+                                        <v-select label="Driver" v-model="smtpSettings.driver"
+                                            :items="drivers"></v-select>
+                                    </td>
                                     <th>
                                         Host
                                     </th>
@@ -65,6 +70,9 @@
                                         <v-text-field label="Host*" v-model="smtpSettings.host"
                                             :rules="required"></v-text-field>
                                     </td>
+
+                                </tr>
+                                <tr>
                                     <th>
                                         Port
                                     </th>
@@ -72,8 +80,6 @@
                                         <v-text-field label="Port*" v-model="smtpSettings.port"
                                             :rules="required"></v-text-field>
                                     </td>
-                                </tr>
-                                <tr>
                                     <th>
                                         Username
                                     </th>
@@ -81,6 +87,9 @@
                                         <v-text-field label="Username*" v-model="smtpSettings.username"
                                             :rules="required"></v-text-field>
                                     </td>
+
+                                </tr>
+                                <tr>
                                     <th>
                                         Password
                                     </th>
@@ -88,8 +97,6 @@
                                         <v-text-field label="Password*" v-model="smtpSettings.password"
                                             :rules="required"></v-text-field>
                                     </td>
-                                </tr>
-                                <tr>
                                     <th>
                                         Encryption
                                     </th>
@@ -97,9 +104,7 @@
                                         <v-select label="Encryption" v-model="smtpSettings.encryption"
                                             :items="encryptionOptions"></v-select>
                                     </td>
-                                    <!-- <th>Enable Emails</th>
-                                    <td><v-checkbox v-model="smtpSettings.enablesmtp"
-                                            label="Tick to Enable sending Emails"></v-checkbox><span></span> </td> -->
+
                                 </tr>
                             </v-simple-table>
                         </v-tab-item>
@@ -160,6 +165,18 @@ import {
 export default {
     data() {
         return {
+            drivers: [{
+                text: "SMTP",
+                value: "smtp",
+            },
+            {
+                text: "Sendmail",
+                value: "sendmail",
+            },
+            {
+                text: "Log",
+                value: "log",
+            }],
             tab: null,
             askpassword: false,
             storeDetails: {
@@ -170,8 +187,10 @@ export default {
                 logo: "",
                 enablesms: true,
             },
+
             smtpSettings: {
                 host: "",
+                driver: "sendmail",
                 port: "587",
                 username: "",
                 password: "",
@@ -260,6 +279,11 @@ export default {
         },
         updateSmtpDetails() {
             //  console.log(this.smtpSettings);
+            // check if smtp details are filled
+            if (!this.smtpSettings.host || !this.smtpSettings.port || !this.smtpSettings.username || !this.smtpSettings.password) {
+                this.$toasted.error("Please fill all SMTP details").goAway(2000);
+                return;
+            }
             axios.post("/api/admin/settings/smtp/update", this.smtpSettings).then((response) => {
                 if (response.data.success) {
                     this.smtpSettings = response.data.smtpSettings;
@@ -269,6 +293,7 @@ export default {
                 } else {
                     this.$toasted.error("Something went wrong").goAway(2000);
                 }
+                this.getSmtpData();
             });
         },
         testsmtp() {
