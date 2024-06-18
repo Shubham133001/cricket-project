@@ -160,7 +160,7 @@
 
                           </td>
                           <td v-if="!isMobile">
-                            <v-btn icon small fab color="red" @click="deletebooking(slot)">
+                            <v-btn icon x-small fab color="red" @click="deletebooking(slot)">
                               <v-icon x-small>mdi-delete</v-icon>
                             </v-btn>
                           </td>
@@ -833,7 +833,7 @@ table tr {
 
 .v-label {
   font-size: 16px;
-  margin-left: 10px;
+
   font-weight: bold;
 }
 

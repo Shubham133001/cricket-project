@@ -11,7 +11,7 @@ use App\Http\Controllers\UserAuthController;
 use \App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\CategoriesController;
 use \App\Http\Controllers\admin\DoctorController;
-use App\Http\Controllers\SettingsController;
+use \App\Http\Controllers\SettingsController;
 use App\Http\Controllers\InvoicesController;
 use App\Models\Payment;
 use App\Http\Controllers\PaymentsController;

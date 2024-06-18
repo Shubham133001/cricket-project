@@ -416,7 +416,8 @@ export default {
     },
     redirectToGoogleAuth() {
       let baseurl = window.location.origin;
-      let $clientid = "436364067035-8ik3b0ubtjd9lci69ivn319go0jhookm.apps.googleusercontent.com";
+      console.log(JSON.parse(localStorage.getItem("store")).clientid)
+      let $clientid = JSON.parse(localStorage.getItem("store")).clientid;
       let $redirecturi = baseurl + "/user/auth/google";
       window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${$clientid}&redirect_uri=${$redirecturi}&response_type=code&scope=email+profile`;
 

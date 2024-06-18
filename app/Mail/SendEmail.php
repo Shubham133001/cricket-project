@@ -17,13 +17,10 @@ class SendEmail extends Mailable
      *
      * @return void
      */
-    protected $body;
-    protected $title;
+    protected $url;
     public function __construct($details)
     {
-        //
-        $this->body = $details['body'];
-        $this->title = $details['title'];
+        $this->url = $details;
     }
 
     /**
@@ -33,10 +30,9 @@ class SendEmail extends Mailable
      */
     public function build()
     {   
-        $storedata = Setting::where('setting', 'store_details')->first();
-        $storeDetails = json_decode($storedata->value);
-
-        $storeDetails = ['logo' => $storeDetails->logo, 'companyname' => $storeDetails->name, 'msg' => $this->title.'<br />'.$this->body];
-        return $this->view('emails.email', $storeDetails);
+        $storename = Setting::where('setting','name')->first();
+        $logo = Setting::where('setting','logo')->first();
+        $storeDetails = ['logo' => $logo->value, 'companyname' => $storename->value, 'msg' => "Forgot Email".'<br />','url'=>$this->url];
+        return $this->view('emails.email', $storeDetails)->subject("Reset password");
     }
 }

@@ -8,6 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB as Capsule;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Carbon;
 
 class User extends Authenticatable
 {
@@ -67,5 +70,23 @@ class User extends Authenticatable
     //         $query->where('cradit_type', 2)->sum('amount'); 
     //     });
     // }
+
+    public function getTokenVelidate($email, $token)
+    {
+        $tokendata = Capsule::table('password_resets')->where('email', $email)->first();
+        if ($tokendata && Hash::check($token, $tokendata->token)) {
+            $isAuthenticated = Carbon::parse($tokendata->created_at)->addMinutes(config('auth.passwords.users.expire'))->isPast();
+            if ($isAuthenticated) {
+                echo 'fails';
+                exit;
+            } else {
+                echo 'success';
+                exit;
+            }
+        } else {
+            echo 'fails';
+            exit;
+        }
+    }
 
 }
