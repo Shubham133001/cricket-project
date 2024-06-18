@@ -29,6 +29,7 @@ class MailConfigServiceProvider extends ServiceProvider
         if (\Schema::hasTable('settings')) {
 
             $mail = \App\Models\Setting::where('setting', 'smtp_details')->first();
+            $storename = \App\Models\Setting::where('setting', 'name')->first();
 
             if ($mail) //checking if table is not empty
             {
@@ -39,7 +40,7 @@ class MailConfigServiceProvider extends ServiceProvider
                     'driver'     => 'smtp',
                     'host'       => isset($maildata['host']) ? $maildata['host'] : '',
                     'port'       => isset($maildata['port']) ? $maildata['port'] : '',
-                    'from'       => array('address' => $maildata['username'], 'name' => 'The Sports Wala'),
+                    'from'       => array('address' => isset($maildata['username']) ? $maildata['username'] : '', 'name' => $storename->value),
                     'encryption' => isset($maildata['encryption']) ? $maildata['encryption'] : '',
                     'username'   => isset($maildata['username']) ? $maildata['username'] : '',
                     'password'   => isset($maildata['password']) ? $maildata['password'] : '',
