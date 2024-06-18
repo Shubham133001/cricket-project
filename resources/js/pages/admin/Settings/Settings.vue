@@ -172,10 +172,6 @@ export default {
             {
                 text: "Sendmail",
                 value: "sendmail",
-            },
-            {
-                text: "Log",
-                value: "log",
             }],
             tab: null,
             askpassword: false,
