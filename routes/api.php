@@ -11,7 +11,7 @@ use App\Http\Controllers\UserAuthController;
 use \App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\CategoriesController;
 use \App\Http\Controllers\admin\DoctorController;
-use \App\Http\Controllers\admin\SettingsController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\InvoicesController;
 use App\Models\Payment;
 use App\Http\Controllers\PaymentsController;
@@ -45,6 +45,7 @@ Route::get('stats', [CommonController::class, 'stats'])->name('stats');
 Route::post('contactus', [CommonController::class, 'contactus'])->name('contactus');
 Route::get('getpageoption', [CommonController::class, 'getPageOption'])->name('getpageoption');
 Route::get('popularcategories', [CategoriesController::class, 'popularcategories'])->name('popularcategories');
+Route::get('smtp', [SettingsController::class, 'smtp'])->name('smtp');
 // add admin group with middleware
 Route::group(['prefix' => 'admin'], function () {
     Route::post('signin', [AdminAuthController::class, 'signin'])->name('admin.signin');
@@ -82,11 +83,11 @@ Route::group(['prefix' => 'admin'], function () {
 
 
         // Route::post('/settings/update', [App\Http\Controllers\admin\SettingsController::class, 'update'])->name('storedetails.update');
-        // //Route::post('/settings/smtp', [App\Http\Controllers\admin\SettingsController::class, 'smtp'])->name('storedetails.smtp');
+        Route::post('/settings/smtp', [App\Http\Controllers\SettingsController::class, 'smtp'])->name('storedetails.smtp');
 
-        // Route::post('/settings/smtp/update', [App\Http\Controllers\admin\SettingsController::class, 'smtpupdate'])->name('storedetails.smtpupdate');
-        // Route::post('/settings/sms/update', [App\Http\Controllers\admin\SettingsController::class, 'smsupdate'])->name('storedetails.smsupdate');
-        // Route::post('/settings/smtp/test', [App\Http\Controllers\admin\SettingsController::class, 'testsmtp'])->name('storedetails.smtptest');
+        Route::post('/settings/smtp/update', [App\Http\Controllers\SettingsController::class, 'smtpupdate'])->name('storedetails.smtpupdate');
+        Route::post('/settings/sms/update', [App\Http\Controllers\SettingsController::class, 'smsupdate'])->name('storedetails.smsupdate');
+        Route::post('/settings/smtp/test', [App\Http\Controllers\SettingsController::class, 'testsmtp'])->name('storedetails.smtptest');
 
         Route::post('addpaymentgateways', [PaymentgatewaysController::class, 'addpaymentgateways'])->name('admin.addpaymentgateways');
         Route::post('removepaymentgateways', [PaymentgatewaysController::class, 'removepaymentgateways'])->name('admin.removepaymentgateways');
@@ -151,6 +152,9 @@ Route::group(['prefix' => 'admin'], function () {
 Route::group(['prefix' => 'user',], function () {
     Route::post('signin', [UserAuthController::class, 'signin'])->name('user.signin');
     Route::post('signup', [UserAuthController::class, 'signup'])->name('user.signup');
+    Route::post('/auth/google', [UserAuthController::class, 'authGoogle'])->name('user.authGoogle');
+    Route::post('forgotpassword', [UserAuthController::class, 'forgotpassword'])->name('user.forgotpassword');
+    Route::post('resetpassword', [UserAuthController::class, 'resetpassword'])->name('password.reset');
     Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/me', [UserAuthController::class, 'me'])->name('user.me');
         Route::post('signout', [UserAuthController::class, 'signout'])->name('user.signout');

@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 
-class EmailsController extends Controller
+class EmailsController extends Controller implements ShouldQueue
 {
     //  
     use Queueable;

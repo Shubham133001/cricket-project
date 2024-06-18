@@ -178,10 +178,11 @@ export default {
                                 // newcatgories.push(child);
                                 category.slotslength = (category.slotslength + child.slots.length);
                             });
+                            this.showloading = false;
                         }
                     });
                     this.categories = newcatgories;
-                    this.showloading = false;
+
                 })
                 .catch(error => {
                     this.showloading = false;
@@ -204,10 +205,11 @@ export default {
                     top: yPosition,
                     behavior: 'smooth'
                 });
+                this.showloading = false;
             }
 
             if (childrens.length == 0) {
-                this.showloading = false;
+
                 this.$router.push({
                     name: 'bookings-slots',
                     params: {

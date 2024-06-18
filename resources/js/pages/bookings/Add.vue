@@ -63,7 +63,8 @@
                             {{ slot.title }}
                             <span class="mr-3 ml-2" v-if="!isMobile" style="font-size: 14px; font-weight: 400px">({{
     slot.start_time + " - " + slot.end_time
-  }})</span><v-chip v-if="!isMobile" :color="slot.bookings.length == 0
+  }})</span><v-chip v-if="!isMobile && !(slot.bookings.length >= slot.bookings_allowed)"
+                              :color="slot.bookings.length == 0
     ? 'green'
     : slot.bookings.length >=
       slot.bookings_allowed
@@ -95,7 +96,7 @@
                         <v-radio-group v-model="selection[index]" inline>
                           <v-radio label="Half" :disabled="slot.bookings.length >= slot.bookings_allowed"
                             :value="[slot]"></v-radio>
-                          <v-radio label="Full"
+                          <v-radio label="Full" v-if="slot.bookings.length == 0"
                             :disabled="slot.bookings.length >= slot.bookings_allowed || slot.bookings.length > 0"
                             :value="[slot, slot]"></v-radio>
                         </v-radio-group>
@@ -159,7 +160,7 @@
 
                           </td>
                           <td v-if="!isMobile">
-                            <v-btn icon x-small fab color="red" @click="deletebooking(slot)">
+                            <v-btn icon small fab color="red" @click="deletebooking(slot)">
                               <v-icon x-small>mdi-delete</v-icon>
                             </v-btn>
                           </td>
@@ -689,7 +690,17 @@ export default {
       if (this.team.id == 0) {
         this.$toasted.show('Please create a team', {
           type: 'error',
-          duration: 3000
+          duration: 5000,
+          action: {
+            text: 'Create Team',
+            color: 'white',
+            onClick: (e, toastObject) => {
+              this.$router.push({
+                name: 'userteam'
+              });
+              toastObject.goAway(0);
+            }
+          }
         });
         return;
       }
@@ -823,6 +834,7 @@ table tr {
 .v-label {
   font-size: 16px;
   margin-left: 10px;
+  font-weight: bold;
 }
 
 @media screen and (max-width: 600px) {

@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use \App\Http\Controllers\admin\SettingsController;
+use \App\Http\Controllers\SettingsController;
+use Illuminate\Support\Facades\Config;
+
 class MailConfigServiceProvider extends ServiceProvider
 {
     /**
@@ -25,28 +27,28 @@ class MailConfigServiceProvider extends ServiceProvider
     {
         // set smtp config from database
         if (\Schema::hasTable('settings')) {
-            $settingController = new SettingsController();
-            $mail = $settingController->smtp();
+
+            $mail = \App\Models\Setting::where('setting', 'smtp_details')->first();
+
             if ($mail) //checking if table is not empty
             {
-                $maildata = array();
-                foreach ($mail as $m) {
-                    $maildata[$m->name] = $m->value;
-                }
+                $maildata = json_decode($mail->value, true);
+
+
                 $config = array(
                     'driver'     => 'smtp',
                     'host'       => isset($maildata['host']) ? $maildata['host'] : '',
                     'port'       => isset($maildata['port']) ? $maildata['port'] : '',
-                    // 'from'       => array('address' => $mail->from_address, 'name' => $mail->from_name),
+                    'from'       => array('address' => $maildata['username'], 'name' => 'The Sports Wala'),
                     'encryption' => isset($maildata['encryption']) ? $maildata['encryption'] : '',
                     'username'   => isset($maildata['username']) ? $maildata['username'] : '',
                     'password'   => isset($maildata['password']) ? $maildata['password'] : '',
                     // 'sendmail'   => '/usr/sbin/sendmail -bs',
                     // 'pretend'    => false,
                 );
+
                 Config::set('mail', $config);
             }
         }
-
     }
 }

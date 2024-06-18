@@ -7,9 +7,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\HasApiTokens;
 
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Auth\Events\PasswordReset;
+use App\Notifications\ResetPasswordNotification;
+use Illuminate\Notifications\Notifiable;
+
 class UserAuthController extends Controller
 {
     use HasApiTokens;
+    use Notifiable;
     //
     public function signin(Request $request)
     {
@@ -134,6 +142,152 @@ class UserAuthController extends Controller
             return response()->json([
                 'success' => true,
                 'user' => $user
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function forgotpassword(Request $request)
+    {
+        try {
+            $messages = [
+                'email.required' => 'Email is required',
+                'email.email' => 'Email is not valid',
+                'email.exists' => 'Email is not registered'
+            ];
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email|exists:users'
+            ], $messages);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()->first()
+                ]);
+            }
+
+            $user = \App\Models\User::where('email', $request->email)->first();
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not found'
+                ]);
+            }
+            // $status = Password::sendResetLink(
+            //     $request->only('email')
+            // );
+            // use notification
+            $notification = $user->notify(new ResetPasswordNotification(Password::createToken($user)));
+            // return response
+            return response()->json([
+                'success' => true,
+                'message' => 'Reset password link sent to your email'
+            ]);
+            // return $status === Password::RESET_LINK_SENT
+            //     ? response()->json(['success' => true, 'message' => __($status)], 200)
+            //     : response()->json(['success' => false, 'message' => __($status)], 400);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function resetpassword(Request $request)
+    {
+        try {
+            $messages = [
+                'password.required' => 'Password is required',
+                'password.min' => 'Password must be at least 6 characters'
+            ];
+            $validator = Validator::make($request->all(), [
+                'password' => 'required|min:6'
+            ], $messages);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()->first()
+                ]);
+            }
+            // get user with token
+            $status = Password::reset(
+                $request->only('email', 'password', 'password_confirmation', 'token'),
+                function ($user) use ($request) {
+                    $user->forceFill([
+                        'password' => Hash::make($request->password)
+                    ])->save();
+                    event(new PasswordReset($user));
+                }
+            );
+            return $status == Password::PASSWORD_RESET
+                ? response()->json(['success' => true, 'message' => __($status)], 200)
+                : response()->json(['success' => false, 'message' => __($status)], 400);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function authGoogle(Request $request)
+    {
+        try {
+            $storedetails = getstoredetails();
+            $client_id = $storedetails['clientid'];
+            $client_secret = $storedetails['clientsecret'];
+            if (!$request->code) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid credentials'
+                ]);
+            }
+            $code = $request->code;
+            // $client_id = "436364067035-8ik3b0ubtjd9lci69ivn319go0jhookm.apps.googleusercontent.com";
+            // $client_secret = "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";
+
+            $url = "https://oauth2.googleapis.com/token";
+            $post_fields = [
+                'code' => $code,
+                'client_id' => $client_id,
+                'client_secret' => $client_secret,
+                'redirect_uri' => url('/user/auth/google'),
+                'grant_type' => 'authorization_code'
+            ];
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $response = json_decode($response);
+            $access_token = $response->access_token;
+            $url = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=" . $access_token;
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $response = json_decode($response);
+            // check if user exists
+            $user = \App\Models\User::where('email', $response->email)->first();
+            if (!$user) {
+                $user = new \App\Models\User();
+                $user->name = $response->name;
+                $user->email = $response->email;
+                $user->email_verified_at = now();
+                $user->credits = 0;
+                $user->save();
+            }
+            $token = $user->createToken('authToken')->plainTextToken;
+            if ($token) {
+                return response()->json([
+                    'success' => true,
+                    'user' => $user,
+                    'token' => $token
+                ]);
+            }
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials'
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);

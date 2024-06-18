@@ -3,7 +3,7 @@
     <v-row style="display: flex;justify-content: center;align-items: center;">
       <v-col cols="12" md="8">
         <h2 style="text-align: center;color: #0096c7;margin-bottom: 25px;">Terms and Conditions for {{
-          storeDetails.name }} Appointment Website</h2>
+          storeDetails.name }}</h2>
         <p><strong>1. Acceptance of Terms</strong></p>
         <p style="padding-left: 20px;">By using the services provided by this {{
           storeDetails.name }} appointment website, you

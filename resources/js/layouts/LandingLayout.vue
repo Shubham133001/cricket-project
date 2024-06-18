@@ -2,10 +2,11 @@
   <div>
     <v-app-bar flat height="80">
       <v-container class="py-0 px-0 px-sm-2 fill-height">
-        <router-link to="/" class="d-flex align-center text-decoration-none mr-2">
-          <img :src="storeDetails.logo" height="36" />
-          <h1 v-if="storeDetails.logo == null" class="text-sm-h6 text-xs-h6 text-lg-h3">{{ storeDetails.name }}</h1>
-        </router-link>
+
+        <img :src="storeDetails.logo" height="36" @click="gotomain" />
+        <h1 v-if="storeDetails.logo == null" class="text-sm-h6 text-xs-h6 text-lg-h3" @click="gotomain">{{
+          storeDetails.name }}</h1>
+
 
         <v-spacer></v-spacer>
 
@@ -95,7 +96,9 @@
         </v-btn>
       </v-img>
       <v-col cols="12" class="text-center">
-        <v-img src="/images/logo.png" max-width="150"></v-img>
+        <v-img :src="storeDetails.logo" max-width="150"></v-img>
+        <!-- <img :src="storeDetails.logo" height="36" /> -->
+        <h1 v-if="storeDetails.logo == null" class="text-sm-h6 text-xs-h6 text-lg-h3">{{ storeDetails.name }}</h1>
       </v-col>
 
       <v-row v-if="haveaccount">
@@ -105,9 +108,27 @@
           <v-text-field label="Password" type="password" outlined v-model="booking.password"></v-text-field>
           <p class="text-center">
             Don't have an account?
-            <v-btn text @click="haveaccount = false" small>Register</v-btn>
+            <v-btn color="primary" text style="text-decoration: underline" @click="haveaccount = false">Register Your
+              Team</v-btn>
           </p>
           <v-btn color="primary" @click="login" block>Login</v-btn>
+          <v-btn :disabled="isSignUpDisabled" class="mb-2 red mt-2 lighten-1 white--text" block
+            @click="redirectToGoogleAuth()">
+            <v-icon small left>mdi-google</v-icon>
+            Signin with Google
+          </v-btn>
+          <div class="text-center">
+            <v-btn text class="mt-2" @click="haveaccount = false; forgotpassword = true">Forgot Password?</v-btn>
+          </div>
+        </v-col>
+      </v-row>
+      <v-row v-else-if="forgotpassword">
+        <v-col cols="12" md="12" class="pl-6 pr-6">
+          <v-text-field label="Email" v-model="booking.email" outlined></v-text-field>
+          <v-btn color="primary" block @click="sendemailforgotpassword" :loading="sendinglink">Send Reset Link</v-btn>
+          <div class="text-center block">
+            <v-btn text class="mt-2" @click="haveaccount = true; forgotpassword = false">Back to Login</v-btn>
+          </div>
         </v-col>
       </v-row>
       <v-row v-else>
@@ -121,7 +142,8 @@
           <v-text-field label="Password" type="password" outlined v-model="booking.password" required></v-text-field>
           <p class="text-center">
             Already have an account?
-            <v-btn text @click="haveaccount = true" small>Login</v-btn>
+            <v-btn color="primary" text style="text-decoration: underline" @click="haveaccount = true">Login Your
+              Team</v-btn>
           </p>
           <v-btn color="primary" @click="register" block>Register</v-btn>
           <v-btn :disabled="isSignUpDisabled" class="mb-2 red mt-2 lighten-1 white--text" block
@@ -131,6 +153,7 @@
           </v-btn>
         </v-col>
       </v-row>
+
       <v-img src="/images/loginfooterimg.png" class="mt-4"></v-img>
     </v-navigation-drawer>
     <v-navigation-drawer v-model="drawer" app temporary left style="max-width: 450px" width="80%">
@@ -263,7 +286,8 @@
           </v-row>
           <v-divider class="my-3"></v-divider>
           <div class="text-center caption">
-            © Indielayer {{ currentYear }}. All Rights Reserved
+            Made with <v-icon color="red" small>mdi-heart</v-icon> by <a href="https://whmcssmarters.com"
+              target="_blank" class="text-decoration-none">WHMCSSmarters</a>
           </div>
         </v-container>
       </v-footer>
@@ -283,9 +307,11 @@ export default {
     return {
       isSignUpDisabled: false,
       drawer: false,
+      sendinglink: false,
       currentYear: new Date().getFullYear(),
       isUserlogin: localStorage.getItem("userdetails") ? true : false,
       haveaccount: true,
+      forgotpassword: false,
       aboutexcerpts: '',
       openlogindialog: false,
       userdetails: localStorage.getItem("userdetails")
@@ -372,11 +398,14 @@ export default {
   created() {
     EventBus.$on("isUserLogin", (status) => {
       this.isUserlogin = status;
+      console.log("isUserLogin", status);
     });
   },
   methods: {
     ...mapActions("app", ["getStoreData", "setUserdetails", "getUserLogin"]),
-
+    gotomain() {
+      window.location.href = "https://thesportswala.com";
+    },
     description(data) {
       return this.$striphtml(data);
     },
@@ -386,7 +415,11 @@ export default {
       });
     },
     redirectToGoogleAuth() {
-      window.location.href = `${config.apiURL}/auth/google`;
+      let baseurl = window.location.origin;
+      let $clientid = "436364067035-8ik3b0ubtjd9lci69ivn319go0jhookm.apps.googleusercontent.com";
+      let $redirecturi = baseurl + "/user/auth/google";
+      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${$clientid}&redirect_uri=${$redirecturi}&response_type=code&scope=email+profile`;
+
     },
     async login() {
       this.loading = true;
@@ -523,6 +556,34 @@ export default {
       this.$router.push({
         name: "myprofile",
       });
+    },
+    sendemailforgotpassword() {
+      this.sendinglink = true;
+      axios
+        .post("/api/user/forgotpassword", this.booking)
+        .then((response) => {
+          if (response.data.success) {
+            this.$toasted.show(response.data.message, {
+              type: "success",
+              duration: 5000,
+            });
+            this.haveaccount = true;
+            this.forgotpassword = false;
+          } else {
+            this.$toasted.show(response.data.message, {
+              type: "error",
+              duration: 5000,
+            });
+          }
+          this.sendinglink = false;
+        })
+        .catch((error) => {
+          this.$toasted.show(error.response.data.message, {
+            type: "error",
+            duration: 5000,
+          });
+          this.sendinglink = false;
+        });
     },
   },
   created() {
