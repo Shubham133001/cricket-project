@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 class CommonController extends Controller
 {
     //
-    public function store(Request $request)
+    public function store()
     {
         try {
             $data = \App\Models\Setting::get();

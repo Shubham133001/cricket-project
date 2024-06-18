@@ -6,28 +6,19 @@
       <div class="error--text mt-2 mb-4">{{ error }}</div>
 
       <a v-if="error" href="/">Back to Sign In</a>
-
-      <v-text-field v-if="verified" v-model="newPassword" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-        :rules="[passwordrules.required,
-        passwordrules.alpha,
-        passwordrules.capsAlpha,
-        passwordrules.num,
-        passwordrules.minLength,]" :type="showPassword ? 'text' : 'password'" :error="errorNewPassword"
+      <v-text-field v-model="newPassword" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+        :rules="[rules.required]" :type="showPassword ? 'text' : 'password'" :error="errorNewPassword"
         :error-messages="errorNewPasswordMessage" name="password" label="New Password" outlined class="mt-4"
-        @change="resetErrors" @keyup.enter="confirmPasswordReset"
-        @click:append="showPassword = !showPassword"></v-text-field>
+        @change="resetErrors" @click:append="showPassword = !showPassword"></v-text-field>
 
-      <v-text-field v-if="verified" v-model="confirmPassword"
-        :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'" :rules="[
-          passwordrules.required,
-          passwordrules.matchNewPassword
-        ]" :type="showConfirmPassword ? 'text' : 'password'" :error="errorConfirmPassword"
-        :error-messages="errorConfirmPasswordMessage" name="confirmPassword" label="Confirm Password" outlined
-        class="mt-4" @change="resetErrors" @keyup.enter="confirmPasswordReset"
-        @click:append="showConfirmPassword = !showConfirmPassword"></v-text-field>
+      <v-text-field v-model="newConfirmPassword" :append-icon="showPassword1 ? 'mdi-eye' : 'mdi-eye-off'"
+        :rules="[rules.required, rules.confirm]" :type="showPassword1 ? 'text' : 'password'"
+        :error="errorNewConfirmPassword" :error-messages="errorNewConfirmPasswordMessage" name="password"
+        label="Confirm Password" outlined class="mt-4" @change="resetErrors" @keyup.enter="confirmPasswordReset"
+        @click:append="showPassword1 = !showPassword1"></v-text-field>
 
-      <v-btn :loading="isLoading" :disabled="isDisabled" block depressed x-large color="primary"
-        @click="confirmPasswordReset">Set new password and Sign In</v-btn>
+      <v-btn :loading="isLoading" block depressed x-large color="primary" @click="confirmPasswordReset">Set new password
+        and Sign In</v-btn>
     </v-form>
   </v-card>
 </template>
@@ -42,119 +33,56 @@ export default {
       isDisabled: true,
       resendemail: false,
       showNewPassword: true,
-      newPassword: "",
-      confirmPassword: '',
-      errorConfirmPassword: false,
-      errorConfirmPasswordMessage: '',
-      showConfirmPassword: false,
+      showNewConfirmPassword: true,
+      newPassword: '',
+      newConfirmPassword: '',
+      token: this.$route.query.token,
+      email: this.$route.query.email,
+
+      // form error
       errorNewPassword: false,
-      errorNewPasswordMessage: "",
+      errorNewPasswordMessage: '',
+
+      errorNewConfirmPassword: false,
+      errorNewConfirmPasswordMessage: '',
+
+      // show password field
       showPassword: false,
-      status: "Verifying Token",
+      showPassword1: false,
+
+      status: 'Resetting password',
       error: null,
       verified: false,
       rules: {
-        required: (value) => (value && Boolean(value)) || "Required",
-      },
-      passwordrules: {
-        required: (value) => (value && Boolean(value)) || "Required",
-        alpha: (value) =>
-          /[a-z]+/.test(value) || "Required atleast one Lowercase Letter required",
-        capsAlpha: (value) =>
-          /[A-Z]+/.test(value) || "Required atleast one Uppercase Letter required",
-        num: (value) => /[0-9]+/.test(value) || "Required atleast one numeric",
-        minLength: (value) =>
-          value.length >= 8 || "Password Must be of min. 8 characters",
-        matchNewPassword: v => v === this.newPassword || 'Passwords do not match'
-      },
-    };
+        required: (value) => (value && Boolean(value)) || 'Required',
+        confirm: (value) => value === this.newPassword || 'Password does not match'
+      }
+    }
   },
   methods: {
-    verifytoken() {
-      var postdata = {
-        email: this.$route.query.email,
-        token: this.$route.query.token,
-      };
-      const requestOptions = {
-        headers: { "Content-Type": "application/json" },
-      };
-      axios
-        .post("/api/verifyresetpasswordtoken", postdata, requestOptions)
-        .then((res) => {
-
-          if (res.data == "success") {
-            this.verified = true;
-            this.status = "Reset your password";
-            this.isLoading = false;
-            this.isDisabled = false;
-            this.resendemail = false;
-          } else {
-            this.verified = true;
-            this.status = "Verification Link Expired/Invalid.";
-            this.isLoading = false;
-            this.isDisabled = true;
-            this.resendemail = true;
-          }
-        });
-    },
     confirmPasswordReset() {
-      if (this.$refs.form.validate()) {
-        if (this.newPassword !== this.confirmPassword) {
-          this.errorConfirmPassword = true;
-          this.errorConfirmPasswordMessage = 'Passwords do not match';
+      this.isLoading = true
+      axios.post('/api/user/resetpassword', {
+        email: this.email,
+        token: this.token,
+        password: this.newPassword,
+        confirmPassword: this.newConfirmPassword
+      }).then(response => {
+        this.isLoading = false
+        if (response.data.success) {
+          this.status = 'Password reset successful'
+          this.$toasted.show('Password reset successful', { type: 'success', duration: 5000 })
+          this.$router.push('/')
+
         } else {
-          this.errorConfirmPassword = false;
-          this.errorConfirmPasswordMessage = '';
+          this.error = response.data.message
+          this.$toasted.show(response.data.message, { type: 'error', duration: 5000 })
         }
-        this.isLoading = true;
-        var postdata = {
-          email: this.$route.query.email,
-          password: this.newPassword,
-          token: this.$route.query.token,
-        };
-        const requestOptions = {
-          headers: { "Content-Type": "application/json" },
-        };
-        axios
-          .post("/api/reset-password", postdata, requestOptions)
-          .then((res) => {
-            if (res.data.success == false) {
-              this.$toasted
-                .show(res.data.message, {
-                  type: "error",
-                  icon: "",
-                  action: {
-                    text: "Close",
-                    onClick: (e, toastObject) => {
-                      toastObject.goAway(0);
-                    },
-                  },
-                })
-                .goAway(10000);
-              this.isLoading = false;
-              this.isDisabled = false;
-            } else {
-              this.$toasted
-                .show("Password Reset Successfully.", {
-                  type: "success",
-                  icon: "",
-                  action: {
-                    text: "Close",
-                    onClick: (e, toastObject) => {
-                      toastObject.goAway(0);
-                    },
-                  },
-                })
-                .goAway(10000);
-              this.$router.push("/");
-              this.isLoading = false;
-              this.isDisabled = false;
-            }
-          });
-      }
-      // setTimeout(() => {
-      //   this.isLoading = false
-      // }, 500)
+
+      }).catch(error => {
+        this.isLoading = false
+        this.error = error.response.data.message
+      })
     },
     resetErrors() {
       this.errorNewPassword = false;

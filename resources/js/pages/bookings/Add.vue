@@ -63,7 +63,8 @@
                             {{ slot.title }}
                             <span class="mr-3 ml-2" v-if="!isMobile" style="font-size: 14px; font-weight: 400px">({{
     slot.start_time + " - " + slot.end_time
-  }})</span><v-chip v-if="!isMobile" :color="slot.bookings.length == 0
+  }})</span><v-chip v-if="!isMobile && !(slot.bookings.length >= slot.bookings_allowed)"
+                              :color="slot.bookings.length == 0
     ? 'green'
     : slot.bookings.length >=
       slot.bookings_allowed
@@ -73,7 +74,7 @@
                               /
                               {{ slot.bookings_allowed }}</v-chip>
                             <v-btn small color="primary"
-                              v-if="( slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed ) && !isMobile"
+                              v-if="(slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed) && !isMobile"
                               style="text-decoration: underline;" text @click="showbookings(slot)">Booked By</v-btn>
                           </p>
                           <v-spacer></v-spacer>
@@ -86,17 +87,17 @@
                             /
                             {{ slot.bookings_allowed }}</v-chip><br v-if="isMobile" />
                           <v-btn small color="primary"
-                            v-if="(slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed || isUserlogin== true) && isMobile"
+                            v-if="(slot.bookings.length > 0 && slot.bookings.length <= slot.bookings_allowed) && isMobile"
                             style="text-decoration: underline;" text @click="showbookings(slot)">Booked By</v-btn>
                         </v-list-item-subtitle>
                       </v-list-item-content>
                       <v-list-item-action>
 
                         <v-radio-group v-model="selection[index]" inline>
-                          <v-radio class="font-weight-black" label="Half" @click="checkbookings(slot.bookings.length,slot.bookings_allowed)"  :readonly="slot.bookings.length >= slot.bookings_allowed"
+                          <v-radio label="Half" :disabled="slot.bookings.length >= slot.bookings_allowed"
                             :value="[slot]"></v-radio>
-                          <v-radio class="font-weight-black" label="Full" @click="checkbookings(slot.bookings.length,slot.bookings_allowed)"
-                            :readonly="slot.bookings.length >= slot.bookings_allowed || slot.bookings.length > 0"
+                          <v-radio label="Full" v-if="slot.bookings.length == 0"
+                            :disabled="slot.bookings.length >= slot.bookings_allowed || slot.bookings.length > 0"
                             :value="[slot, slot]"></v-radio>
                         </v-radio-group>
                       </v-list-item-action>
@@ -446,20 +447,6 @@ export default {
     fomartdate(date) {
       return moment(date).format("DD MMM YYYY (dddd)");
     },
-    checkbookings(bookinglenth , bookings_allowed){
-       if(bookinglenth >= bookings_allowed){
-        this.$toasted.show("Slot Full", {
-                type: "danger",
-                icon: 'success_outline',
-                action: {
-                  text: 'cancel',
-                  onClick: (e, toastObject) => {
-                    toastObject.goAway(0);
-                  }
-                }
-              }).goAway(2000);
-       }
-    },
     opendirection() {
       // parse string to url
       // let addr = encodeURIComponent(this.selecteditem.name + ' ' + this.selecteditem.location);
@@ -703,7 +690,17 @@ export default {
       if (this.team.id == 0) {
         this.$toasted.show('Please create a team', {
           type: 'error',
-          duration: 3000
+          duration: 5000,
+          action: {
+            text: 'Create Team',
+            color: 'white',
+            onClick: (e, toastObject) => {
+              this.$router.push({
+                name: 'userteam'
+              });
+              toastObject.goAway(0);
+            }
+          }
         });
         return;
       }
@@ -836,7 +833,8 @@ table tr {
 
 .v-label {
   font-size: 16px;
-  margin-left: 10px;
+
+  font-weight: bold;
 }
 
 @media screen and (max-width: 600px) {

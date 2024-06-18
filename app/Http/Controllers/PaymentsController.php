@@ -70,9 +70,9 @@ class PaymentsController extends Controller
             }
 
             $data['invoiceid'] = $request->invoiceid;
-            $data['callbackurl'] = 'http://localhost:8000/api/callback/' . $gateway . '/' . $request->invoiceid;
+            $data['callbackurl'] = url('/api/callback/' . $gateway . '/' . $request->invoiceid);
             $data['redirecturl'] =
-                'http://localhost:8000/api/callback/' . $gateway . '/' . $request->invoiceid;
+                url('/api/callback/' . $gateway . '/' . $request->invoiceid);
             $resp = \App::call('App\\Http\\Controllers\\gateways\\' . $gateway . '@redirect', ['data' => $data]);
             return response()->json([
                 'success' => true,
