@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
-use \App\Http\Controllers\admin\SettingsController;
+
 class MailConfigServiceProvider extends ServiceProvider
 {
     /**
@@ -23,30 +25,31 @@ class MailConfigServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // set smtp config from database
         if (\Schema::hasTable('settings')) {
-            $settingController = new SettingsController();
-            $mail = $settingController->smtp();
-            if ($mail) //checking if table is not empty
-            {
+            $mail = DB::table('settings')->where('setting', 'like', '%smtp%')->get();
+            $storename  = DB::table('settings')->where('setting', 'name')->first();
+
+            if ($mail) {
                 $maildata = array();
                 foreach ($mail as $m) {
-                    $maildata[$m->name] = $m->value;
+                    $maildata[$m->setting] = $m->value;
                 }
+
                 $config = array(
                     'driver'     => 'smtp',
-                    'host'       => isset($maildata['host']) ? $maildata['host'] : '',
-                    'port'       => isset($maildata['port']) ? $maildata['port'] : '',
-                    // 'from'       => array('address' => $mail->from_address, 'name' => $mail->from_name),
-                    'encryption' => isset($maildata['encryption']) ? $maildata['encryption'] : '',
-                    'username'   => isset($maildata['username']) ? $maildata['username'] : '',
-                    'password'   => isset($maildata['password']) ? $maildata['password'] : '',
-                    // 'sendmail'   => '/usr/sbin/sendmail -bs',
-                    // 'pretend'    => false,
+                    'host'       => isset($maildata['smtphost']) ? $maildata['smtphost'] : '',
+                    'port'       => isset($maildata['smtpport']) ? $maildata['smtpport'] : '',
+                    'encryption' => isset($maildata['smtpencryption']) ? $maildata['smtpencryption'] : '',
+                    'username'   => isset($maildata['smtpusername']) ? $maildata['smtpusername'] : '',
+                    'password'   => isset($maildata['smtppassword']) ? $maildata['smtppassword'] : '',
+                    'from' => [
+                        'address' => isset($maildata['smtpusername']) ? $maildata['smtpusername'] : '',
+                        'name' => isset($storename->value) ? $storename->value : '',
+                    ],
                 );
-                Config::set('mail', $config);
+
+                 Config::set('mail', $config);               
             }
         }
-
     }
 }

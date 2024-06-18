@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\Password;
 use App\Notifications\CustomResetPassword;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Setting;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Google\Client as Google_Client;
 use Google\Service\Oauth2 as Google_Oauth2Service;
 use App\Mail\SendEmail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 
 
 
@@ -240,13 +242,14 @@ class UserAuthController extends Controller
             return response()->json(['success' => false, 'message' => "Invalid request"]);
         }
         try {
-
+            $clientId = Setting::where('setting','clientid')->first();
+            $clientsecret = Setting::where('setting','clientsecret')->first();
             $redirecturl = url('/auth/googleoauth');
             $storename = getStoreDetails('name');
             $gClient = new Google_Client();
             $gClient->setApplicationName('Login to ' . $storename);
-            $gClient->setClientId("436364067035-8ik3b0ubtjd9lci69ivn319go0jhookm.apps.googleusercontent.com");
-            $gClient->setClientSecret("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");
+            $gClient->setClientId($clientId->value);
+            $gClient->setClientSecret($clientsecret->value);
             $gClient->setRedirectUri($redirecturl);
             $gClient->authenticate($request['google_code']);
             $token = $gClient->getAccessToken();
@@ -275,13 +278,15 @@ class UserAuthController extends Controller
 
     public function getLoginUrl()
     {
+        $clientId = Setting::where('setting','clientid')->first();
+        $clientsecret = Setting::where('setting','clientsecret')->first();
         $authUrlg = '';
         $redirecturl = url('/auth/googleoauth');
         $storename = getStoreDetails('companyname');
         $gClient = new Google_Client();
         $gClient->setApplicationName('Login to ' . $storename);
-        $gClient->setClientId("436364067035-8ik3b0ubtjd9lci69ivn319go0jhookm.apps.googleusercontent.com");
-        $gClient->setClientSecret("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");
+        $gClient->setClientId($clientId->value);
+        $gClient->setClientSecret($clientsecret->value);
         $gClient->setRedirectUri($redirecturl);
         $gClient->addScope('email');
         $gClient->addScope('profile');
