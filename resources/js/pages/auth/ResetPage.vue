@@ -31,6 +31,26 @@
 
     ></v-text-field>
 
+    <v-text-field
+      v-if="verified"
+      v-model="confirmPassword"
+      :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
+      :rules="[ 
+        passwordrules.required,
+        passwordrules.matchNewPassword
+      ]"
+      :type="showConfirmPassword ? 'text' : 'password'"
+      :error="errorConfirmPassword"
+      :error-messages="errorConfirmPasswordMessage"
+      name="confirmPassword"
+      label="Confirm Password"
+      outlined
+      class="mt-4"
+      @change="resetErrors"
+      @keyup.enter="confirmPasswordReset"
+      @click:append="showConfirmPassword = !showConfirmPassword"
+    ></v-text-field>
+
     <v-btn
       :loading="isLoading"
       :disabled="isDisabled"
@@ -40,16 +60,6 @@
       color="primary"
       @click="confirmPasswordReset"
       >Set new password and Sign In</v-btn
-    >
-    <v-btn v-if="resendemail"
-      :loading="isLoading"
-      
-      block
-      depressed
-      x-large
-      color="primary"
-      to="/auth/forgot-password"
-      >Resend Verification Email</v-btn
     >
    </v-form>
   </v-card>
@@ -72,10 +82,12 @@ export default {
       isLoading: true,
       isDisabled: true,
       resendemail: false,
-
       showNewPassword: true,
       newPassword: "",
-
+      confirmPassword: '',
+      errorConfirmPassword: false,
+      errorConfirmPasswordMessage: '',
+      showConfirmPassword: false,
       // form error
       errorNewPassword: false,
       errorNewPasswordMessage: "",
@@ -101,10 +113,17 @@ export default {
           num: (value) => /[0-9]+/.test(value) || "Required atleast one numeric",
           minLength: (value) =>
             value.length >= 8 || "Password Must be of min. 8 characters",
+          matchNewPassword: v => v === this.newPassword || 'Passwords do not match'
         },
     };
   },
   methods: {
+    resetErrors() {
+      this.errorNewPassword = false;
+      this.errorNewPasswordMessage = '';
+      this.errorConfirmPassword = false;
+      this.errorConfirmPasswordMessage = '';
+    },
     verifytoken() {
       // console.log("Verifying Token");
       var postdata = {
@@ -135,6 +154,14 @@ export default {
     },
     confirmPasswordReset() {
       if (this.$refs.form.validate()) {
+        if (this.newPassword !== this.confirmPassword) {
+        this.errorConfirmPassword = true;
+        this.errorConfirmPasswordMessage = 'Passwords do not match';
+      } else {
+        this.errorConfirmPassword = false;
+        this.errorConfirmPasswordMessage = '';
+        // Proceed with password reset logic
+      }
       this.isLoading = true;
       var postdata = {
         email: this.$route.query.email,

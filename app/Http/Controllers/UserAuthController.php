@@ -13,6 +13,8 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Google\Client as Google_Client;
 use Google\Service\Oauth2 as Google_Oauth2Service;
+use App\Mail\SendEmail;
+use Illuminate\Support\Facades\Mail;
 
 
 
@@ -154,9 +156,10 @@ class UserAuthController extends Controller
     {
 
         if ($request['email'] !== null || !empty($request['email'])) {
-            $status = Password::broker('users')->sendResetLink(
-                $request->only('email')
-            );
+           $user = User::where('email', $request['email'])->firstOrFail();
+           $token = Password::getRepository()->create($user);
+           $details['url'] = url('api/reset-password?token='.$token."&email=".$request['email']);
+            Mail::to($request['email'])->send(new SendEmail($details['url']));
             return response()->json(['success' => true, 'message' => "Forgot email sent"]);
         } else {
             return response()->json(['success' => false, 'message' => "email not provided"]);
@@ -259,8 +262,8 @@ class UserAuthController extends Controller
                 $data = array();
                 $data['name'] = $gpUserProfile['given_name'];
                 $data['email'] = $gpUserProfile['email'];
-                $data['phone'] = $gpUserProfile['id'];
-                $data['password'] = Hash::make("Dummy");
+               // $data['phone'] = $gpUserProfile['id'];
+               // $data['password'] = Hash::make("Dummy");
                 $data['oauth_provider'] = 'google';
                 $data['oauth_uid'] = $gpUserProfile['id'];
                 return $this->commonsignup($data);
@@ -292,7 +295,7 @@ class UserAuthController extends Controller
         $user = new User();
         $user->name = $data['name'];
         $user->email = $data['email'];
-        $user->password = $data['password'];
+        //$user->password = $data['password'];
         $user->oauth_provider = $data['oauth_provider'];
         $user->oauth_uid = $data['oauth_uid'];
         $user->email_verified_at = date('Y-m-d H:i:s');

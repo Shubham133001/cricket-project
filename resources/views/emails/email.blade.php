@@ -26,55 +26,18 @@
 </head>
 
 <body>
-    <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-        <tr>
-            <td align="center">
-                <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-                    <tr>
-                        <td class="header" style="text-align: center;">
-                            @if(isset($logo) && $logo != '')
-                            <img style="width: 200px;" src="{{ $logo }}" class="logo" alt="{{ $companyname }}">
-                            @else
-                            {{ $companyname }}
-                            @endif
-                        </td>
-                    </tr>
-                     <a href="{{ url('auth/reset-password')}}">reset password</a>
-                    <!-- Email Body -->
-                    <tr>
-                        <td class="body" width="100%" cellpadding="0" cellspacing="0">
-                            <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
-                                <!-- Body content -->
-                                <tr>
-                                    <td class="content-cell">
-                                        @if(isset($msg))
-                                        {{ Illuminate\Mail\Markdown::parse(nl2br($msg)) }}
-                                        @else
-                                        {{ Illuminate\Mail\Markdown::parse(nl2br($message)) }}
-                                        @endif
+    <div style='text-align: center'>
+        @if(isset($logo) && $logo != '')
+        <img style="width: 200px;" src="{{ $logo }}" class="logo" alt="{{ $companyname }}">
+        @else
+        {{ $companyname }}
+        @endif
+        <h2>You are receiving this email because we received a password reset request for your account.</h2>
+        <br /><a href="{{ $url}}" style='background-color: #4CAF50; border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;'>Reset Password</a><br /><br />
+        If you did not request a password reset, no further action is required.
+        <p>© {{ $companyname }} 2024. All Rights Reserved</p>
+    </div>
 
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <table class="footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
-                                <tr>
-                                    <td class="content-cell" align="center">
-                                        © 2024 {{ $companyname }} All rights reserved.
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-
-                </table>
-            </td>
-        </tr>
-    </table>
 </body>
 
 </html>
