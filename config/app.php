@@ -163,7 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
-        App\Providers\MailConfigServiceProvider::class,
+
 
         /*
          * Package Service Providers...

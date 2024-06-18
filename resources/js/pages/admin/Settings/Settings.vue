@@ -9,7 +9,7 @@
 
                     <v-tabs v-model="tab">
                         <v-tab>Store Details</v-tab>
-                        <v-tab>Smtp Setting</v-tab>
+                       
                     </v-tabs>
                     <v-tabs-items v-model="tab">
                         <v-tab-item>
@@ -34,18 +34,11 @@
                                     <th>Store Logo</th>
                                     <td><v-text-field label="Store Logo URL" v-model="storeDetails.logo"></v-text-field>
                                     </td>
-                                </tr>
-                                <h3>Google Credential</h3>
-
-                                <tr>
-                                    <th>Client ID</th>
-                                    <td><v-text-field label="Google Client Id"
-                                            v-model="storeDetails.clientid"></v-text-field>
-                                    </td>
-                                    <th>Client Secret</th>
-                                    <td><v-text-field label="Google Client Secret"
-                                            v-model="storeDetails.clientsecret"></v-text-field>
-                                    </td>
+                                    <!-- <th>Enable SMS</th>
+                                    <td><v-checkbox v-model="storeDetails.enablesms"
+                                            label="Tick to Enable sending SMS"></v-checkbox><span></span>
+                                    </td> -->
+                                    
                                 </tr>
                             </v-simple-table>
                         </v-tab-item>
@@ -91,7 +84,47 @@
                                         <v-select label="Encryption" v-model="smtpSettings.encryption"
                                             :items="encryptionOptions"></v-select>
                                     </td>
+                                    <th>Enable Emails</th>
+                                    <td><v-checkbox v-model="smtpSettings.enablesmtp"
+                                            label="Tick to Enable sending Emails"></v-checkbox><span></span> </td>
                                 </tr>
+                            </v-simple-table>
+                        </v-tab-item>
+                        <v-tab-item>
+                            <v-simple-table>
+                                <tr>
+                                    <th>
+                                        SMS API Key
+                                    </th>
+                                    <td>
+                                        <v-text-field label="SMS API Key*" v-model="smsSettings.apikey"
+                                            :rules="required"></v-text-field>
+                                    </td>
+                                    <th>
+                                        Sender ID
+                                    </th>
+                                    <td>
+                                        <v-text-field label="Sender ID*" v-model="smsSettings.senderid"
+                                            :rules="required"></v-text-field>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Route
+                                    </th>
+                                    <td>
+                                        <v-select label="Route" v-model="smsSettings.route"
+                                            :items="routeOptions"></v-select>
+                                    </td>
+                                    <th>
+                                        Country
+                                    </th>
+                                    <td>
+                                        <v-select label="Country" v-model="smsSettings.country"
+                                            :items="countryOptions"></v-select>
+                                    </td>
+                                </tr>
+
                             </v-simple-table>
                         </v-tab-item>
                     </v-tabs-items>
@@ -122,8 +155,6 @@ export default {
                 contact: "",
                 email: "",
                 logo: "",
-                clientsecret: "",
-                clientid: "",
                 enablesms: true,
             },
             smtpSettings: {
@@ -132,10 +163,34 @@ export default {
                 username: "",
                 password: "",
                 encryption: "tls",
+                enablesmtp: false,
             },
             encryptionOptions: [
                 "tls",
                 "ssl"
+            ],
+            smsSettings: {
+                url: "",
+                apikey: "",
+                senderid: "",
+                route: "1",
+                country: "91",
+            },
+            routeOptions: [
+                {
+                    text: "Promotional",
+                    value: "1",
+                },
+                {
+                    text: "Transactional",
+                    value: "4",
+                }
+            ],
+            countryOptions: [
+                {
+                    text: "India",
+                    value: "91",
+                }
             ],
             required: [
                 (v) => !!v || "This field is required",
@@ -147,13 +202,10 @@ export default {
         getStoreData() {
             axios.get("/api/store").then((response) => {
                 this.storeDetails = response.data.storeDetails;
-                this.smtpSettings.encryption = response.data.storeDetails.smtpencryption
-                this.smtpSettings.host = response.data.storeDetails.smtphost
-                this.smtpSettings.port = response.data.storeDetails.smtpport
-                this.smtpSettings.username = response.data.storeDetails.smtpusername
-                this.smtpSettings.password = response.data.storeDetails.smtppassword
-                // set store details to vuex 
+                // set store details to vuex
                 this.$store.commit("app/setStoreDetails", response.data.storeDetails);
+                // this.getSmtpData();
+                // this.getSmsData();
             }).catch((error) => {
                 if (error.response.status == 403) {
                     this.$router.push("/admin/unauthorized");
@@ -163,25 +215,72 @@ export default {
             });
         },
         updateStoreDetails() {
+          //  console.log(this.storeDetails);
             axios.post("/api/admin/settings/update", {
                 name: this.storeDetails.name,
                 address: this.storeDetails.address,
                 contact: this.storeDetails.contact,
                 email: this.storeDetails.email,
                 logo: this.storeDetails.logo,
-                clientid: this.storeDetails.clientid,
-                clientsecret: this.storeDetails.clientsecret,
                 enablesms: this.storeDetails.enablesms,
-                smtphost: this.smtpSettings.host,
-                smtpport: this.smtpSettings.port,
-                smtpusername: this.smtpSettings.username,
-                smtppassword: this.smtpSettings.password,
-                smtpencryption: this.smtpSettings.encryption,
             }).then((response) => {
                 if (response.data.success) {
                     this.storeDetails = response.data.storeDetails;
                     this.$store.commit("app/setStoreDetails", response.data.storeDetails);
-                    this.$toasted.success("Settings updated successfully").goAway(2000);
+                    // this.updateSmtpDetails();
+                    // this.updateSmsDetails();
+                    this.$toasted.success("General Settings updated successfully").goAway(2000);
+                } else {
+                    this.$toasted.error("Something went wrong").goAway(2000);
+                }
+            });
+        },
+        ...mapActions("app", ["getSmtpData"]),
+        getSmtpData() {
+            axios.get("/api/smtp").then((response) => {
+                this.smtpSettings = response.data.smtpSettings;
+                // set store details to vuex
+                this.$store.commit("app/setSmtpDetails", response.data.smtpSettings);
+            });
+        },
+        updateSmtpDetails() {
+          //  console.log(this.smtpSettings);
+            axios.post("/api/admin/settings/smtp/update", this.smtpSettings).then((response) => {
+                if (response.data.success) {
+                    this.smtpSettings = response.data.smtpSettings;
+                    this.$store.commit("app/setSmtpDetails", response.data.smtpSettings);
+
+                    this.$toasted.success("SMTP details updated successfully").goAway(2000);
+                } else {
+                    this.$toasted.error("Something went wrong").goAway(2000);
+                }
+            });
+        },
+        testsmtp() {
+            axios.post("/api/admin/settings/smtp/test").then((response) => {
+                if (response.data.success) {
+                    this.$toasted.success("SMTP details are correct").goAway(2000);
+                } else {
+                    this.$toasted.error("SMTP details are incorrect").goAway(2000);
+                }
+            });
+        },
+        ...mapActions("app", ["getSmsData"]),
+        getSmsData() {
+            axios.get("/api/sms").then((response) => {
+                this.smsSettings = response.data.smsSettings;
+                // set store details to vuex
+                this.$store.commit("app/setSmsDetails", response.data.smtpSettings);
+            });
+        },
+        updateSmsDetails() {
+            console.log(this.smsSettings);
+            axios.post("/api/admin/settings/sms/update", this.smsSettings).then((response) => {
+                if (response.data.success) {
+                    this.smsSettings = response.data.smsSettings;
+                    this.$store.commit("app/setSmsDetails", response.data.smsSettings);
+
+                    this.$toasted.success("SMS details updated successfully").goAway(2000);
                 } else {
                     this.$toasted.error("Something went wrong").goAway(2000);
                 }

@@ -35,6 +35,7 @@ class MailConfigServiceProvider extends ServiceProvider
                     $maildata[$m->setting] = $m->value;
                 }
 
+
                 $config = array(
                     'driver'     => 'smtp',
                     'host'       => isset($maildata['smtphost']) ? $maildata['smtphost'] : '',
@@ -47,6 +48,7 @@ class MailConfigServiceProvider extends ServiceProvider
                         'name' => isset($storename->value) ? $storename->value : '',
                     ],
                 );
+
 
                  Config::set('mail', $config);               
             }
