@@ -18,6 +18,7 @@ use App\Http\Controllers\BookingsController;
 use App\Http\Controllers\AbandonedbookingsController;
 use App\Models\Booking;
 use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use App\Models\Payment;
 use App\Models\Setting;
 use App\Models\Slot;
@@ -74,6 +75,9 @@ class Cron extends Command
                 'booking_date' => $booking->date
             ]);
             $abandonedbooking->addabandonedbookings($request);
+            // remove invoice 
+            InvoiceItem::where('invoice_id', $booking->invoice_id)->delete();
+            Invoice::where('id', $booking->invoice_id)->delete();
             // remove booking
             $booking->delete();
 

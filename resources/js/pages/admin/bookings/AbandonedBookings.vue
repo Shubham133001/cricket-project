@@ -16,8 +16,8 @@
                         </v-toolbar>
                     </template>
                     <template v-slot:item.id="{ item }">
-                        <span style="font-weight: bold; cursor: pointer; border-bottom: dashed 1px #000;"
-                            @click="editBooking(item)">#{{ item.id }}</span>
+                        <span style="font-weight: bold; cursor: pointer; border-bottom: dashed 1px #000;">#{{ item.id
+                            }}</span>
                     </template>
                     <template v-slot:item.slot.start_time="{ item }">
                         {{ item.slot.start_time }} - {{ item.slot.end_time }}
@@ -27,14 +27,12 @@
                             @click="openuser(item.user.id)">#{{ item.user.name }}</span>
                     </template>
                     <template v-slot:item.slot.advanceprice="{ item }">
-                        <v-img src="/images/inr_icon.png" width="20"
-                            style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
-                            style="color:#297729">{{item.slot.advanceprice }}</strong>
+                        <strong style="color:#297729">{{ item.slot.advanceprice }}%</strong>
                     </template>
                     <template v-slot:item.slot.price="{ item }">
                         <v-img src="/images/inr_icon.png" width="20"
                             style="float: left; margin-top: 4px; margin-right: 5px;"></v-img> <strong
-                            style="color:#297729">{{item.slot.price }}</strong>
+                            style="color:#297729">{{ item.slot.price }}</strong>
                     </template>
 
                     <template v-slot:item.actions="{ item }">
@@ -100,7 +98,7 @@ export default {
                 sortable: false
             },
             {
-                text: 'Advance Price',
+                text: 'Advance Price(%)',
                 value: 'slot.advanceprice',
                 sortable: false
             },

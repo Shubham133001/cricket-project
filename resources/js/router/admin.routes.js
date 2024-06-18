@@ -8,7 +8,10 @@ export default [{
 }, {
   path: '/admin',
   name: 'admin',
-  component: () => import(/* webpackChunkName: "admin-dashboard" */ '@/pages/admin/auth/SigninPage')
+  component: () => import(/* webpackChunkName: "admin-dashboard" */ '@/pages/admin/auth/SigninPage'),
+  meta: {
+    layout: 'auth'
+  }
 }, {
   path: '/admin/dashboard',
   name: 'admin-dashboard',
@@ -44,7 +47,7 @@ export default [{
   path: '/admin/adminuser/editgroup/:id',
   name: 'admin-edit-admin-group',
   component: () => import('@/pages/admin/adminuser/EditAdminGroup.vue'),
-}, 
+},
 {
   path: '/admin/settings',
   name: 'admin-settings',
@@ -54,7 +57,7 @@ export default [{
   path: '/admin/themesettings',
   name: 'admin-theme-settings',
   component: () => import('@/pages/admin/Settings/ThemeSettings.vue')
-}, 
+},
 {
   path: '/admin/smtpsettings',
   name: 'admin-settings-smtp',

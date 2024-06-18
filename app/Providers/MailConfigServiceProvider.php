@@ -29,28 +29,43 @@ class MailConfigServiceProvider extends ServiceProvider
             $mail = DB::table('settings')->where('setting', 'like', '%smtp%')->get();
             $storename  = DB::table('settings')->where('setting', 'name')->first();
 
-            if ($mail) {
-                $maildata = array();
-                foreach ($mail as $m) {
-                    $maildata[$m->setting] = $m->value;
-                }
+            $mail = \App\Models\Setting::where('setting', 'smtp_details')->first();
+            $storename = \App\Models\Setting::where('setting', 'name')->first();
+            $storeemail = \App\Models\Setting::where('setting', 'email')->first();
 
-
+            if ($mail) //checking if table is not empty
+            {
+                $maildata = json_decode($mail->value, true);
                 $config = array(
-                    'driver'     => 'smtp',
-                    'host'       => isset($maildata['smtphost']) ? $maildata['smtphost'] : '',
-                    'port'       => isset($maildata['smtpport']) ? $maildata['smtpport'] : '',
-                    'encryption' => isset($maildata['smtpencryption']) ? $maildata['smtpencryption'] : '',
-                    'username'   => isset($maildata['smtpusername']) ? $maildata['smtpusername'] : '',
-                    'password'   => isset($maildata['smtppassword']) ? $maildata['smtppassword'] : '',
-                    'from' => [
-                        'address' => isset($maildata['smtpusername']) ? $maildata['smtpusername'] : '',
-                        'name' => isset($storename->value) ? $storename->value : '',
-                    ],
+                    'driver' => isset($maildata['driver']) ? $maildata['driver'] : 'sendmail',
+                    'host' => '',
+                    'port' => '',
+                    'from' => array('address' => $storeemail->value, 'name' => $storename->value),
+                    'encryption' => '',
+                    'username' => '',
+                    'password' => '',
+                    'sendmail'   => '/usr/sbin/sendmail -bs',
+                    'pretend'    => false,
                 );
+                if (isset($maildata['driver'])) {
+
+                    if ($maildata['driver'] == 'smtp') {
 
 
-                 Config::set('mail', $config);               
+                        $config = array(
+                            'driver'     => isset($maildata['driver']) ? $maildata['driver'] : 'sendmail',
+                            'host'       => isset($maildata['host']) ? $maildata['host'] : '',
+                            'port'       => isset($maildata['port']) ? $maildata['port'] : '',
+                            'from'       => array('address' => isset($maildata['username']) ? $maildata['username'] : '', 'name' => $storename->value),
+                            'encryption' => isset($maildata['encryption']) ? $maildata['encryption'] : '',
+                            'username'   => isset($maildata['username']) ? $maildata['username'] : '',
+                            'password'   => isset($maildata['password']) ? $maildata['password'] : '',
+                            // 'sendmail'   => '/usr/sbin/sendmail -bs',
+                            // 'pretend'    => false,
+                        );
+                    }
+                }
+                Config::set('mail', $config);
             }
         }
     }
