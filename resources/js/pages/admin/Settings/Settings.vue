@@ -9,7 +9,7 @@
 
                     <v-tabs v-model="tab">
                         <v-tab>Store Details</v-tab>
-                        <v-tab>Email Configuration</v-tab>
+
                     </v-tabs>
                     <v-tabs-items v-model="tab">
                         <v-tab-item>
@@ -39,19 +39,6 @@
                                             label="Tick to Enable sending SMS"></v-checkbox><span></span>
                                     </td> -->
 
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <h4 style="text-decoration: underline;">Google Auth Details</h4>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Client ID</th>
-                                    <td><v-text-field label="Client ID*" v-model="storeDetails.clientid"
-                                            :rules="required"></v-text-field></td>
-                                    <th>Client Secret</th>
-                                    <td><v-text-field label="Client Secret*" v-model="storeDetails.clientsecret"
-                                            :rules="required"></v-text-field></td>
                                 </tr>
                             </v-simple-table>
                         </v-tab-item>
@@ -104,7 +91,6 @@
                                         <v-select label="Encryption" v-model="smtpSettings.encryption"
                                             :items="encryptionOptions"></v-select>
                                     </td>
-
                                 </tr>
                             </v-simple-table>
                         </v-tab-item>
@@ -232,7 +218,7 @@ export default {
                 this.storeDetails = response.data.storeDetails;
                 // set store details to vuex
                 this.$store.commit("app/setStoreDetails", response.data.storeDetails);
-                this.getSmtpData();
+                // this.getSmtpData();
                 // this.getSmsData();
             }).catch((error) => {
                 if (error.response.status == 403) {
@@ -251,13 +237,11 @@ export default {
                 email: this.storeDetails.email,
                 logo: this.storeDetails.logo,
                 enablesms: this.storeDetails.enablesms,
-                clientid: this.storeDetails.clientid,
-                clientsecret: this.storeDetails.clientsecret,
             }).then((response) => {
                 if (response.data.success) {
                     this.storeDetails = response.data.storeDetails;
                     this.$store.commit("app/setStoreDetails", response.data.storeDetails);
-                    this.updateSmtpDetails();
+                    // this.updateSmtpDetails();
                     // this.updateSmsDetails();
                     this.$toasted.success("General Settings updated successfully").goAway(2000);
                 } else {
