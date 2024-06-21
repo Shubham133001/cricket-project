@@ -52,10 +52,10 @@
           you
           have questions or requests, please contact us using the information provided below.</p>
         <p><strong>8. Refund Policy</strong></p>
-        <p style="padding-left: 20px;">You will receive a refund if we are unable to provide you with an opponent team
-          for your scheduled event. Refunds will be added to your user wallet within our platform. To request a refund,
-          please contact us within 30 days of your scheduled event date. Refunds will be processed in accordance with
-          our terms and conditions.</p>
+        <p style="padding-left: 20px;">You will receive a refund if we are unable to provide an opponent team for your
+          scheduled event. Refunds will be added to your user wallet within our platform. To request a refund, please
+          contact us within 30 days of your event date. Refunds will be processed within one day and according to our
+          terms and conditions.</p>
         <p><strong>9. Changes to this Policy</strong></p>
         <p style="padding-left: 20px;">We may update this Privacy Policy from time to time. Any changes will be posted
           on
