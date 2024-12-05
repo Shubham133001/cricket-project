@@ -361,7 +361,7 @@ export default {
           to: "/terms",
         },
         {
-          label: "Privacy Policy",
+          label: "Refund & Privacy Policy",
           to: "/privacy",
         },
         {

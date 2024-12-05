@@ -3,8 +3,6 @@
     "/dist/js/coming-soon.js": "/dist/js/coming-soon.js",
     "/dist/js/blank.js": "/dist/js/blank.js",
     "/dist/js/error.js": "/dist/js/error.js",
-    "/dist/js/auth-signin.js": "/dist/js/auth-signin.js",
-    "/dist/js/auth-signup.js": "/dist/js/auth-signup.js",
     "/dist/js/auth-verify-email.js": "/dist/js/auth-verify-email.js",
     "/dist/js/auth-forgot.js": "/dist/js/auth-forgot.js",
     "/dist/js/auth-reset.js": "/dist/js/auth-reset.js",

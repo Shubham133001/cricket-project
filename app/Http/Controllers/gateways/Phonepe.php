@@ -130,7 +130,7 @@ class Phonepe extends Controller
             "callbackUrl" => $callbackUrl,
             'mobileNumber' => $phone,
             "paymentInstrument" => [
-                "type" => "UPI_QR",
+                "type" => "PAY_PAGE",
             ],
             "param1" => $invoiceid
         ];
@@ -167,8 +167,8 @@ class Phonepe extends Controller
         $response = curl_exec($ch);
         $decodeJson = json_decode($response);
 
-        // return $decodeJson->data->instrumentResponse->redirectInfo->url;
-        return $decodeJson->data->instrumentResponse->intentUrl;
+        return $decodeJson->data->instrumentResponse->redirectInfo->url;
+        // return $decodeJson->data->instrumentResponse->intentUrl;
     }
 
     public function getTransactionStatus(array $request)

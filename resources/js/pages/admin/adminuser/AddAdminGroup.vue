@@ -59,7 +59,7 @@
         </div>
       </v-form>
     </v-card>
-  </div>
+  </div>  
 </template>
 <script>
 export default {
@@ -119,7 +119,7 @@ export default {
     submit(e) {
       if (this.$refs.form.validate()) {
         this.isLoading = true;
-        this.isSignInDisabled = true;
+        this.is SignInDisabled = true;
         axios
           .post("/api/admin/addadmingroup", {
             name: this.fullname,

@@ -28,6 +28,7 @@
       <Categories />
     </v-col>
     <Feature2 :features="features" />
+    
     <CallToAction :callaction="callaction" />
   </div>
 </template>
@@ -36,6 +37,7 @@ import Partners from '@/components/landing/Partners.vue'
 import Stats from '@/components/landing/Stats.vue'
 import CallToAction from '@/components/landing/CallToAction.vue'
 import Feature2 from '@/components/landing/Feature2.vue'
+
 import Categories from '@/pages/bookings/Bookings.vue'
 export default {
   components: {
